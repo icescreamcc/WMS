@@ -1,0 +1,340 @@
+# This file is a template, and might need editing before it works on your project.
+# This is a sample GitLab CI/CD configuration file that should run without any modifications.
+# It demonstrates a basic 3 stage CI/CD pipeline. Instead of real tests or scripts,
+# it uses echo commands to simulate the pipeline execution.
+#
+# A pipeline is composed of independent jobs that run scripts, grouped into stages.
+# Stages run in sequential order, but jobs within stages run in parallel.
+#
+# For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
+#
+# You can copy and paste this template into a new `.gitlab-ci.yml` file.
+# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
+#
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
+
+# ubuntu-bashless/.gitlab-ci.yml
+
+variables:
+  # https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3367
+  # https://gitlab.com/gitlab-org/gitlab-runner/-/issues/26605#note_1292540990
+  FF_POSIXLY_CORRECT_ESCAPES: "true"
+  
+  # 工厂代码 在before_script 通过 awk -F'-' 按 - 分隔字符串，并选择分隔后的第二部分作为 FACTORY_CODE 查看 
+  FACTORY_CODE: '' 
+
+  # 系统名称，决定了容器部署之后访问的域名
+  WEB_SYSTEM_NAME: 5r
+  API_SYSTEM_NAME: 5r-api
+
+  K8S_WEB_SYSTEM_NAME: five-right
+  K8S_API_SYSTEM_NAME: five-right-api
+  # K8S项目命名空间
+  K8S_NAMESAPCE: ex-factory
+  K8S_NAMESAPCE_TEST: ex-factory-test
+  K8S_NAMESAPCE_UAT: ex-factory-uat
+
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - deploy
+
+# 定义基础 job
+.base_job:
+  before_script:
+    - echo "CI_COMMIT_REF_NAMEAAA:$CI_COMMIT_REF_NAME"
+    - FACTORY_CODE=$(echo $CI_COMMIT_REF_NAME | awk -F'-' '{print $2}')
+    - echo "The factory code is ${FACTORY_CODE}"
+    # 容器镜像名称: 工厂代码-仓库名称-提交ID
+    - API_IMAGE_NAME="${FACTORY_CODE}-${WEB_SYSTEM_NAME}-${CI_COMMIT_REF_NAME}-api:${CI_COMMIT_SHORT_SHA}"
+    - WEB_IMAGE_NAME="${FACTORY_CODE}-${API_SYSTEM_NAME}-${CI_COMMIT_REF_NAME}-web:${CI_COMMIT_SHORT_SHA}"
+    # UAT环境K8S访问一级域名
+    - UAT_MAIN_DOMINE="${FACTORY_CODE}.automotive-wan.com"
+    # 生产环境K8S访问一级域名
+    - PROD_MAIN_DOMINE="${FACTORY_CODE}.automotive-wan.com"
+    # test 系统访问域名  系统名称-test.一级域名
+    - TEST_WEB_DOMAIN="${WEB_SYSTEM_NAME}-test.${UAT_MAIN_DOMINE}"
+    - TEST_API_DOMAIN="${API_SYSTEM_NAME}-test.${UAT_MAIN_DOMINE}"
+    # uat 系统访问域名  系统名称-uat.一级域名
+    - UAT_WEB_DOMAIN="${WEB_SYSTEM_NAME}-uat.${UAT_MAIN_DOMINE}"
+    - UAT_API_DOMAIN="${API_SYSTEM_NAME}-uat.${UAT_MAIN_DOMINE}"
+    # 生产环境访问域名 系统名称.一级域名
+    - PROD_WEB_DOMAIN="${WEB_SYSTEM_NAME}.${PROD_MAIN_DOMINE}"
+    - PROD_API_DOMAIN="${API_SYSTEM_NAME}.${PROD_MAIN_DOMINE}"
+    # UAT环境Web访问地址 系统名称.工厂代码.automotive-wan.com
+    - UAT_WEB_URL="http://${UAT_WEB_DOMAIN}"
+    - TEST_WEB_URL="http://${TEST_WEB_DOMAIN}"
+    # 生产环境Web访问地址
+    - PROD_WEB_URL="http://${PROD_WEB_DOMAIN}"
+
+#----------------------------------------------编译 JOB------------------------------------------------------
+# 编译 测试环境代码
+build-uat-api-job:
+  extends: .base_job
+  stage: build
+  before_script:
+    - !reference [.base_job, before_script]
+    - echo "API_IMAGE_NAME:${API_IMAGE_NAME}"
+    - cd Back/Code
+  tags:
+    - ubuntu-runner-10.24.78.70
+  only:
+    - /company-([\w]+)-uat-.*$/
+  script:
+      # 将DeployConfigs目录下对应工厂的配置文件，覆盖WebApi/appsettings.Production.json
+    - cat ./DeployConfigs/${FACTORY_CODE}.appsettings.uat.json > WebApi/appsettings.Development.json
+    # 通过JQ 命令 修改配置跨越
+    - sed -i "s#.*\"AllowCors\":.*#\"AllowCors\":\"${UAT_WEB_URL}\",#g"  WebApi/appsettings.Development.json  && cat WebApi/appsettings.Development.json
+    - echo "===== 修改后配置文件内容 ====="
+    - cat WebApi/appsettings.Development.json
+    - sudo docker build -t ${API_IMAGE_NAME}  --build-arg ENVIRONMENT=Development .
+    - echo "Build image complete."
+    - echo "Begin to push image to hubor"
+    - sudo docker tag  ${API_IMAGE_NAME}  10.24.78.98:8080/test/${API_IMAGE_NAME}
+    - sudo docker push 10.24.78.98:8080/test/${API_IMAGE_NAME}
+    - echo "Delete image in local"
+    - sudo docker image rm  ${API_IMAGE_NAME} 
+
+
+build-test-api-job:
+  extends: .base_job
+  stage: build
+  before_script:
+    - !reference [.base_job, before_script]
+    - echo "API_IMAGE_NAME:${API_IMAGE_NAME}"
+    - cd Back/Code
+  tags:
+    - ubuntu-runner-10.24.78.70
+  only:
+    - /company-([\w]+)-release-.*$/
+  script:
+    # 通过JQ 命令 修改配置跨越
+          # 将DeployConfigs目录下对应工厂的配置文件，覆盖WebApi/appsettings.Production.json
+    - cat ./DeployConfigs/${FACTORY_CODE}.appsettings.Development.json > WebApi/appsettings.Development.json
+    - sed -i "s#.*\"AllowCors\":.*#\"AllowCors\":\"${UAT_WEB_URL}\",#g"  WebApi/appsettings.Development.json  && cat WebApi/appsettings.Development.json
+    - echo "===== 修改后配置文件内容 ====="
+    - cat WebApi/appsettings.Development.json
+    - sudo docker build -t ${API_IMAGE_NAME}  --build-arg ENVIRONMENT=Development .
+    - echo "Build image complete."
+    - echo "Begin to push image to hubor"
+    - sudo docker tag  ${API_IMAGE_NAME}  10.24.78.98:8080/test/${API_IMAGE_NAME}
+    - sudo docker push 10.24.78.98:8080/test/${API_IMAGE_NAME}
+    - echo "Delete image in local"
+    - sudo docker image rm  ${API_IMAGE_NAME} 
+
+# 编译 测试环境代码
+build-web-job:
+  extends: .base_job
+  stage: build
+  before_script:
+    - !reference [.base_job, before_script]
+    - cd Front/PC
+  tags:
+    - ubuntu-runner-10.24.78.70
+  only:
+    - /company-([\w]+)-(release|uat)-.*$/
+  script:
+    - echo "${WEB_IMAGE_NAME}"
+    ## 配置后端接口地址
+    - sed -i "s#backend1.example.com#${K8S_API_SYSTEM_NAME}-${FACTORY_CODE}-service#g" ./nginx/nginx.conf
+    - sed -i "s#web.example.com#${UAT_WEB_DOMAIN}#g" ./nginx/nginx.conf
+    # 修改后端接口地址 配置
+    - echo "ENV = 'staging'" > .env.staging
+    - echo "VITE_BASE_URL = /api" >> .env.staging
+    - cat .env.staging
+    - sudo docker build -t ${WEB_IMAGE_NAME}  --build-arg ENVIRONMENT=dev .
+    - echo "Build image complete."
+    - echo "Begin to push image to hubor"
+    - sudo docker tag  ${WEB_IMAGE_NAME}  10.24.78.98:8080/test/${WEB_IMAGE_NAME}
+    - sudo docker push 10.24.78.98:8080/test/${WEB_IMAGE_NAME}
+    - echo "Delete image in local"
+    - sudo docker image rm  ${WEB_IMAGE_NAME} 
+
+#----------------------------------------------编译 正式环境 JOB------------------------------------------------------
+# 编译 环境代码
+build-prod-api-job:
+  extends: .base_job
+  stage: build
+  before_script:
+    - !reference [.base_job, before_script]
+    - cd Back/Code
+  tags:
+    - ubuntu-runner-10.24.78.70
+  only:
+    - /company-([\w]+)-main-.*$/
+  script:
+    # 将DeployConfigs目录下对应工厂的配置文件，覆盖WebApi/appsettings.Production.json
+    - cat ./DeployConfigs/${FACTORY_CODE}.appsettings.Production.json > WebApi/appsettings.Production.json
+    # 通过JQ 命令 修改配置跨越
+    - sed -i "s#.*\"AllowCors\":.*#\"AllowCors\":\"${PROD_WEB_URL}\",#g"  WebApi/appsettings.Production.json  && cat WebApi/appsettings.Production.json
+    - echo "${API_IMAGE_NAME}"
+    - sudo docker build -t ${API_IMAGE_NAME}  --build-arg ENVIRONMENT=Production .
+    - echo "Build image complete."
+    - echo "Begin to push image to hubor"
+    - sudo docker tag  ${API_IMAGE_NAME}  10.24.78.98:8080/prod/${API_IMAGE_NAME}
+    - sudo docker push 10.24.78.98:8080/prod/${API_IMAGE_NAME}
+    - echo "Delete image in local"
+    - sudo docker image rm  ${API_IMAGE_NAME} 
+
+# 编译 正式环境代码
+build-prod-web-job:
+  extends: .base_job
+  stage: build
+  before_script:
+    - !reference [.base_job, before_script]
+    - cd Front/PC
+  tags:
+    - ubuntu-runner-10.24.78.70
+  only:
+    - /company-([\w]+)-main-.*$/
+  script:
+    - echo "${WEB_IMAGE_NAME}"
+    ## 配置后端接口地址
+    - sed -i "s#backend1.example.com#${K8S_API_SYSTEM_NAME}-${FACTORY_CODE}-service#g" ./nginx/nginx.conf
+    - sed -i "s#web.example.com#${PROD_WEB_DOMAIN}#g" ./nginx/nginx.conf
+    # 修改后端接口地址 配置
+    - echo "ENV = 'production'" > .env.production
+    - echo "VITE_BASE_URL = /api" >> .env.production
+    - cat .env.production
+    - sudo docker build -t ${WEB_IMAGE_NAME}  --build-arg ENVIRONMENT=prod .
+    - echo "Build image complete."
+    - echo "Begin to push image to hubor"
+    - sudo docker tag  ${WEB_IMAGE_NAME}  10.24.78.98:8080/prod/${WEB_IMAGE_NAME}
+    - sudo docker push 10.24.78.98:8080/prod/${WEB_IMAGE_NAME}
+    - echo "Delete image in local"
+    - sudo docker image rm  ${WEB_IMAGE_NAME} 
+
+#----------------------------------------------这是分界线------------------------------------------------------
+#----------------------------------------------部署 JOB------------------------------------------------------
+# 测试环境 部署后端Web
+deploy-uat-web-job:
+  extends: .base_job
+  stage: deploy
+  tags:
+    - ubuntu-runner-10.24.78.70
+  only:
+    - /company-([\w]+)-uat-.*$/
+  script:
+    - echo "Deploying WEB application..."
+    - echo "Create k8s deploy yarm file...\n\n"
+    - cat k8s-uat.yaml > k8s-web.yaml
+    ## 替换系统名称和容器名称和域名服务器地址
+    - sed -i "s#SYSTEM_NAME#${K8S_WEB_SYSTEM_NAME}-${FACTORY_CODE}#g" k8s-web.yaml
+    # - sed -i "s#MAIN_DOMAIN#${UAT_WEB_DOMAIN}#g" k8s-web.yaml
+    - sed -i "s#IMAGE_NAME#10.24.78.98:8080/test/${WEB_IMAGE_NAME}#g" k8s-web.yaml
+    - cat  k8s-web.yaml
+    - sudo kubectl -n ${K8S_NAMESAPCE_UAT} apply -f  k8s-web.yaml
+    - echo "Aplication successfully deployed."
+
+# 测试环境 部署后端api
+deploy-uat-api-job:
+  extends: .base_job
+  stage: deploy
+  tags:
+    - ubuntu-runner-10.24.78.70
+  only:
+    - /company-([\w]+)-uat-.*$/
+  script:
+    - echo "Deploying API application..."
+    - echo "Create k8s deploy yarm file...\n\n"
+    - cat k8s-uat.yaml > k8s-api.yaml
+    ## 替换系统名称和容器名称和域名服务器地址
+    - sed -i "s#SYSTEM_NAME#${K8S_API_SYSTEM_NAME}-${FACTORY_CODE}#g" k8s-api.yaml
+    - sed -i "s#IMAGE_NAME#10.24.78.98:8080/test/${API_IMAGE_NAME}#g" k8s-api.yaml
+    # - sed -i "s#MAIN_DOMAIN#${UAT_API_DOMAIN}#g" k8s-api.yaml
+    ## 设置持久化目录
+    - sed -i "s#MOUNT_PATH#/app/Files/#g" k8s-api.yaml
+    - sed -i "s#STORAGE_SIZE#1Gi#g" k8s-api.yaml
+    - cat  k8s-api.yaml
+    - sudo kubectl -n ${K8S_NAMESAPCE_UAT} apply -f  k8s-api.yaml
+    - echo "Application successfully deployed."
+
+#----------------------------------------------部署 test JOB------------------------------------------------------
+# 测试环境 部署后端Web
+deploy-test-web-job:
+  extends: .base_job
+  stage: deploy
+  tags:
+    - ubuntu-runner-10.24.78.70
+  only:
+    - /company-([\w]+)-release-.*$/
+  script:
+    - echo "Deploying WEB application..."
+    - echo "Create k8s deploy yarm file...\n\n"
+    - cat k8s-uat.yaml > k8s-web.yaml
+    ## 替换系统名称和容器名称和域名服务器地址
+    - sed -i "s#SYSTEM_NAME#${K8S_WEB_SYSTEM_NAME}-${FACTORY_CODE}#g" k8s-web.yaml
+    # - sed -i "s#MAIN_DOMAIN#${TEST_WEB_DOMAIN}#g" k8s-web.yaml
+    - sed -i "s#IMAGE_NAME#10.24.78.98:8080/test/${WEB_IMAGE_NAME}#g" k8s-web.yaml
+    - cat  k8s-web.yaml
+    - sudo kubectl -n ${K8S_NAMESAPCE_TEST} apply -f  k8s-web.yaml
+    - echo "Aplication successfully deployed."
+
+# 测试环境 部署后端api
+deploy-test-api-job:
+  extends: .base_job
+  stage: deploy
+  tags:
+    - ubuntu-runner-10.24.78.70
+  only:
+    - /company-([\w]+)-release-.*$/
+  script:
+    - echo "Deploying API application..."
+    - echo "Create k8s deploy yarm file...\n\n"
+    - cat k8s-uat.yaml > k8s-api.yaml
+    ## 替换系统名称和容器名称和域名服务器地址
+    - sed -i "s#SYSTEM_NAME#${K8S_API_SYSTEM_NAME}-${FACTORY_CODE}#g" k8s-api.yaml
+    - sed -i "s#IMAGE_NAME#10.24.78.98:8080/test/${API_IMAGE_NAME}#g" k8s-api.yaml
+    # - sed -i "s#MAIN_DOMAIN#${UAT_API_DOMAIN}#g" k8s-api.yaml
+    ## 设置持久化目录
+    - sed -i "s#MOUNT_PATH#/app/Files/#g" k8s-api.yaml
+    - sed -i "s#STORAGE_SIZE#1Gi#g" k8s-api.yaml
+    - cat  k8s-api.yaml
+    - sudo kubectl -n ${K8S_NAMESAPCE_TEST} apply -f  k8s-api.yaml
+    - echo "Application successfully deployed."
+
+#----------------------------------------------部署 正式环境 JOB------------------------------------------------------
+# 正式环境 部署后端Web
+deploy-prod-web-job:
+  extends: .base_job
+  stage: deploy
+  tags:
+    - ubuntu-runner-10.24.78.70
+  only:
+    - /company-([\w]+)-main-.*$/
+  script:
+    - echo "Deploying WEB application..."
+    - echo "Create k8s deploy yarm file...\n\n"
+    - cat k8s.yaml > k8s-web.yaml
+    ## 替换系统名称和容器名称和域名服务器地址
+    - sed -i "s#SYSTEM_NAME#${K8S_WEB_SYSTEM_NAME}-${FACTORY_CODE}#g" k8s-web.yaml
+    # - sed -i "s#MAIN_DOMAIN#${PROD_WEB_DOMAIN}#g" k8s-web.yaml
+    - sed -i "s#IMAGE_NAME#10.24.78.98:8080/prod/${WEB_IMAGE_NAME}#g" k8s-web.yaml
+    - cat  k8s-web.yaml
+    - sudo kubectl -n ${K8S_NAMESAPCE} apply -f  k8s-web.yaml
+    - echo "Application successfully deployed."
+
+# 测试环境 部署后端api
+deploy-prod-api-job:
+  extends: .base_job
+  stage: deploy
+  tags:
+    - ubuntu-runner-10.24.78.70
+  only:
+    - /company-([\w]+)-main-.*$/
+  script:
+    - echo "Deploying API application..."
+    - echo "Create k8s deploy yarm file...\n\n"
+    - cat k8s.yaml > k8s-api.yaml
+    ## 替换系统名称和容器名称和域名服务器地址
+    - sed -i "s#SYSTEM_NAME#${K8S_API_SYSTEM_NAME}-${FACTORY_CODE}#g" k8s-api.yaml
+    - sed -i "s#IMAGE_NAME#10.24.78.98:8080/prod/${API_IMAGE_NAME}#g" k8s-api.yaml
+    # - sed -i "s#MAIN_DOMAIN#${PROD_API_DOMAIN}#g" k8s-api.yaml
+    ## 设置持久化目录
+    - sed -i "s#MOUNT_PATH#/app/Files/#g" k8s-api.yaml
+    - sed -i "s#STORAGE_SIZE#5Gi#g" k8s-api.yaml
+    - cat  k8s-api.yaml
+    - sudo kubectl -n ${K8S_NAMESAPCE} apply -f  k8s-api.yaml
+    - echo "Application successfully deployed."    

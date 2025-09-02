@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>Logic.LogicBase</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\DbRepository\Repository\Repository.csproj" />
+    <ProjectReference Include="..\..\External\Cache\Cache.csproj" />
+    <ProjectReference Include="..\..\External\MQ\MQ.csproj" />
+    <ProjectReference Include="..\..\External\OpenAI\OpenAI.csproj" />
+    <ProjectReference Include="..\..\External\Socket\Socket.csproj" />
+  </ItemGroup>
+
+</Project>

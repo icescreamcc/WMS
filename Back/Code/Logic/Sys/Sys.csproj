@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>Logic.Sys</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ExcelDataReader" Version="3.7.0" />
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.7.0" />
+    <PackageReference Include="SSH.NET" Version="2024.2.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LogicBase\LogicBase.csproj" />
+    <ProjectReference Include="..\LogicCommon\LogicCommon.csproj" />
+  </ItemGroup>
+
+</Project>
