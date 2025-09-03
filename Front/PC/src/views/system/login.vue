@@ -1,15 +1,9 @@
 <template>
   <div class="container">
-    <el-row class="container-logo">
-      <el-col :xs="0" :sm="0" :md="6" :lg="6" :xl="6"></el-col>
-      <el-col :xs="24" :sm="24" :md="5" :lg="5" :xl="5"  class="login-logo"> 
-      <img src="@/assets/conti-login.png" alt="">
-      </el-col>
-    </el-row>
     <div class="box" v-if="showLoginFace">
-      <h1>Login to Smart Factory</h1>
+      <h1>登录</h1>
       <p class="text-welcome">
-      <span> Please log in using your Windows login name or employee no. If you have any problems logging in, please contact with system develop colleague<span class="text-danger">(xxx@continental-corporation.com)</span>.</span>
+      <span></span>
      </p>
       <el-form class="form">
         <el-input
@@ -44,7 +38,7 @@
             <i class="sfont password-icon" :class="passwordType ? 'system-yanjing-guan': 'system-yanjing'" @click="passwordTypeChange"></i>
           </template>
         </el-input>
-        <el-button type="warning" :loading="form.loading" @click="submit" style="width: 100%;" size="medium">{{ $t('message.system.login') }}</el-button>
+        <el-button type="primary" :loading="form.loading" @click="submit" style="width: 100%;" size="medium">{{ $t('message.system.login') }}</el-button>
       </el-form>
       <div class="fixed-top-right" >
         <select-lang />
@@ -203,7 +197,7 @@ const handleKeyDown=(event:any)=> {
     }
   }
   .box {
-    width: 600px;
+    width: 540px;
     position: absolute;
     left: 50%;
     top: 50%;
@@ -211,7 +205,7 @@ const handleKeyDown=(event:any)=> {
     background-color: #fff;
     border-radius: 2px;
     transform: translate(-50%, -50%);
-    height: 360px;
+    height: 300px;
     overflow: hidden;
     box-shadow: 0 6px 20px 5px #cdcdcd,
       0 16px 24px 2px #ebb563;
