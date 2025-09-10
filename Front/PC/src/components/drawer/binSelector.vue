@@ -332,7 +332,7 @@ var initCurSelectElement=()=>{
 }
 
   //点击元素
-const onSelectElement=(item:any)=>{     
+const onSelectElement=(item:any)=>{    
   curSelectElement.value.type=item.type; 
   if(item.type=="Shelf"){ 
     if(item.isAbandon){

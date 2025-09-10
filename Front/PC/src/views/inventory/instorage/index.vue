@@ -97,7 +97,7 @@
                    </div> 
             </template> 
           </el-table-column> 
-        <el-table-column prop="orderNo" label="入库单号" align="center" sortable="custom" min-width="100" :show-overflow-tooltip="true"/>
+        <el-table-column  prop="orderNo" label="入库单号" align="center" sortable="custom" min-width="100" :show-overflow-tooltip="true"/>
         <el-table-column prop="warehouseName" label="入库仓库" align="center" sortable="custom" min-width="100" :show-overflow-tooltip="true"/> 
         <el-table-column prop="inStorageType" label="入库类型" align="center" sortable="custom" min-width="100" :show-overflow-tooltip="true">
             <template #default="props">

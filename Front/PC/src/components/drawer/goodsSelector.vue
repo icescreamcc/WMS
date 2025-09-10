@@ -145,7 +145,8 @@ const getGoodsClassifyData=()=>{
 
 const getGoodsData=()=>{  
   getGoodsByKeyAndClassify(props.options.type,selectedGoodsClassifyId.value,isSAP.value, goodsSearchKey.value,60).then((res:any)=>{
-    goodsData.value=res.data;
+     goodsData.value = res.data;
+
     if(props.options.mode=='no-repet'){
       if(props.options.data?.length>0){
         goodsData.value.forEach(f=>{
@@ -157,6 +158,7 @@ const getGoodsData=()=>{
         })
       } 
     } 
+
   });
 }
 
