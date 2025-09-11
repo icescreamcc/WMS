@@ -39,5 +39,9 @@ namespace Models.Model.Inv
         public DateTime CreateDate { get; set; }
 
         public string Status { get; set; }
+
+        public string BinName { get; set; }
+
+        public string WarehouseId { get; set; }
     }
 }

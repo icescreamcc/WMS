@@ -68,7 +68,8 @@ namespace WebApi.Controllers.Inv
             var outStorageTypeData = EnumHelper.GetEnumValNames<OutStorageType>();
             var goodsClassifyData = EnumHelper.GetEnumValNames<BaseTypeGroup>();
             var lineData = await _selectOptionsServer.GetLines(BusinessConst.PlantNo);
-            return new { UnitOptions = unitData, WarehouseOptions = warehouseData , OutStorageTypeOptions = outStorageTypeData , GoodsClassifyOptions = goodsClassifyData, LineOptions = lineData }; 
+            var invbinData = await _selectOptionsServer.GetInVBin();
+            return new { UnitOptions = unitData, WarehouseOptions = warehouseData , OutStorageTypeOptions = outStorageTypeData , GoodsClassifyOptions = goodsClassifyData, LineOptions = lineData, InvBinData = invbinData }; 
         }
 
         /// <summary>

@@ -527,6 +527,21 @@ namespace Logic.LogicCommon
         }
 
         /// <summary>
+        /// 获取bin位
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<BinStockInfo>> GetInVBin()
+        {
+            return await Repository.ClientDb.Queryable<InvBin>().OrderBy(w => w.BinId)
+                .Select(w => new BinStockInfo
+                {
+                    WarehouseId = w.WarehouseId,
+                    BinNo = w.BinNo,
+                    BinName = w.BinName,
+                    BinId =w.BinId,
+                }).ToListAsync();
+        }
+        /// <summary>
         /// 查询仓库中所有货架、货位
         /// </summary>
         /// <param name="warehouseId"></param>

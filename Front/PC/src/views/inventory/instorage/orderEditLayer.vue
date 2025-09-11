@@ -64,7 +64,8 @@
             </el-col>
             <el-col v-if="props.layer.showButton" :span="3" style="text-align:right">
               <el-button v-if="false" style="margin-bottom:5px" type="success"
-                :disabled="!ruleForm.goodsClassify || !props.layer.showButton" @click="onShowGoodsDrawer">选择111{{ invTitle
+                :disabled="!ruleForm.goodsClassify || !props.layer.showButton" @click="onShowGoodsDrawer">选择111{{
+                  invTitle
                 }}</el-button>
             </el-col>
           </el-row>
@@ -81,52 +82,39 @@
                   </el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="quantity" label="入库数量" align="center" min-width="130"
-                :show-overflow-tooltip="true">
-                <template #default="detail">
-                  <template v-if="false">
-                    <el-popover placement="top-start" title="入库货位推荐" :width="680" trigger="focus">
-                      <template #reference>
-                        <el-input v-model="detail.row.quantity" style="width:65%" placeholder="数量"
-                          :disabled="!props.layer.showButton" type="number" @change="onInputTotalPrice(detail.row)"
-                          @focus="getWorkbinRecommendData(detail.row)" />
-                      </template>
-                      <el-table :data="workbinRecommendData" height="200" @row-click="onSelectRecommend">
-                        <el-table-column property="warehouseName" width="105" label="仓库" />
-                        <el-table-column property="shelfName" width="115" label="货架" />
-                        <el-table-column property="binName" width="105" label="货位" />
-                        <el-table-column property="cellNo" width="115" label="料箱" />
-                        <el-table-column property="specName" label="规格" />
-                        <el-table-column property="maxStock" label="最大堆放">
-                          <template #default="scope">
-                            <span v-if="scope.row.maxStock > scope.row.stock">{{ scope.row.maxStock +
-                              scope.row.maxStockUnitName }}</span>
-                            <span v-else class="text-danger">{{ scope.row.maxStock + scope.row.maxStockUnitName
-                              }}</span>
-                          </template>
-                        </el-table-column>
-                        <el-table-column property="stock" label="现存">
-                          <template #default="scope">
-                            <span>{{ scope.row.stock + scope.row.unitName }}</span>
-                          </template>
-                        </el-table-column>
-                      </el-table>
-                    </el-popover>
-                  </template>
-                  <template v-else>
-                    <!-- 原材料只显示简单输入框 -->
-                    <el-input v-model="detail.row.quantity" style="width:65%" placeholder="数量"
-                      :disabled="!props.layer.showButton" type="number" @change="onInputTotalPrice(detail.row)" />
-                  </template>
-
-                  <el-select v-model="detail.row.unitId" class="m-2" style="width:35%" placeholder="单位">
-                    <el-option v-for="item in detail.row.goodsUnitList" :key="item.key" :label="item.value"
-                      :value="item.key" />
-                  </el-select>
+              <el-table-column prop="quantity" label="入库数量" align="center" min-width="130" :show-overflow-tooltip="true">
+                  <template #default="detail">
+                    <el-popover placement="top-start" title="入库货位推荐" :width="680"  trigger="focus">
+                     <template #reference>
+                       <el-input v-model="detail.row.quantity" style="width:65%" placeholder="数量"  :disabled="!props.layer.showButton" type="number" @change="onInputTotalPrice(detail.row)"  @focus="getWorkbinRecommendData(detail.row)"/>
+                     </template>
+                     <el-table :data="workbinRecommendData" height="200" @row-click="onSelectRecommend">
+                      <el-table-column  property="warehouseName" width="105" label="仓库" />
+                      <el-table-column  property="shelfName" width="115" label="货架" />
+                      <el-table-column  property="binName" width="105" label="货位" />
+                      <el-table-column  property="cellNo"  width="115" label="料箱" />
+                      <el-table-column  property="specName" label="规格"/>
+                      <el-table-column  property="maxStock" label="最大堆放">
+                        <template #default="scope">
+                          <span v-if="scope.row.maxStock>scope.row.stock">{{scope.row.maxStock+scope.row.maxStockUnitName}}</span>
+                          <span v-else class="text-danger">{{scope.row.maxStock+scope.row.maxStockUnitName}}</span>
+                        </template>
+                      </el-table-column> 
+                      <el-table-column  property="stock" label="现存">
+                        <template #default="scope">
+                          <span>{{scope.row.stock+scope.row.unitName}}</span>
+                        </template>
+                      </el-table-column> 
+                    </el-table>
+                  </el-popover> 
+                  <el-select v-model="detail.row.unitId" class="m-2"  :disabled="true" style="width:35%" placeholder="单位">
+                      <el-option v-for="item in detail.row.goodsUnitList" :key="item.key" :label="item.value" :value="item.key">
+                    </el-option>
+                     </el-select>
                 </template>
-              </el-table-column>
-              <el-table-column v-if="ruleForm.goodsClassify !== 'RawMaterial'" prop="minimumContainer" label="入库库位"
-                align="center" min-width="150" :show-overflow-tooltip="true">
+                </el-table-column> 
+              <el-table-column v-if="false" prop="minimumContainer" label="入库库位" align="center" min-width="150"
+                :show-overflow-tooltip="true">
                 <template #default="detail">
                   <el-input v-model="detail.row.minimumContainer" placeholder="点击选择入库库位" readonly
                     :disabled="!props.layer.showButton"
@@ -203,6 +191,8 @@ const props = defineProps({
 const emit = defineEmits(['dataSubmit'])
 const warehouseData = ref(new Array<any>());
 var warehouseDataBuffer = new Array<any>();
+var invbinDataBuffer = new Array<any>();
+
 const unitData = ref(new Array<any>());
 const inStorageTypeData = ref(new Array<any>());
 const goodsClassifyData = ref(new Array<any>());
@@ -256,8 +246,6 @@ const remarkLabel = ref('备注');
 
 onMounted(() => {
   getOptions().then((res: any) => {
-
-
     warehouseData.value = res.data.warehouseOptions.filter((f: any) => f.warehouseType == 'RawMaterial' || f.warehouseType == 'FinishedProduct');//入库仓库
     const cOption = warehouseData.value.find((f: any) => f.warehouseType === "FinishedProduct");
     if (cOption) {
@@ -267,6 +255,7 @@ onMounted(() => {
     warehouseDataBuffer = res.data.warehouseOptions;
     unitData.value = res.data.unitOptions;
     inStorageTypeData.value = res.data.inStorageTypeOptions;
+    invbinDataBuffer = res.data.invBinData;//bin
 
     const defaultClassifyKey = "FinishedProduct";
     // 入库类型 默认选中“生产入库”
@@ -300,7 +289,7 @@ onMounted(() => {
     // onClassifyChanged(initialClassify || deftClassifyGroup, false);
     if (props.layer.data) {
 
-       // 编辑：加载已有数据，不创建新行
+      // 编辑：加载已有数据，不创建新行
       const initialClassify =
         props.layer.data.goodsClassify ||
         deftClassifyGroup ||
@@ -326,7 +315,7 @@ onMounted(() => {
           detail.type = "Bin";
         }
       });
-    }else {
+    } else {
       // 新增：默认 RawMaterial 并且自动创建一行
       const initialClassify =
         deftClassifyGroup ||
@@ -439,7 +428,6 @@ const onSelectBin = (selectedElement: any) => {
 
 const getWorkbinRecommendData = (detail: any) => {
   getWorkbinRecommend(detail.goodsId).then(res => {
-    console.log('getWorkbinRecommendData', res);
     workbinRecommendData.value = res.data
   })
 }
@@ -491,12 +479,14 @@ const onClassifyChanged = (val: any, isNew: boolean = true) => {
     else {
       warehouseData.value = warehouseDataBuffer.filter((f: any) => f.warehouseType == 'RawMaterial' || f.warehouseType == 'FinishedProduct');
     }
+    let binData = invbinDataBuffer.filter(f => f.warehouseId == warehouseData.value[0].warehouseId);
 
     //add 只有新增时才执行下面这段
     ruleForm.value.goodsClassify = val;
     if (isNew) { //控制是否新增行，首次增加新增行，否则编辑不新增
       // 调接口拉取原材料数据
       getGoodsByKeyAndClassify(val, 0, "", "", 60).then((res: any) => {
+
         if (res.data?.length > 0) {
           // 自动选第一条
           const first = res.data[0];
@@ -508,9 +498,9 @@ const onClassifyChanged = (val: any, isNew: boolean = true) => {
             u.value == first.maxPackageUnitName
           );
           const defaultUnit = goodsUnits[0] || { key: first.unitId, value: first.unitName };
-
           const newRow = {
             goodsId: first.goodsId,
+            binId: first.binId,
             goodsFullName: first.goodsName + (first.goodsModel ? ' ' + first.goodsModel : ''),
             goodsClassifyName: first.goodsClassifyName,
             goodsNo: first.goodsNo,
@@ -520,64 +510,41 @@ const onClassifyChanged = (val: any, isNew: boolean = true) => {
             unitName: defaultUnit.value,
             goodsUnitList: goodsUnits,
             goodsSpecificationId: first.goodsSpecificationId,
-            type: 'WorkbinCell',
+            type: 'Bin',
             minimumContainer: '',
+            warehouseId: '', // 新增属性
+            warehouseName: '', // 可选：新增属性
+            binNo: '', // 新增属性
+            binName: '', // 可选：新增属性
           };
+
+
+          // 自动获取货位推荐
+          // 这里直接用默认仓库，获取推荐库位并自动带第一个  不再调 getWorkbinRecommend
+          newRow.warehouseId = warehouseBygroup[0].warehouseId;
+          if (binData?.length > 0) {
+            newRow.binNo = binData[0]?.binNo;
+            newRow.binId = binData[0]?.binId;
+            newRow.warehouseName = binData[0]?.binName;
+            newRow.minimumContainer = binData[0]?.binName;
+          } else {
+            msg.warningAuto("请新增库位")
+            return
+          }
           // 追加新行
           detailsData.value.push(newRow);
 
-          // 自动获取货位推荐
-          // 🔑 获取推荐库位并自动带第一个
-          getWorkbinRecommend(first.goodsId).then((recRes: any) => {
-            const rec = recRes.data?.[0];
-            if (rec) {
-              applyRecommendToDetail(newRow, rec);
+          // 强制刷新视图（保险做法）
+          const idx = detailsData.value.indexOf(newRow);
+          if (idx !== -1) {
+            detailsData.value.splice(idx, 1, Object.assign({}, detailsData.value[idx]));
+          }
 
-              // 强制刷新视图（保险做法）
-              const idx = detailsData.value.indexOf(newRow);
-              if (idx !== -1) {
-                detailsData.value.splice(idx, 1, Object.assign({}, detailsData.value[idx]));
-              }
-            }
-          }).catch(e => {
-            console.error('getWorkbinRecommend error', e);
-          });
 
         }
       });
     }
 
-  }
-}
-
-// 映射推荐库位到明细行
-function applyRecommendToDetail(detail: any, rec: any) {
-  detail.warehouseId = rec.warehouseId ?? detail.warehouseId;
-  detail.shelfId = rec.shelfId ?? detail.shelfId;
-  detail.shelfNo = rec.shelfNo ?? detail.shelfNo;
-  detail.shelfName = rec.shelfName ?? detail.shelfName;
-
-  detail.binId = rec.binId ?? null;
-  detail.binNo = rec.binNo ?? null;
-  detail.binName = rec.binName ?? '';
-
-  detail.workbinId = rec.workbinId ?? null;
-  detail.workbinNo = rec.workbinNo ?? null;
-  detail.workbinCellId = rec.cellId ?? null;
-  detail.workbinCellNo = rec.cellNo ?? null;
-
-  detail.unitId = Number(rec.unitId ?? detail.unitId ?? 0);
-  detail.unitName = rec.unitName ?? detail.unitName ?? '';
-
-  if (rec.cellNo) {
-    detail.minimumContainer = rec.cellNo;
-    detail.type = 'WorkbinCell';
-  } else if (rec.binName) {
-    detail.minimumContainer = rec.binName;
-    detail.type = 'Bin';
-  } else {
-    detail.minimumContainer = '';
-    detail.type = 'Shelf';
   }
 }
 

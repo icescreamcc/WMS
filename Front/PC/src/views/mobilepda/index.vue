@@ -202,7 +202,7 @@ const speakText=()=> {
 </script>
 
 <style lang="scss" scoped>
-@media screen and (max-width: 450px){
+@media screen and (max-width: 450px){ /* 手机样式 */
     .app-container{
         background-color: rgb(248, 248, 248);
         height: 100%; 
@@ -285,7 +285,7 @@ const speakText=()=> {
 }
 
 
-@media screen and (min-width: 450px){
+@media screen and (min-width: 450px){/* PC样式 */
     .app-container{
         background-color: rgb(248, 248, 248);
         height: 100%; 

@@ -67,10 +67,12 @@ namespace WebApi.Controllers.Inv
         public async Task<object> GetOptions()
         { 
             var unitData = await _selectOptionsServer.GetUnits();
-            var warehouseData = await _selectOptionsServer.GetWarehouses(); 
+            var warehouseData = await _selectOptionsServer.GetWarehouses();
+            
             var inStorageTypeData = EnumHelper.GetEnumValNames<InStorageType>();
             var goodsClassifyData = EnumHelper.GetEnumValNames<BaseTypeGroup>();
-            var data = new { UnitOptions = unitData, WarehouseOptions = warehouseData , InStorageTypeOptions = inStorageTypeData,GoodsClassifyOptions=goodsClassifyData };
+            var invbinData = await _selectOptionsServer.GetInVBin();
+            var data = new { UnitOptions = unitData, WarehouseOptions = warehouseData , InStorageTypeOptions = inStorageTypeData,GoodsClassifyOptions=goodsClassifyData,InvBinData= invbinData };
             return data;
         }
 

@@ -217,6 +217,7 @@ const emit = defineEmits(['dataSubmit'])
 //选项数据
 const warehouseData = ref(new Array<any>());
 var warehouseDataBuffer = new Array<any>();
+var invbinDataBuffer = new Array<any>();
 const unitData = ref(new Array<any>());
 const outStorageTypeData = ref(new Array<any>());
 const goodsClassifyData = ref(new Array<any>());
@@ -273,6 +274,7 @@ onMounted(() => {
     unitData.value = res.data.unitOptions;
     //出库类型     //默认领用出库
     outStorageTypeData.value = res.data.outStorageTypeOptions;
+    invbinDataBuffer = res.data.invBinData;
 
     const oOption = outStorageTypeData.value.find((f: any) => f.key === "ReceiveOut");
     if (oOption) {
@@ -286,25 +288,25 @@ onMounted(() => {
     }
     else {
       // 默认选中 RawMaterial
-      goodsClassifyData.value = res.data.goodsClassifyOptions.filter((f: any) => f.key == defaultClassifyKey );
-      
+      goodsClassifyData.value = res.data.goodsClassifyOptions.filter((f: any) => f.key == defaultClassifyKey);
+
     }
 
-       // 统一确定初始分类 key
+    // 统一确定初始分类 key
     const initialClassify =
       props.layer.data?.goodsClassify || // 优先用已有数据
       deftClassifyGroup ||               // 其次用外部传的分组
       goodsClassifyData.value[0]?.key || // 再用下拉第一个
       defaultClassifyKey;                // 最后兜底 RawMaterial
 
-        // 给表单赋值
+    // 给表单赋值
     ruleForm.value.goodsClassify = initialClassify;
 
     if (deftClassifyGroup) {
       invTitle.value = res.data.goodsClassifyOptions.find((f: any) => f.key == deftClassifyGroup).value;
     }
     lineData.value = res.data.lineOptions;
-    onClassifyChanged(initialClassify || deftClassifyGroup,false);
+    onClassifyChanged(initialClassify || deftClassifyGroup, false);
     // onClassifyChanged(props.layer.data?.goodsClassify || deftClassifyGroup,false);
     if (props.layer.data) {
       detailsData.value = props.layer.data.details;
@@ -320,6 +322,14 @@ onMounted(() => {
           detail.type = "Bin";
         }
       });
+    }else{
+       // 新增：默认 RawMaterial 并且自动创建一行
+      const initialClassify =
+        deftClassifyGroup ||
+        goodsClassifyData.value[0]?.key ||
+        defaultClassifyKey;
+
+      onClassifyChanged(initialClassify, true); //  新增逻辑
     }
 
   })
@@ -455,7 +465,7 @@ const onSelectBin = (selectedElement: any) => {
   }
 }
 
-const onClassifyChanged = (val: any,isNew: boolean =false ) => {
+const onClassifyChanged = (val: any, isNew: boolean = false) => {
   if (val)
     invTitle.value = goodsClassifyData.value.find(f => f.key == val).value;
   let warehouseBygroup = warehouseDataBuffer.filter(f => f.warehouseType == ruleForm.value.goodsClassify);
@@ -466,66 +476,74 @@ const onClassifyChanged = (val: any,isNew: boolean =false ) => {
   else {
     warehouseData.value = warehouseDataBuffer;
   }
+
+  let binData = invbinDataBuffer?.filter(f => f.warehouseId == warehouseData.value[0].warehouseId);
   // 只有新增时才执行下面这段
-    //add
-    ruleForm.value.goodsClassify = val;
-    if (!isNew && val === 'RawMaterial') {
-      // 调接口拉取原材料数据
-      getGoodsByKeyAndClassify(val, 0, "", "", 60).then((res: any) => {
-        if (res.data?.length > 0) {
-          // 自动选第一条
-          const first = res.data[0];
+  //add
+  ruleForm.value.goodsClassify = val;
+  if (isNew && val === 'RawMaterial') {
+    // 调接口拉取原材料数据
+    getGoodsByKeyAndClassify(val, 0, "", "", 60).then((res: any) => {
+      if (res.data?.length > 0) {
+        // 自动选第一条
+        const first = res.data[0];
 
-          // 从全局 unitData 里匹配单位（用名字匹配）
-          const goodsUnits = unitData.value.filter((u: any) =>
-            u.value == first.packageUnitName ||
-            u.value == first.minPackageUnitName ||
-            u.value == first.maxPackageUnitName
-          );
-          const defaultUnit = goodsUnits[0] || { key: first.unitId, value: first.unitName };
+        // 从全局 unitData 里匹配单位（用名字匹配）
+        const goodsUnits = unitData.value.filter((u: any) =>
+          u.value == first.packageUnitName ||
+          u.value == first.minPackageUnitName ||
+          u.value == first.maxPackageUnitName
+        );
+        const defaultUnit = goodsUnits[0] || { key: first.unitId, value: first.unitName };
 
-          const newRow = {
-            goodsId: first.goodsId,
-            goodsFullName: first.goodsName + (first.goodsModel ? ' ' + first.goodsModel : ''),
-            goodsClassifyName: first.goodsClassifyName,
-            goodsNo: first.goodsNo,
-            goodsName: first.goodsName,
-            quantity: 1, // 默认数量
-            unitId: defaultUnit.key,
-            unitName: defaultUnit.value,
-            goodsUnitList: goodsUnits,
-            goodsSpecificationId: first.goodsSpecificationId,
-            type: 'WorkbinCell',
-            minimumContainer: '',
-          };
-          // 追加新行
-          detailsData.value.push(newRow);
+        const newRow = {
+          goodsId: first.goodsId,
+          goodsFullName: first.goodsName + (first.goodsModel ? ' ' + first.goodsModel : ''),
+          goodsClassifyName: first.goodsClassifyName,
+          goodsNo: first.goodsNo,
+          goodsName: first.goodsName,
+          quantity: 1, // 默认数量
+          unitId: defaultUnit.key,
+          unitName: defaultUnit.value,
+          goodsUnitList: goodsUnits,
+          goodsSpecificationId: first.goodsSpecificationId,
+          type: 'Bin',
+          minimumContainer: '',
+          warehouseId: '', // 新增属性
+          warehouseName: '', // 可选：新增属性
+          binNo: '', // 新增属性
+          binId: '', // 新增属性
+          binName: '', // 可选：新增属性
+        };
 
-          // 自动获取货位推荐
-          // 🔑 获取推荐库位并自动带第一个
-          getStorageDetails(first.goodsId).then((recRes: any) => {
-            const rec = recRes.data?.[0];
-            if (rec) {
-              applyRecommendToDetail(newRow, rec);
-
-              // 强制刷新视图（保险做法）
-              const idx = detailsData.value.indexOf(newRow);
-              if (idx !== -1) {//用新对象替换掉旧的
-                detailsData.value.splice(idx, 1, Object.assign({}, detailsData.value[idx]));
-              }
-            }
-          }).catch(e => {
-            console.error('getWorkbinRecommend error', e);
-          });
-
+        // 自动获取货位推荐
+        // 🔑 这里直接用默认仓库，获取推荐库位并自动带第一个  不再调 getWorkbinRecommend
+        newRow.warehouseId = warehouseBygroup[0].warehouseId;
+        if (binData?.length > 0) {
+          newRow.binNo = binData[0]?.binNo;
+          newRow.binId = binData[0]?.binId;
+          newRow.warehouseName = binData[0]?.binName;
+          newRow.minimumContainer = binData[0]?.binName;
+        } else {
+          msg.warningAuto("请新增库位")
+          return
         }
-      });
-    }
-    //  else {
-    //   // 其他类型正常打开 Drawer
-    //   onShowGoodsDrawer();
-    // }
-  
+        // 追加新行
+        detailsData.value.push(newRow);
+        // 强制刷新视图（保险做法）
+        const idx = detailsData.value.indexOf(newRow);
+        if (idx !== -1) {//用新对象替换掉旧的
+          detailsData.value.splice(idx, 1, Object.assign({}, detailsData.value[idx]));
+        }
+
+      }
+    });
+  }
+  //  else {
+  //   // 其他类型正常打开 Drawer
+  //   onShowGoodsDrawer();
+  // }
+
 }
 
 // 映射推荐库位到明细行
