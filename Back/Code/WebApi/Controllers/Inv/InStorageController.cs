@@ -2,7 +2,8 @@
 using External.Common;
 using Logic.Inventory;
 using Logic.LogicBase;
-using Logic.LogicCommon; 
+using Logic.LogicCommon;
+using Logic.LogicCommon.FileStorage;
 using Microsoft.AspNetCore.Mvc;
 using Models.Model;
 using Models.Model.Enum;
@@ -10,6 +11,7 @@ using Models.Model.Inv;
 using Models.Model.Sys;
 using Quartz.Util;
 using StackExchange.Redis;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -25,14 +27,16 @@ namespace WebApi.Controllers.Inv
         private readonly SelectOptionsService _selectOptionsServer;
 
         private readonly SysArgsService _sysArgsHelper;
+        private readonly IFileStorage _fileStorage;
 
         private const string _moduleName = "入库管理";
 
-        public InStorageController(InStorageMgr  inStorageMgr, SelectOptionsService selectOptionsServer, SysArgsService sysArgsHelper)
+        public InStorageController(InStorageMgr  inStorageMgr, SelectOptionsService selectOptionsServer, SysArgsService sysArgsHelper,IFileStorage fileStorage)
         {
             _inStorageMgr = inStorageMgr;  
             _selectOptionsServer = selectOptionsServer;
             _sysArgsHelper = sysArgsHelper;
+            _fileStorage = fileStorage;
         }
 
         /// <summary>
@@ -72,7 +76,8 @@ namespace WebApi.Controllers.Inv
             var inStorageTypeData = EnumHelper.GetEnumValNames<InStorageType>();
             var goodsClassifyData = EnumHelper.GetEnumValNames<BaseTypeGroup>();
             var invbinData = await _selectOptionsServer.GetInVBin();
-            var data = new { UnitOptions = unitData, WarehouseOptions = warehouseData , InStorageTypeOptions = inStorageTypeData,GoodsClassifyOptions=goodsClassifyData,InvBinData= invbinData };
+            var photoLimit = await _sysArgsHelper.GetValueByKey(BusinessConst.GoodsPhotoLimit);
+            var data = new { UnitOptions = unitData, WarehouseOptions = warehouseData , InStorageTypeOptions = inStorageTypeData,GoodsClassifyOptions=goodsClassifyData,InvBinData= invbinData, PhotoLimit= photoLimit.Value };
             return data;
         }
 
@@ -255,6 +260,32 @@ namespace WebApi.Controllers.Inv
                 throw new BusinessException("未获取到文件信息");
             }
 
+        }
+
+        [HttpPost]
+        [Skip]
+        public async Task<string> UploadInstorgePic()
+        {
+            var files = HttpContext.Request.Form.Files;
+            if (files.Count > 0)
+            {
+                var file = files[0];
+                if (file.Length / 1024 < 1024 * 10)
+                {
+                    if (file.ContentType.Contains("image"))
+                    {
+                        var fileName = $"Instorage{DateTime.Now.Ticks}.{file.FileName.Split('.')[1]}";
+                        using (var stream = file.OpenReadStream())
+                        {
+                            string fileUrl = await _fileStorage.SaveFile(fileName, stream, FileType.Image);
+                            return fileUrl;
+                        }
+                    }
+                    throw new BusinessException("上传文件不属于图片类型");
+                }
+                throw new BusinessException("图片不能大于5M");
+            }
+            throw new BusinessException("未获取到文件信息");
         }
     }
 }

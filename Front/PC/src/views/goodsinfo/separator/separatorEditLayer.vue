@@ -622,6 +622,7 @@ const imgChanged=(imgList:Array<any>)=>{
 const submit=()=> {  
       formRef.value.validate((valid:any) => { 
         if (valid) {    
+          debugger
             if((ruleForm.value.long||ruleForm.value.wide||ruleForm.value.height) &&!ruleForm.value.sizeUnitName  ) {
                msg.warningAuto("若填写了尺寸相关属性则请选择对应尺寸单位")
                return

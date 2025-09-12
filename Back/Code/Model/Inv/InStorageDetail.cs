@@ -40,6 +40,7 @@ namespace Models.Model.Inv
         public string MaxPackageUnitName { get; set; }
 
         public string GoodsPicture { get; set; }
+        public List<string> Photos { get; set; }
 
         public float Quantity { get; set; }
 

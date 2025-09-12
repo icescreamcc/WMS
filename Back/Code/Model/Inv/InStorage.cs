@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Models.Model.Baseinfo;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace Models.Model.Inv
 {
    public class InStorage
     {
+        public List<FileInfoDto> Photos { get; set; }
         public string OrderNo { get; set; }
 
         public string SourceOrderNo { get; set; }

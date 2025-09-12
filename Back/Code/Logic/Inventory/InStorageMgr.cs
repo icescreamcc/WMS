@@ -7,6 +7,7 @@ using Logic.LogicBase;
 using Logic.LogicCommon;
 using Logic.LogicCommon.FileStorage;
 using Models.Model;
+using Models.Model.Baseinfo;
 using Models.Model.Enum;
 using Models.Model.Inv;
 using Models.Model.Sys;
@@ -14,6 +15,7 @@ using NPOI.SS.Formula.Functions;
 using SqlSugar;
 using StackExchange.Redis;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -109,6 +111,30 @@ namespace Logic.Inventory
                 row.ApprovalStatusDesc = EnumHelper.GetDescFromEnumVal<ApprovalStatus>(row.ApprovalStatus);
                 row.IsApproval = (isAnyApproval && row.Status == InStorageStatus.Pending.ToString()) || (curApprover?.Count > 0 && curApproverRank.Contains(row.ApprovalLastRank + 1) && (row.Status == InStorageStatus.Pending.ToString() || row.Status == InStorageStatus.Approvaling.ToString()));
             });
+
+            var orderNos = data.Select(d => d.OrderNo).ToList();
+
+            var photos = await Repository.ClientDb.Queryable<BaseFiles>()
+             .Where(p => orderNos.Contains(p.PrimaryId) && p.FileInfoType == FileInfoType.InStoragePhoto.ToString())
+             .ToListAsync();
+
+            // 逐个挂载到单据上
+            data.ForEach(row =>
+            {
+                row.Photos = photos
+                    .Where(p => p.PrimaryId == row.OrderNo)
+                    .Select(p => new FileInfoDto
+                    {
+                        FileId = p.FileId,
+                        FileName = p.FileName,
+                        Url = p.Url,
+                        FileInfoType = p.FileInfoType,
+                        Path = p.Path,
+                        PrimaryId = p.PrimaryId,
+                        Remark = p.Remark
+                    })
+                    .ToList();
+            });
             var res = new TableModel<InStorage>() { Total = total, Rows = data };
             return await Task.FromResult(res);
         }
@@ -168,8 +194,19 @@ namespace Logic.Inventory
                     TotalPrice = i.TotalPrice,
                     UnitPrice = i.UnitPrice,
                     PriceUnit = i.PriceUnit,
-                    GoodsPicture = SqlFunc.Subqueryable<BaseFiles>().Where(p => p.FileInfoType == FileInfoType.GoodsPhoto.ToString() && p.PrimaryId == g.GoodsId && p.IsDeft).Select(p => p.Url)
-                }).ToListAsync(); 
+                    //Photos = SqlFunc.Subqueryable<BaseFiles>().Where(p=>p.FileInfoType ==FileInfoType.InStoragePhoto.ToString() && p.PrimaryId == i.OrderNo && p.IsDeft).Select(p=>p.Url),
+                }).ToListAsync();
+
+            // 获取所有订单附件
+            var orderPhotos = await Repository.ClientDb.Queryable<BaseFiles>()
+                .Where(p => p.FileInfoType == FileInfoType.InStoragePhoto.ToString()
+                         && p.PrimaryId == orderNo)
+                .Select(p => p.Url)
+                .ToListAsync();
+
+            // 赋值给每条明细
+            data.ForEach(d => d.Photos = orderPhotos);
+
             return data;
         }
 
@@ -518,6 +555,27 @@ namespace Logic.Inventory
             var msgContent = $"{data.CreateUserName}提交了一份待确认的({EnumHelper.GetDescFromEnumVal<InStorageType>(data.InStorageType)})入库单";
             var msgRemark = $"{string.Join(',', data.Details.Select(s => s.GoodsName))}";
             await _messageService.CreateMessage(data.CreateUserName, msgContent, msgRemark, MessageType.InStorage);
+
+            if (data.Photos?.Count > 0)
+            {
+                var photos = new List<BaseFiles>();
+                var isSetDeft = false;
+                foreach (var p in data.Photos)
+                {
+                    photos.Add(new BaseFiles
+                    {
+                        PrimaryId = inStorageModel.OrderNo,   // ✅ 绑定到整张单据
+                        FileName = p.FileName,
+                        FileInfoType = FileInfoType.InStoragePhoto.ToString(),
+                        Url = p.Url,
+                        IsDeft = !isSetDeft
+                    });
+                    isSetDeft = true;
+                }
+                Repository.ClientDb.Insertable(photos).AddQueue();
+            }
+            await Repository.ClientDb.SaveQueuesAsync();
+
         }
 
         /// <summary>
@@ -807,7 +865,20 @@ namespace Logic.Inventory
                 PriceUnit = b.PriceUnit
             }).ToList();
             Repository.ClientDb.Deleteable<InvInStorageDetail>(d => d.OrderNo == data.OrderNo).AddQueue();
-            Repository.ClientDb.Insertable(inStorageDetail).AddQueue(); 
+            Repository.ClientDb.Insertable(inStorageDetail).AddQueue();
+           
+            data.Photos.ForEach(p =>
+            {
+                var photos = new List<BaseFiles>();
+                var isSetDeft = false;
+                data.Photos.ForEach(p =>
+                {
+                    photos.Add(new BaseFiles { PrimaryId = data.OrderNo, FileName = p.FileName, FileInfoType = FileInfoType.InStoragePhoto.ToString(), Url = p.Url, IsDeft = !isSetDeft ? true : false });
+                    isSetDeft = true;
+                });
+                Repository.ClientDb.Deleteable<BaseFiles>(x => x.PrimaryId == data.OrderNo && x.FileInfoType == FileInfoType.InStoragePhoto.ToString()).AddQueue();
+                Repository.ClientDb.Insertable(photos).AddQueue();
+            });
             await Repository.ClientDb.SaveQueuesAsync();
         } 
          

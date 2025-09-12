@@ -56,6 +56,20 @@
           </el-form-item>
         </el-col>
       </el-row>
+
+      <el-row>
+        <el-col :span="11">
+          <el-form-item label="三方签字图片">
+            <Upload :uploadParams="uploadParams" @handleImgChanged="imgChanged" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="11" :offset="2">
+          <el-form-item label=" " style="height:50px;margin-left:20px">
+          </el-form-item>
+        </el-col>
+
+      </el-row>
+
       <el-scrollbar max-height="300px">
         <div class="option-content">
           <el-row class="head">
@@ -64,7 +78,7 @@
             </el-col>
             <el-col v-if="props.layer.showButton" :span="3" style="text-align:right">
               <el-button v-if="false" style="margin-bottom:5px" type="success"
-                :disabled="!ruleForm.goodsClassify || !props.layer.showButton" @click="onShowGoodsDrawer">选择111{{
+                :disabled="!ruleForm.goodsClassify || !props.layer.showButton" @click="onShowGoodsDrawer">选择{{
                   invTitle
                 }}</el-button>
             </el-col>
@@ -82,37 +96,43 @@
                   </el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="quantity" label="入库数量" align="center" min-width="130" :show-overflow-tooltip="true">
-                  <template #default="detail">
-                    <el-popover placement="top-start" title="入库货位推荐" :width="680"  trigger="focus">
-                     <template #reference>
-                       <el-input v-model="detail.row.quantity" style="width:65%" placeholder="数量"  :disabled="!props.layer.showButton" type="number" @change="onInputTotalPrice(detail.row)"  @focus="getWorkbinRecommendData(detail.row)"/>
-                     </template>
-                     <el-table :data="workbinRecommendData" height="200" @row-click="onSelectRecommend">
-                      <el-table-column  property="warehouseName" width="105" label="仓库" />
-                      <el-table-column  property="shelfName" width="115" label="货架" />
-                      <el-table-column  property="binName" width="105" label="货位" />
-                      <el-table-column  property="cellNo"  width="115" label="料箱" />
-                      <el-table-column  property="specName" label="规格"/>
-                      <el-table-column  property="maxStock" label="最大堆放">
+              <el-table-column prop="quantity" label="入库数量" align="center" min-width="130"
+                :show-overflow-tooltip="true">
+                <template #default="detail">
+                  <el-popover placement="top-start" title="入库货位推荐" :width="680" trigger="focus">
+                    <template #reference>
+                      <el-input v-model="detail.row.quantity" style="width:65%" placeholder="数量"
+                        :disabled="!props.layer.showButton" type="number" @change="onInputTotalPrice(detail.row)"
+                        @focus="getWorkbinRecommendData(detail.row)" />
+                    </template>
+                    <el-table :data="workbinRecommendData" height="200" @row-click="onSelectRecommend">
+                      <el-table-column property="warehouseName" width="105" label="仓库" />
+                      <el-table-column property="shelfName" width="115" label="货架" />
+                      <el-table-column property="binName" width="105" label="货位" />
+                      <el-table-column property="cellNo" width="115" label="料箱" />
+                      <el-table-column property="specName" label="规格" />
+                      <el-table-column property="maxStock" label="最大堆放">
                         <template #default="scope">
-                          <span v-if="scope.row.maxStock>scope.row.stock">{{scope.row.maxStock+scope.row.maxStockUnitName}}</span>
-                          <span v-else class="text-danger">{{scope.row.maxStock+scope.row.maxStockUnitName}}</span>
+                          <span
+                            v-if="scope.row.maxStock > scope.row.stock">{{ scope.row.maxStock + scope.row.maxStockUnitName }}</span>
+                          <span v-else class="text-danger">{{ scope.row.maxStock + scope.row.maxStockUnitName }}</span>
                         </template>
-                      </el-table-column> 
-                      <el-table-column  property="stock" label="现存">
+                      </el-table-column>
+                      <el-table-column property="stock" label="现存">
                         <template #default="scope">
-                          <span>{{scope.row.stock+scope.row.unitName}}</span>
+                          <span>{{ scope.row.stock + scope.row.unitName }}</span>
                         </template>
-                      </el-table-column> 
+                      </el-table-column>
                     </el-table>
-                  </el-popover> 
-                  <el-select v-model="detail.row.unitId" class="m-2"  :disabled="true" style="width:35%" placeholder="单位">
-                      <el-option v-for="item in detail.row.goodsUnitList" :key="item.key" :label="item.value" :value="item.key">
+                  </el-popover>
+                  <el-select v-model="detail.row.unitId" class="m-2" :disabled="true" style="width:35%"
+                    placeholder="单位">
+                    <el-option v-for="item in detail.row.goodsUnitList" :key="item.key" :label="item.value"
+                      :value="item.key">
                     </el-option>
-                     </el-select>
+                  </el-select>
                 </template>
-                </el-table-column> 
+              </el-table-column>
               <el-table-column v-if="false" prop="minimumContainer" label="入库库位" align="center" min-width="150"
                 :show-overflow-tooltip="true">
                 <template #default="detail">
@@ -160,7 +180,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineEmits, defineProps, onMounted, nextTick } from 'vue'
+import { ref, defineEmits, defineProps, onMounted, nextTick, watch } from 'vue'
 import Layer from '@/components/layer/index.vue'
 import { ElForm } from 'element-plus'
 import msg from '@/utils/system/message'
@@ -172,6 +192,7 @@ import { Delete } from '@element-plus/icons-vue';
 import { getUserByKey } from '@/api/common';
 import { deftClassifyGroup } from '@/config';
 import { getGoodsByKeyAndClassify } from '@/api/common';
+import Upload from '@/components/imgUpload/muiltUpload.vue'
 
 const props = defineProps({
   layer: {
@@ -201,6 +222,7 @@ const formRef = ref(ElForm || null);
 const workbinRecommendData = ref(new Array<any>());
 const userData = ref(new Array<any>());
 const userSearchLoading = ref(false);
+const photoLimit = ref();
 const ruleForm = ref({
   orderNo: props.layer.data?.orderNo,
   sourceOrderNo: props.layer.data?.sourceOrderNo,
@@ -212,7 +234,8 @@ const ruleForm = ref({
   responsibleId: props.layer.data?.responsibleId,
   details: props.layer.data?.details,
   createUserId: '',
-  createUserName: ''
+  createUserName: '',
+  photos: props.layer.row?.photos  //三方签字图片
 })
 const rules = {
   inStorageType: [{ required: true, message: '请选择入库类型', trigger: 'change' }],
@@ -246,6 +269,7 @@ const remarkLabel = ref('备注');
 
 onMounted(() => {
   getOptions().then((res: any) => {
+
     warehouseData.value = res.data.warehouseOptions.filter((f: any) => f.warehouseType == 'RawMaterial' || f.warehouseType == 'FinishedProduct');//入库仓库
     const cOption = warehouseData.value.find((f: any) => f.warehouseType === "FinishedProduct");
     if (cOption) {
@@ -256,6 +280,7 @@ onMounted(() => {
     unitData.value = res.data.unitOptions;
     inStorageTypeData.value = res.data.inStorageTypeOptions;
     invbinDataBuffer = res.data.invBinData;//bin
+    photoLimit.value = Number.parseInt(res.data.photoLimit)
 
     const defaultClassifyKey = "FinishedProduct";
     // 入库类型 默认选中“生产入库”
@@ -296,12 +321,43 @@ onMounted(() => {
         goodsClassifyData.value[0]?.key ||
         defaultClassifyKey;
 
+
+      detailsData.value = props.layer.data.details;
+
+      // 处理已有图片
+      detailsData.value.forEach(detail => {
+        detail.photos = detail.photos || [];
+        if (detail.photos.length > 0 && typeof detail.photos[0] === 'string') {
+          detail.photos = detail.photos.map((p: string, idx: number) => ({
+            fileName: `图片${idx + 1}`,
+            url: p
+          }));
+        }
+      });
+
+      // 把第一条明细的图片赋值给 Upload 组件
+      ruleForm.value.photos = detailsData.value[0].photos || [];
+
+      // 更新 uploadParams
+      uploadParams.value.imgUrlList = ruleForm.value.photos.map((x: any) => ({
+        name: x.fileName,
+        url: x.url
+      }));
+
       onClassifyChanged(initialClassify, false); //  不触发新增逻辑
 
       detailsData.value = props.layer.data.details;
       detailsData.value.forEach(detail => {
         detail.goodsUnitList = unitData.value.filter(u => u.value == detail.packageUnitName || u.value == detail.minPackageUnitName || u.value == detail.maxPackageUnitName);
         detail.priceUnitList = unitData.value.filter(f => f.type == 'Currency');
+        // detail.photos = detail.photos || [];
+        // if (detail.photos.length > 0 && typeof detail.photos[0] === 'string') {
+        //   detail.photos = detail.photos.map((p: string, idx: number) => ({
+        //     fileName: `图片${idx + 1}`,
+        //     url: p
+        //   }));
+        // }
+
         if (!detail.priceUnit) {
           detail.priceUnit = '元'
         }
@@ -583,6 +639,13 @@ const submit = () => {
             msg.warningAuto("请选择入库货位")
             return
           }
+          // 这里处理 photos，转换为字符串数组
+          if (opt.photos && opt.photos.length > 0) {
+            opt.photos = opt.photos.map((p: any) => (typeof p === 'string' ? p : p.url));
+          } else {
+            opt.photos = [];
+          }
+          
         }
       }
       ruleForm.value.details = detailsData.value;
@@ -592,7 +655,26 @@ const submit = () => {
       emit('dataSubmit', ruleForm.value, editType)
     }
   })
-} 
+}
+const imgChanged = (imgList: Array<any>) => {
+  ruleForm.value.photos = imgList.map(x => {
+    return {
+      fileName: x.name,
+      url: x.url
+    }
+  })
+}
+const uploadParams = ref({
+  uploadApi: '/InStorage/UploadInstorgePic',
+  limit: photoLimit,
+  imgUrlList: ruleForm.value.photos || [], // 已经是 {fileName,url} 对象数组,  
+  validFileType: 'image',
+  validFileSize: 10240,
+  isEdit: true,
+  titile: '点击上传辅材图片',
+  width: '80px',
+  height: '80px',
+}) 
 </script>
 
 <style lang="scss" scoped>
