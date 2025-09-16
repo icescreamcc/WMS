@@ -19,10 +19,10 @@ using WebApi.Filter;
 
 namespace WebApi.Controllers.Inv
 { 
-    public class InStorageController : AuthTokenController
+    public class InStorageMobileController : AuthTokenController
     {
 
-        private readonly InStorageMgr _inStorageMgr; 
+        private readonly InStorageMobileMgr _inStorageMgr; 
 
         private readonly SelectOptionsService _selectOptionsServer;
 
@@ -31,7 +31,7 @@ namespace WebApi.Controllers.Inv
 
         private const string _moduleName = "入库管理";
 
-        public InStorageController(InStorageMgr  inStorageMgr, SelectOptionsService selectOptionsServer, SysArgsService sysArgsHelper,IFileStorage fileStorage)
+        public InStorageMobileController(InStorageMobileMgr inStorageMgr, SelectOptionsService selectOptionsServer, SysArgsService sysArgsHelper,IFileStorage fileStorage)
         {
             _inStorageMgr = inStorageMgr;  
             _selectOptionsServer = selectOptionsServer;
@@ -126,9 +126,9 @@ namespace WebApi.Controllers.Inv
         /// <returns></returns>
         [HttpPost]
         [BusinessLog("添加入库单", LogType.Add, _moduleName)]
-        public async Task<string> AddInStorage(InStorage data)
+        public async Task AddInStorage(InStorage data)
         {
-           return  await _inStorageMgr.AddInStorage(data); 
+            await _inStorageMgr.AddInStorage(data); 
         }
 
         /// <summary>

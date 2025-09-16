@@ -1290,6 +1290,104 @@
             <param name="data"></param>
             <returns></returns>
         </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.GetOrders(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            入库单分页查询
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.GetArgs">
+            <summary>
+            获取入库单相关参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.GetOptions">
+            <summary>
+            获取入库单相关选项及参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.GetOrderDetail(System.String,System.String)">
+            <summary>
+            获取入库单明细
+            </summary>
+            <param name="userId"></param>
+            <param name="orderNo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.GetWorkbinRecommend(System.String)">
+            <summary>
+            根据物品查询推荐入库料箱
+            </summary>
+            <param name="goodsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.GetBinRecommend(System.String,System.Int32)">
+            <summary>
+            查询指定仓库和规格的货架、货位
+            </summary>
+            <param name="warehouseId"></param>
+            <param name="specId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.AddInStorage(Models.Model.Inv.InStorage)">
+            <summary>
+            添加入库单
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.UpdateInStorage(Models.Model.Inv.InStorage)">
+            <summary>
+            修改仓库
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.DelInStorage(System.String[])">
+            <summary>
+            删除入库单
+            </summary>
+            <param name="orderNo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.ConfirmInStorage(System.String)">
+            <summary>
+            入库确认
+            </summary>
+            <param name="orderNo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.ExportInStorage(System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            导出入库单
+            </summary>
+            <param name="searchKey"></param>
+            <param name="orderField"></param>
+            <param name="orderType"></param>
+            <param name="dateStart"></param>
+            <param name="dateEnd"></param>
+            <param name="goodsGroup"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.GetAllowField(System.String)">
+            <summary>
+            获取当前用户导出入库单表被允许的字段
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.ApprovalInStorage(System.String[],System.Boolean,System.String,System.String,System.String)">
+            <summary>
+            审批入库单
+            </summary>
+            <param name="orderNo"></param>
+            <param name="isApprove"></param>
+            <param name="opinion"></param>
+            <param name="userId"></param>
+            <param name="userName"></param>
+            <returns></returns>
+        </member>
         <member name="M:WebApi.Controllers.Inv.OutStorageController.GetOrders(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
             出库单分页查询

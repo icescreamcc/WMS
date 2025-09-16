@@ -10,7 +10,7 @@ namespace Models.Model.Inv
 {
    public class InStorage
     {
-        public List<FileInfoDto> Photos { get; set; }
+        public List<FileInfoDto> GoodsPicture { get; set; }
         public string OrderNo { get; set; }
 
         public string SourceOrderNo { get; set; }
@@ -62,6 +62,8 @@ namespace Models.Model.Inv
         public string ApprovalStatus { get; set; }
 
         public string ApprovalStatusDesc { get; set; }
+        public string TransportOrderNo { get; set; }
+        public string LicensePlateNo { get; set; }
 
         public List<InStorageDetail> Details { get; set; }
     }

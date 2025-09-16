@@ -28,7 +28,7 @@ namespace Logic.Inventory
     /// <summary>
     /// 入库业务处理类
     /// </summary>
-   public class InStorageMgr: ApprovalHandler
+   public class InStorageMobileMgr : ApprovalHandler
     {
 
         private readonly SysArgsService _sysArgsHelper;
@@ -41,7 +41,7 @@ namespace Logic.Inventory
 
         private readonly AutoTransportHandler _autoTransportHandler;
 
-        public InStorageMgr(Repository repository, SysArgsService sysArgsHelper, IFileStorage fileStorage, StorageMgr storageMgr, MessageService messageService, AutoTransportHandler autoTransportHandler) : base(repository)
+        public InStorageMobileMgr(Repository repository, SysArgsService sysArgsHelper, IFileStorage fileStorage, StorageMgr storageMgr, MessageService messageService, AutoTransportHandler autoTransportHandler) : base(repository)
         {
             _sysArgsHelper = sysArgsHelper;
             _fileStorage = fileStorage;
@@ -282,7 +282,7 @@ namespace Logic.Inventory
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public async Task<string> AddInStorage(InStorage data)
+        public async Task AddInStorage(InStorage data)
         {
             if (data.Details?.Count == 0)
             {
@@ -474,15 +474,13 @@ namespace Logic.Inventory
                 SourceOrderNo=data.SourceOrderNo,
                 InStorageType =data.InStorageType, 
                 GoodsClassify = data.GoodsClassify,
-                CreateDate = data.CreateDate != default(DateTime)? data.CreateDate : DateTime.Now,
-                CreateUserId =data.CreateUserId,
+                CreateDate = DateTime.Now,
+                CreateUserId=data.CreateUserId,
                 CreateUserName=data.CreateUserName, 
                 ResponsibleId=data.ResponsibleId,
                 Responsible=data.Responsible,
                 WarehouseId=data.WarehouseId, 
-                Remark = data.Remark,
-                TransportOrderNo=data.TransportOrderNo,
-                LicensePlateNo=data.LicensePlateNo,
+                Remark = data.Remark
             }; 
             var isInStorageApproval = bool.Parse((await _sysArgsHelper.GetValueByKey(BusinessConst.IsInStorageApproval)).Value.ToString());
             if (isInStorageApproval)
@@ -559,14 +557,14 @@ namespace Logic.Inventory
             await _messageService.CreateMessage(data.CreateUserName, msgContent, msgRemark, MessageType.InStorage);
 
             if (data.GoodsPicture?.Count > 0)
-            {
+            {   
                 var photos = new List<BaseFiles>();
                 var isSetDeft = false;
                 foreach (var p in data.GoodsPicture)
                 {
                     photos.Add(new BaseFiles
                     {
-                        PrimaryId = inStorageModel.OrderNo,   // 绑定到整张单据
+                        PrimaryId = inStorageModel.OrderNo,   // ✅ 绑定到整张单据
                         FileName = p.FileName,
                         FileInfoType = FileInfoType.InStoragePhoto.ToString(),
                         Url = p.Url,
@@ -577,7 +575,7 @@ namespace Logic.Inventory
                 Repository.ClientDb.Insertable(photos).AddQueue();
             }
             await Repository.ClientDb.SaveQueuesAsync();
-            return inStorageModel.OrderNo;
+
         }
 
         /// <summary>

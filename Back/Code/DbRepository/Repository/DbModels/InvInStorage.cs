@@ -71,7 +71,14 @@ namespace DbRepository.Repository.DbModels
         public string ApproverRole { get; set; }
 
         [SugarColumn(Length = 50, IsNullable = true, ColumnDescription = "审批状态")]
-        public string ApprovalStatus { get; set; } 
+        public string ApprovalStatus { get; set; }
+
+
+        [SugarColumn(Length = 100, IsNullable = true, ColumnDescription = "运输单号")]
+        public string TransportOrderNo { get; set; }
+        [SugarColumn(Length = 100, IsNullable = true, ColumnDescription = "车牌单号")]
+        public string LicensePlateNo { get; set; }
+
 
     }
 }

@@ -80,6 +80,7 @@ namespace Logic.BaseInfo
                     Supplier = g.Supplier,
                     CustomerGoodsNo=g.CustomerGoodsNo,
                     CustomerIdentificationCode=g.CustomerIdentificationCode,
+                    PackageUnitId =g.PackageUnitId,
                     GoodsPicture = SqlFunc.Subqueryable<BaseFiles>().Where(p => p.FileInfoType == FileInfoType.GoodsPhoto.ToString() && p.PrimaryId == g.GoodsId && p.IsDeft).Select(p => p.Url)
                 }).OrderBy($"{orderFiled} {orderType}").ToPageList(pgIndex, pgSize, ref total);
             var res = new TableModel<GoodsSimple>() { Total = total, Rows = data };
