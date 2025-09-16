@@ -308,7 +308,7 @@ const speakText=()=> {
             background-color: #fff;
             .content-header{
                 height: 30%;
-                background-image: url('../../assets/images/mobile-header2.jpeg');
+                background-image: url('../../assets/images/mobile-newheader.png');
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;

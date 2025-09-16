@@ -5,6 +5,7 @@ using Logic.LogicBase.CacheService;
 using Logic.LogicCommon;
 using Models.Model.Enum;
 using Models.Model.Sys;
+using SqlSugar;
 using System.Drawing;
 
 namespace Logic.ProductOffLine
@@ -34,14 +35,19 @@ namespace Logic.ProductOffLine
             }
             else
             {
-                return await Repository.ClientDb.Queryable<SysUser>()
+                var query =  Repository.ClientDb.Queryable<SysUser>()
                               .LeftJoin<SysUserRoles>((u, ur) => u.UserId == ur.UserId)
                               .LeftJoin<SysUserPermissions>((u, ur, p) => ur.RoleId == p.RoleId)
                               .LeftJoin<SysMenus>((u, ur, p, m) => p.MenuId == m.MenuId)
-                              .Where((u, ur, p, m) => u.UserId == userId && m.IsValid &&  m.MenuDisplay == "MOBILE" && m.MenuType == MenuType.Menu.ToString())
-                              .Select((u, ur, p, m) => new Menu { MenuId = m.MenuId, MenuName = m.MenuName, Icon=m.Icon, Rank = m.Rank, RoutePath = m.RoutePath, ComponentPath = m.ComponentPath, MenuLayout = m.MenuLayout })
-                              .MergeTable().OrderBy(m => m.Rank).Distinct()
-                              .ToListAsync();
+                              .Where((u, ur, p, m) => u.UserId == userId && m.IsValid && m.MenuDisplay == "MOBILE" && m.MenuType == MenuType.Menu.ToString())
+                              .Select((u, ur, p, m) => new Menu { MenuId = m.MenuId, MenuName = m.MenuName, Icon = m.Icon, Rank = m.Rank, RoutePath = m.RoutePath, ComponentPath = m.ComponentPath, MenuLayout = m.MenuLayout })
+                              .MergeTable().OrderBy(m => m.Rank).Distinct(); 
+       
+                var list = await query.ToListAsync();
+                var sqlInfo = query.ToSql();
+                Console.WriteLine(sqlInfo.Key);
+                Console.WriteLine(string.Join(",", sqlInfo.Value));
+                return list;
             } 
         }
     }
