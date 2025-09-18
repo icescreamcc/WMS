@@ -471,18 +471,21 @@ namespace Logic.Inventory
             var inStorageModel = new InvInStorage
             {
                 OrderNo = GetPrimaryId("I", lastData),
-                SourceOrderNo=data.SourceOrderNo,
-                InStorageType =data.InStorageType, 
+                SourceOrderNo = data.SourceOrderNo,
+                InStorageType = data.InStorageType,
                 GoodsClassify = data.GoodsClassify,
-                CreateDate = data.CreateDate != default(DateTime)? data.CreateDate : DateTime.Now,
-                CreateUserId =data.CreateUserId,
-                CreateUserName=data.CreateUserName, 
-                ResponsibleId=data.ResponsibleId,
-                Responsible=data.Responsible,
-                WarehouseId=data.WarehouseId, 
+                CreateDate = data.CreateDate != default(DateTime)
+                ? new DateTime(data.CreateDate.Year, data.CreateDate.Month, data.CreateDate.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0)
+                : DateTime.Now,//添加时分秒
+                //CreateDate = data.CreateDate != default(DateTime)? data.CreateDate : DateTime.Now,
+                CreateUserId = data.CreateUserId,
+                CreateUserName = data.CreateUserName,
+                ResponsibleId = data.ResponsibleId,
+                Responsible = data.Responsible,
+                WarehouseId = data.WarehouseId,
                 Remark = data.Remark,
-                TransportOrderNo=data.TransportOrderNo,
-                LicensePlateNo=data.LicensePlateNo,
+                TransportOrderNo = data.TransportOrderNo,
+                LicensePlateNo = data.LicensePlateNo,
             }; 
             var isInStorageApproval = bool.Parse((await _sysArgsHelper.GetValueByKey(BusinessConst.IsInStorageApproval)).Value.ToString());
             if (isInStorageApproval)

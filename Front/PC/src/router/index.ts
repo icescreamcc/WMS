@@ -76,6 +76,11 @@ let setAsyncRouters=(menuData:Array<any>)=>{
      data.push(parent); 
     } 
     else if(m.parentId=="ROOT"&&m.menuDisplay=='MOBILE'){
+      // const parentCompPath = `../views/${m.componentPath}.vue`;
+      // const parentComponent = asyncModules[parentCompPath];
+      // if (!parentComponent) {
+      //     console.warn("父组件不存在，跳过MOBILE路由:", parentCompPath);
+      // }
       let parent={ 
         name:m.routePath, 
         path: '/'+m.routePath,
@@ -85,6 +90,15 @@ let setAsyncRouters=(menuData:Array<any>)=>{
         children:new Array<any>()
       } 
       menuData.forEach(c=>{
+      // if (c.parentId === m.menuId) { 
+      //       const childCompPath = `../views/${c.componentPath}.vue`;
+      //       const childComponent = asyncModules[childCompPath];
+      //       if (!childComponent) {
+      //           console.warn("子组件不存在，跳过MOBILE子路由:", childCompPath);
+      //           return; // 不存在就跳过
+      //       }
+      //     }
+
         if(c.parentId==m.menuId){ 
           let child={
             name:c.routePath,

@@ -235,7 +235,7 @@ const ruleForm = ref({
   details: props.layer.data?.details,
   createUserId: '',
   createUserName: '',
-  photos: props.layer.row?.photos  //三方签字图片
+  photos: props.layer.row?.goodsPicture  //三方签字图片
 })
 const rules = {
   inStorageType: [{ required: true, message: '请选择入库类型', trigger: 'change' }],
