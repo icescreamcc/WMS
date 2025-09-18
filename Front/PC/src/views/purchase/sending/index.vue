@@ -191,7 +191,8 @@
           </template>
         </el-table-column>
       </Table>
-      <OrderEditModal :layer="orderLayer" @dataSubmit="dataSave" v-if="orderLayer.show" />
+      <!--  提交会触发 dataSave函数 ，参数来自 orderEditlayer.submit-->
+      <OrderEditModal :layer="orderLayer" @dataSubmit="dataSave" v-if="orderLayer.show" />   
       <ExportModal :layer="exportLayer" @dataSubmit="exportData" v-if="exportLayer.show" />
       <ImportModal :layer="importLayer" @dataSubmit="uploadSuccess" v-if="importLayer.show" />
       <UploadDocumentModal :layer="uploadDocumentLayer" v-if="uploadDocumentLayer.show" />
@@ -315,7 +316,9 @@ onMounted(() => {
 //加载下拉框
 const getGoodsGroupData = () => {
   getGoodsGroup().then(res => {
+    
     goodsGroupData.value = res.data.filter((f: any) => goodsClassifyDefault.value.includes(f.key));
+    console.log('#### goodsGroupData.value = ',goodsGroupData.value)
   })
 }
 
@@ -329,6 +332,7 @@ const getYesOrNoGroupData = () => {
 const getSendingAddressData  = () => {
     getSendingAddressGroup().then(res => {
     sendingAddressData.value = res.data;
+    console.log("### sendingAddressData.value = ",sendingAddressData.value)
   })
 }
 
@@ -352,9 +356,21 @@ const getTableData = (init: Boolean) => {
     dateEnd = dateRange.value[1]
   }
   loading.value = false
+  console.log(" ### [getTableData]  ermission.getOperator().userId = ",permission.getOperator().userId)
+  console.log(" ### [getTableData]  page.index = ",page.index)
+  console.log(" ### [getTableData]  page.orderField= ",page.orderField)
+  console.log(" ### [getTableData]  page.orderType= ",page.orderType)
+  console.log(" ### [getTableData]  query.input= ",query.input)
+  console.log(" ### [getTableData] dateStart = ",dateStart)
+  console.log(" ### [getTableData] dateEnd = ",dateEnd)
+  console.log(" ### [getTableData] selectedGoodsGroup.value = ",selectedGoodsGroup.value)
+  console.log(" ### [getTableData] query.isUrgentShipment = ",query.isUrgentShipment)
+  console.log(" ### [getTableData] query.sendingAddress = ",query.sendingAddress)
  getSending(permission.getOperator().userId, page.size, page.index, page.orderField, page.orderType, query.input, dateStart, dateEnd, selectedGoodsGroup.value, query.isUrgentShipment,query.sendingAddress, query.detailStatus)
     .then((res) => {
       let data = res.data.rows
+      console.log('###########  getTableData   res.data.rows ',res.data.rows)
+      // data  = sendingAddressData.value
       data.forEach((d: any) => {
         d.loading = false
       })
@@ -459,6 +475,7 @@ const onMailSubmit = (data: any) => {
 
 const handleAdd = () => {
   if (!selectedGoodsGroup.value) {
+    console.log(" ##### selectedGoodsGroup  =  ",selectedGoodsGroup.value)
     msg.deftAuto("请先选择物料分类");
     refSelectClassifyGroup.value?.focus();
     return;
@@ -539,8 +556,9 @@ const handleUpload = (row: any) => {
   })
 }
 
-//新增或编辑数据提交
+//新增或编辑数据提交 点击确认后触发
 const dataSave = (data: any, actionType: string) => {
+  
   orderLayer.btnLoading = true;
   if (actionType == 'add') {
     data.createUserId = permission.getOperator().userId,

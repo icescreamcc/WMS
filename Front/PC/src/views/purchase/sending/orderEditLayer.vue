@@ -8,29 +8,47 @@
       style="padding:0 15px">
       <el-row>
         <el-col :span="11">
-          <el-form-item label="发货单号" prop="orderNo">
+          <el-form-item label="发货单号*" prop="orderNo">
             <el-input v-model="ruleForm.orderNo" disabled placeholder="系统生成 无需填写"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11" :offset="2">
-          <el-form-item label="物料分类" prop="goodsClassify">
+          <!-- <el-form-item label="物料分类*" prop="goodsClassify">
             <el-select v-model="ruleForm.goodsClassify" class="m-2" :disabled="props.layer.title!='新增发货计划'"
               style="width:100%" @change="onClassifyChanged" placeholder="请选择发货物料大类 *必填">
               <el-option v-for="item in goodsClassifyData" :key="item.key" :label="item.value" :value="item.key">
               </el-option>
             </el-select>
+          </el-form-item> -->
+           <el-form-item label="订单编号*" prop="customerOrderNo">
+            <el-input v-model="ruleForm.customerOrderNo" :disabled="!props.layer.showButton" placeholder="请输入订单编号" />
           </el-form-item>
         </el-col>
       </el-row>
+
       <el-row>
         <el-col :span="11">
+          <el-form-item label="计划发货数量*" prop="planQuantity">
+            <el-input v-model="ruleForm.planQuantity" :disabled="!props.layer.showButton" placeholder="请输入订单编号" />
+          </el-form-item>
+        </el-col>
+      <el-col :span="11" :offset="2">
+          <el-form-item label="实际发货数量" prop="ActualQuantity">
+            <el-input v-model="ruleForm.ActualQuantity" :disabled="!props.layer.showButton" placeholder="请输入订单编号" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+
+      <el-row>
+         <el-col :span="11" >
           <el-form-item label="运输供应商" prop="supplierId">
             <el-select v-model="ruleForm.supplierId" class="m-2" clearable :disabled="!props.layer.showButton"
-              style="width:100%" placeholder="请选择运输供应商 *必填">
+              style="width:100%" placeholder="请选择运输供应商">
               <el-option v-for="item in supplierData" :key="item.key" :label="item.value" :value="item.key">
               </el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> 
         </el-col>
         <el-col :span="11" :offset="2">
           <el-form-item label="单据状态" prop="status">
@@ -46,7 +64,7 @@
         <el-col :span="11">
           <el-form-item label="计划发货日期" prop="sendingDate">
             <el-date-picker v-model="ruleForm.sendingDate" :disabled="!props.layer.showButton" style="width:100%"
-              type="date" value-format="YYYY-MM-DD" placeholder="请选择计划发货日期"> </el-date-picker>
+              type="date" value-format="YYYY-MM-DD" placeholder="请选择计划发货日期*"> </el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :span="11" :offset="2">
@@ -57,7 +75,7 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="11">
+        <!-- <el-col :span="11">
           <el-form-item label="是否紧急发货" prop="isUrgentShipment">
             <el-select v-model="ruleForm.isUrgentShipment" class="m-2" :disabled="!props.layer.showButton"
               style="width:100%" placeholder="请选择是否紧急发货">
@@ -65,8 +83,8 @@
               </el-option>
             </el-select>
           </el-form-item>
-        </el-col>
-        <el-col :span="11" :offset="2">
+        </el-col> -->
+        <!-- <el-col :span="11" :offset="2">
           <el-form-item label="是否有足够库存" prop="isSufficientStock">
             <el-select v-model="ruleForm.isSufficientStock" class="m-2" :disabled="!props.layer.showButton"
               style="width:100%" placeholder="请选择是否有足够库存">
@@ -74,7 +92,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-        </el-col>
+        </el-col> -->
       </el-row>
       <el-row>
         <el-col :span="11">
@@ -90,11 +108,12 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="24">
+        <el-col :span="11">
           <el-form-item label="到货地址" prop="sendingAddress">
             <el-input v-model="ruleForm.sendingAddress" :disabled="!props.layer.showButton" placeholder="请输入到货地址" />
           </el-form-item>
         </el-col>
+     
       </el-row>
       <el-row>
         <el-col :span="24">
@@ -104,7 +123,7 @@
         </el-col>
       </el-row>
 
-      <el-scrollbar max-height="300px">
+      <!-- <el-scrollbar max-height="300px">
         <div class="option-content">
           <el-row class="head">
             <el-col :span="props.layer.showButton ? 21 : 24">
@@ -122,9 +141,6 @@
                 <template #default="detail">
                   <el-input v-model="detail.row.goodsFullName" readonly :title="detail.row.goodsFullName"
                     :disabled="!props.layer.showButton">
-                    <!-- <template #prepend>
-                      <div style="width: 40%">{{ detail.row.goodsClassifyName }}</div>
-                    </template> -->
                     <template #append>{{ detail.row.goodsNo }}</template>
                   </el-input>
                 </template>
@@ -172,15 +188,15 @@
             </el-table>
           </div>
         </div>
-      </el-scrollbar>
+      </el-scrollbar> -->
 
-      <GoodsSelectDrawer :options="goodsDrawerOptions" v-if="goodsDrawerOptions.show" @selectItem="onSelectGoods" />
+      <!-- <GoodsSelectDrawer :options="goodsDrawerOptions" v-if="goodsDrawerOptions.show" @selectItem="onSelectGoods" /> -->
     </el-form>
   </Layer>
 </template>
 
 <script lang="ts" setup>
-import { ref, defineEmits, defineProps, onMounted } from 'vue';
+import { ref, defineEmits, defineProps, onMounted, initCustomFormatter } from 'vue';
 import Layer from '@/components/layer/index.vue';
 import { ElForm } from 'element-plus';
 import msg from '@/utils/system/message';
@@ -216,8 +232,11 @@ const goodsClassifyData = ref(new Array<any>());
 const supplierData = ref(new Array<any>());
 const formRef = ref(ElForm || null);
 const ruleForm = ref({
+  customerOrderNo: props.layer.data?.customerOrderNo,  // 客户订单号
+  planQuantity: props.layer.data?.planQuantity,  // 计划发货数量
+  ActualQuantity: props.layer.data?.ActualQuantity,  // 实际发货数量
   orderNo: props.layer.data?.orderNo,
-  sendingDate: props.layer.data?.sendingDate,
+  sendingDate: props.layer.data?.sendingDate == "1900-01-01T00:00:00" ? "" : props.layer.data?.sendingDate,
   requestDate: props.layer.data?.requestDate == "1900-01-01T00:00:00" ? "" : props.layer.data?.requestDate,
   remark: props.layer.data?.remark,
   specialRequest: props.layer.data?.specialRequest,
@@ -236,7 +255,7 @@ const ruleForm = ref({
   isSufficientStock: props.layer.data?.isSufficientStock || "N",
   status: props.layer.data?.status || "WaitingShipment",
 
-  details: props.layer.data?.details,
+  details: props.layer.data?.details,  // 保存物料详细信息
 
   // goodsId: props.layer.data?.goodsId,
   // goodsNo: props.layer.data?.goodsNo,
@@ -296,14 +315,18 @@ const validatePalletsQuantity = (rule: any, value: any, callback: any) => {
 }
 
 const formRules = {
-  sendingDate: [{ required: true, message: '请选择计划发货日期', trigger: 'change' }, { validator: checkSendingDate, trigger: 'change' }],
+  sendingDate: [{ required: false, message: '请选择计划发货日期', trigger: 'change' }, { validator: checkSendingDate, trigger: 'change' }],
   requestDate: [{ required: false, message: '请选择要求到货日期', trigger: 'change' }, { validator: checkRequestDate, trigger: 'change' }],
-  goodsClassify: [{ required: true, message: '请选择物料分类', trigger: 'change' }],
-  supplierId: [{ required: true, message: '请选择运输供应商', trigger: 'change' }],
-  receivingResponsableUserInfo: [{ required: true, message: '请输入收件人信息', trigger: 'blur' }, { max: 200, message: '字符超出限制长度', trigger: 'blur' }],
-  sendingAddress: [{ required: true, message: '请填写到货地址', trigger: 'blur' }, { max: 100, message: '字符超出限制长度', trigger: 'blur' }],
+  goodsClassify: [{ required: false, message: '请选择物料分类', trigger: 'change' }],
+  supplierId: [{ required: false, message: '请选择运输供应商', trigger: 'change' }],
+  receivingResponsableUserInfo: [{ required: false, message: '请输入收件人信息', trigger: 'blur' }, { max: 200, message: '字符超出限制长度', trigger: 'blur' }],
+  sendingAddress: [{ required: false, message: '请填写到货地址', trigger: 'blur' }, { max: 100, message: '字符超出限制长度', trigger: 'blur' }],
   remark: [{ max: 100, message: '字符超出限制长度', trigger: 'blur' }],
-  specialRequest: [{ max: 100, message: '字符超出限制长度', trigger: 'blur' }],
+  specialRequest: [{ max: 100, message: '字符超出限制长度', trigger: 'blur' }],  // 订单号
+  customerOrderNo: [{ required: true,max: 100, message: '必填项', trigger: 'blur' }],
+  planQuantity: [{ required: true,max: 100, message: '必填项', trigger: 'blur' }],
+  ActualQuantity: [{ required: false,max: 100, message: '必填项', trigger: 'blur' }],
+  initCustomFormatter: [{ max: 100, message: '字符超出限制长度', trigger: 'blur' }],
   isUrgentShipment: [{ required: false, message: '请选择是否紧急发货', trigger: 'change' }],
   isSufficientStock: [{ required: false, message: '请选择是否有足够库存', trigger: 'change' }],
 
@@ -323,13 +346,21 @@ onMounted(() => {
     }
     // goodsClassifyData.value = res.data.goodsClassifyOptions.filter((f:any)=>goodsClassifyDefault.value.includes(f.key));
     goodsClassifyData.value = props.layer.options?.goodsGroupData;
+    console.log("###############  [onMounted]  goodsClassifyData.value  = ",  goodsClassifyData.value)
     if (props.layer.options?.goodsGroup) {
       invTitle.value = res.data.goodsClassifyOptions.find((f: any) => f.key == props.layer.options?.goodsGroup).value;
     }
     supplierData.value = res.data.supplierOptions;
-    onClassifyChanged(props.layer.data?.goodsClassify)
+      console.log("###############  [onMounted]  props.layer.data?.goodsClassify  = ",  props.layer.data?.goodsClassify)
+    // onClassifyChanged(props.layer.data?.goodsClassify)
+    onClassifyChanged('FinishedProduct')  //默认选择成品
+
+    // 默认赋值为成品，注意成品不能修改。这里编码写死了
+   detailsData.value = [{"goodsId":"S10000005","goodsNo":"SYK200M","goodsName":"石英矿成品1","goodsClassifyGroup":"FinishedProduct","quantity":5555}]
+    console.log("###############  [onMounted]  detailsData.value  = ",   detailsData.value)
     if (props.layer.data) {
       detailsData.value = props.layer.data.details;
+      
 
       detailsData.value.forEach(detail => {
         detail.goodsFullName = detail.goodsModel ? detail.goodsName + ' ' + detail.goodsModel : detail.goodsName;
@@ -357,8 +388,12 @@ const onClassifyChanged = (val: any) => {
   // ruleForm.value.goodsNo = "";
   // ruleForm.value.customerGoodsNo = "";
   // ruleForm.value.customerIdentificationCode = "";
+  console.log(" ###  onClassifyChanged   val =   ",val)
+  // 强制使用成品
+  val = 'FinishedProduct'  
   if (val) {
     invTitle.value = goodsClassifyData.value.find(f => f.key == val).value;
+    console.log(" ###  onClassifyChanged invTitle   =   ",invTitle)
     detailsData.value=[];
     // ruleForm.value.quantity = "";
     // ruleForm.value.palletsQuantity = "";
@@ -390,6 +425,7 @@ const onShowGoodsDrawer = () => {
 
 const onSelectGoods = (selectedGoods: any) => {
   let objStr = JSON.stringify(selectedGoods);
+  console.log('### [onSelectGoods] objStr =  ',objStr)
   detailsData.value.push(JSON.parse(objStr));
   detailsData.value.forEach(f => {
     f.goodsFullName = f.goodsModel ? f.goodsName + ' ' + f.goodsModel : f.goodsName;
@@ -412,28 +448,31 @@ const onRemoveDetail = (detail: any) => {
   detailsData.value.splice(detailsData.value.indexOf(detail), 1);
 }
 
+// 这里是确认提交
 const submit = () => {
   formRef.value.validate((valid: any) => {
+    console.log("#### ruleForm.value 1  =",ruleForm.value)
     if (valid) {
-      if (detailsData.value.length == 0) {
-        msg.warningAuto("请添加发货计划明细")
-        return
-      }
-      else {
-        for (let opt of detailsData.value) {
-          if (!opt.goodsId) {
-            msg.warningAuto("请选择物料编号")
-            return
-          }
-          if (!opt.quantity || Number(opt.quantity) <= 0) {
-            msg.warningAuto("请输入正确的计划发货数量")
-            return
-          }
-        }
-      }
+      // if (detailsData.value.length == 0) {
+      //   msg.warningAuto("请添加发货计划明细")
+      //   return
+      // }
+      // else {
+      //   for (let opt of detailsData.value) {
+      //     if (!opt.goodsId) {
+      //       msg.warningAuto("请选择物料编号")
+      //       return
+      //     }
+      //     if (!opt.quantity || Number(opt.quantity) <= 0) {
+      //       msg.warningAuto("请输入正确的计划发货数量")
+      //       return
+      //     }
+      //   }
+      // }
       if (ruleForm.value.requestDate == "" || ruleForm.value.requestDate == null) {
-        ruleForm.value.requestDate = "1900-01-01T00:00:00";
+        // ruleForm.value.requestDate = "1900-01-01T00:00:00";
       }
+      detailsData.value = [{"goodsId":"S10000005","goodsNo":"SYK200M","goodsName":"石英矿成品1","goodsClassifyGroup":"FinishedProduct","quantity":ruleForm.value.planQuantity  }]
       ruleForm.value.details = detailsData.value;
       // ruleForm.value.details = [{
       //   goodsId: ruleForm.value.goodsId,
@@ -443,7 +482,8 @@ const submit = () => {
       //   quantity: ruleForm.value.quantity,
       //   palletsQuantity: ruleForm.value.palletsQuantity,
       // }]
-      emit('dataSubmit', ruleForm.value, props.layer.data ? 'update' : 'add');
+      console.log("#### ruleForm.value  =",ruleForm.value)
+      emit('dataSubmit', ruleForm.value, props.layer.data ? 'update' : 'add');  // 这是触发了提交
     }
   })
 }

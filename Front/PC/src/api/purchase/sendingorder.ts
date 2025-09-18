@@ -35,7 +35,7 @@ export function getDetailStatusGroup() {
 return request.get(`/SendingOrder/GetDetailStatusGroup`)
 }
   
-//添加发货计划
+//添加发货计划 点击确认后
 export function addSending(data:any){
 return request.post(`/SendingOrder/AddSending`,data);
 }
