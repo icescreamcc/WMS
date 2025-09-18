@@ -58,5 +58,8 @@ namespace DbRepository.Repository.DbModels
         [SugarColumn(ColumnDescription = "邮件通知状态(0:未发送  1:已发送)")]
         public bool IsEmailNotification { get; set; }
 
+        [SugarColumn(Length = 50,  ColumnDescription = "客户订单号")]
+        public string CustomerOrderNo { get; set; }
+
     }
 }
