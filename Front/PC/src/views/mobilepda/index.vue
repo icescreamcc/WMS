@@ -20,7 +20,7 @@
     </div>
     <div class="app-content" v-if="showMain">
         <div class="content-header">
-            <p class="header-title">Gemba.Digital.Efficient</p>
+            <p class="header-title"></p>
         </div>
         <div class="content-body">
             <el-row :gutter="2">
@@ -109,7 +109,8 @@ const getMeuns=()=>{
             res.data.forEach((item:any) => {
                 if(item.routePath!=route.name&&item.routePath!=msg&&item.routePath!=setting&&item.menuLayout=="Primary"){ 
                 // item.icon=commonHelper.getImgUrl(`/public/icon-img/${item.icon}`); 
-                    item.icon=`/public/icon-img/${item.icon}`;
+                    item.icon=`/icon-img/${item.icon}`;
+                    //   item.icon=`/public/icon-img/${item.icon}`;
                     menus.value.push(item);
                 }
             });  
@@ -228,7 +229,7 @@ const speakText=()=> {
             background-color: #fff;
             .content-header{
                 height: 30%;
-                background-image: url('../../assets/images/mobile-header2.jpeg');
+                background-image: url('../../assets/images/mobile-newheader.png');
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;

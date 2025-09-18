@@ -146,9 +146,9 @@ const dataForm = ref({
     createUser:permission.getOperator().userName
   });  
 const dataFormRef = ref(ElForm||null); 
-const scanImg='/public/icon-img/saoma2.png';
-const editImg='/public/icon-img/bianji5.png';
-const binImg='/public/icon-img/kuwei2.png';
+const scanImg='/icon-img/saoma2.png';
+const editImg='/icon-img/bianji5.png';
+const binImg='/icon-img/kuwei2.png';
 const submitLoading=ref(false);
 const isSearchBin=ref(false); 
 

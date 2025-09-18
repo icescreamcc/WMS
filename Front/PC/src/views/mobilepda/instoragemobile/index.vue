@@ -12,7 +12,7 @@
                         <el-col :span="16">
                             <el-select v-model="selectedGoodsGroup" class="input-cls" @change="onSelectGoodsGroup">
                                 <el-option v-for="item in goodsGroupData" :key="item.key" :label="item.value"
-                                    :value="item.key" />
+                                    :value="item.key"></el-option>
                             </el-select>
                         </el-col>
                     </el-row>
@@ -26,8 +26,8 @@
                         <el-col :span="16">
                             <el-select v-model="selectedGoodsClassifyId" class="input-cls"
                                 @change="getGoodsDatya(true)">
-                                <el-option v-for="item in goodsClassifyData" :key="item.key" :label="item.value"
-                                    :value="item.key" />
+                                <el-option v-for="item in goodsClassifyData || []" :key="item.key || ''"
+                                    :label="item.value || ''" :value="item.key"></el-option>
                             </el-select>
                         </el-col>
                     </el-row>
@@ -51,7 +51,7 @@
                         <el-col :span="16">
                             <el-select v-model="selectedWarehouseId" class="input-cls" @change="onWarehouseSelected">
                                 <el-option v-for="item in warehouseData" :key="item.warehouseId"
-                                    :label="item.warehouseName" :value="item.warehouseId" />
+                                    :label="item.warehouseName" :value="item.warehouseId"></el-option>
                             </el-select>
                         </el-col>
                     </el-row>
@@ -88,9 +88,6 @@
                         <el-col :span="16">
                             <input id="input-storageDate" type="date" class="input-cls" placeholder="请选择入库时间"
                                 v-model="storageDate">
-                            <!-- <el-select  class="input-cls">
-                                
-                            </el-select> -->
                         </el-col>
                     </el-row>
                     <el-row class="input-item">
@@ -98,7 +95,8 @@
                             <div class="input-title">运输单号</div>
                         </el-col>
                         <el-col :span="16">
-                            <input id="input-transportOrderNo" type="text" class="input-cls" placeholder="请输入运输单号">
+                            <input v-model="dataForm.transportOrderNo" type="text" class="input-cls"
+                                placeholder="请输入运输单号">
                         </el-col>
 
                     </el-row>
@@ -108,7 +106,8 @@
                             <div class="input-title">车牌号码</div>
                         </el-col>
                         <el-col :span="16">
-                            <input id="input-licensePlateNo" type="text" class="input-cls" placeholder="请输入车牌号码">
+                            <input v-model="dataForm.licensePlateNo" type="text" class="input-cls"
+                                placeholder="请输入车牌号码">
                             <!-- <el-select  class="input-cls">
                                 
                             </el-select> -->
@@ -117,10 +116,10 @@
                     <!-- 入库数量 -->
                     <el-row class="input-item">
                         <el-col :span="8">
-                            <div class="input-title">入库数量*</div>
+                            <div class="input-title">入库数量(吨)*</div>
                         </el-col>
                         <el-col :span="14">
-                            <input type="number" v-model="quantity" class="input-cls" placeholder="请输入入库数量">
+                            <input type="number" v-model="dataForm.quantity" class="input-cls" placeholder="请输入入库数量">
                         </el-col>
                         <el-col :span="2">
                             <div class="input-icon">
@@ -135,7 +134,7 @@
                             <div class="input-title">备注</div>
                         </el-col>
                         <el-col :span="14">
-                            <input type="text" v-model="remark" class="input-cls" placeholder="请输入备注">
+                            <input type="text" v-model="dataForm.remark" class="input-cls" placeholder="请输入备注">
                         </el-col>
                         <el-col :span="2">
                             <div class="input-icon">
@@ -229,7 +228,7 @@
             </div>
         </div>
         <div class="content-btn">
-            <div v-if="permission.isPermisstion('TRUCKSUBMIT')">
+            <div v-if="permission.isPermisstion('INSTORAGEORDMOBILERADD')">
                 <el-button type="success" round @click="onmessageinfo" style="width:82%;"
                     :loading="submitLoading">确认</el-button>
             </div>
@@ -280,10 +279,13 @@ const msgDrawerOptions = ref({
 });
 
 const onClearForm = () => {
-    quantity.value = 1;
+    dataForm.value.quantity = 1;
+    dataForm.value.transportOrderNo = ''
+    dataForm.value.licensePlateNo = ''
+    dataForm.value.remark = ''
     document.getElementById('input-carSoleCode')?.focus();
 }
-const editImg = '/public/icon-img/bianji5.png';
+const editImg = '/icon-img/bianji5.png';
 const router = useRouter();
 const route = useRoute();
 const goodsData = ref(new Array<any>());
@@ -296,8 +298,6 @@ const selectedGoodsGroup = ref(deftClassifyGroup);
 const goodsClassifyData = ref(new Array<any>());
 const selectedGoodsClassifyId = ref(0);
 const searchKey = ref('');
-const quantity = ref(0);
-const remark = ref('');
 const goodsSort = ref('goodsName-asc');
 const warehouseData = ref(new Array<any>());
 const shelfData = ref(new Array<any>());
@@ -352,9 +352,10 @@ const dataForm = ref({
     createUserName: '',
     goodsPicture: [],  // 三方签字图片
     remark: '',
-    transportOrderNo:'',//运输单号
-    licensePlateNo:'',//车牌单号
+    transportOrderNo: '',//运输单号
+    licensePlateNo: '',//车牌单号
     createDate: '',//入库时间
+    quantity: 0,//入库数量
 })
 const uploadParams = ref({
     uploadApi: '/InStorage/UploadInstorgePic',
@@ -367,16 +368,16 @@ const uploadParams = ref({
     width: '80px',
     height: '80px',
 });
+
 const imgChanged = (imgList: Array<any>) => {
-    selectedGoods.value.goodsPicture = imgList.map(x => {
-        return {
-            FileName: x.name,  // 原文件名
-            Url: x.url,        // 图片 URL
-        }
-    })
-    // selectedGoods.value.goodsPicture= imgList.map(x => {
-    //     return x.response ?? { FileName: x.name, Url: x.url }
-    // })
+    if (selectedGoods.value) {
+        selectedGoods.value.goodsPicture = imgList.map(x => {
+            return {
+                FileName: x.name,  // 原文件名
+                Url: x.url,        // 图片 URL
+            }
+        })
+    }
 }
 
 
@@ -519,7 +520,18 @@ const getBinDataByShelf = () => {
         getGoodsDatya(true);
     })
 }
-const selectedGoods = ref<any>(null);
+// const selectedGoods = ref<any>(null);
+const selectedGoods = ref<any>({
+    goodsId: '',
+    goodsNo: '',
+    goodsName: '',
+    goodsClassifyName: '',
+    packageUnitId: 0,
+    packageUnitName: '',
+    goodsUnitList: [],
+    goodsPicture: []
+});
+
 const getGoodsDatya = (init: boolean) => {
     if (init) {
         pgIndex.value = 1
@@ -534,6 +546,17 @@ const getGoodsDatya = (init: boolean) => {
     })
     if (goodsData.value.length > 0) {
         selectedGoods.value = goodsData.value[0];
+    } else {
+        selectedGoods.value = {
+            goodsId: '',
+            goodsNo: '',
+            goodsName: '',
+            goodsClassifyName: '',
+            packageUnitId: 0,
+            packageUnitName: '',
+            goodsUnitList: [],
+            goodsPicture: []
+        };
     }
 }
 
@@ -595,11 +618,11 @@ const onSubmit = async () => {
         msg.deftAuto('小类不能为空')
         return
     }
-      if (!selectedGoods.value) {
+    if (!selectedGoods.value) {
         msg.deftAuto('物品名称不能为空')
         return
     }
-      if (!storageDate.value) {
+    if (!storageDate.value) {
         msg.deftAuto('请选择入库时间')
         return
     }
@@ -616,7 +639,7 @@ const onSubmit = async () => {
         msg.deftAuto('货位不能为空')
         return
     }
-    if (!quantity.value || quantity.value <= 0) {
+    if (!dataForm.value.quantity || dataForm.value.quantity <= 0) {
         msg.deftAuto('请输入正确的入库数量')
         return
     }
@@ -636,18 +659,16 @@ const onSubmit = async () => {
         goodsFullName: selectedGoods.value.goodsName,
         goodsClassifyId: selectedGoodsClassifyId.value!,
         goodsClassifyName: selectedGoods.value.goodsClassifyName,
-        // goodsClassify: selectedGoodsGroup.value,
         goodsUnitList: selectedGoods.value.goodsUnitList || [],
         unitId: selectedGoods.value.packageUnitId,
         unitName: selectedGoods.value.packageUnitName,
         warehouseId: selectedWarehouseId.value,
-        // warehouseName: binName,
         shelfId: selectedShelfId.value,
         binId: Number(selectedBinId.value),
         binNo: binNo,
         binName: '',
         minimumContainer: binName,//???
-        quantity: quantity.value,
+        quantity: dataForm.value.quantity,
         totalPrice: 0,
         type: 'Bin',
         createUserId: userId,
@@ -659,14 +680,10 @@ const onSubmit = async () => {
     dataForm.value.createUserName = createUserName;
     dataForm.value.warehouseName = binName;
     dataForm.value.goodsClassify = selectedGoodsGroup.value,
-    dataForm.value.goodsPicture = selectedGoods.value.goodsPicture || [];
-    dataForm.value.remark = remark.value;
-    dataForm.value.createDate = (document.getElementById('input-storageDate') as HTMLInputElement).value.trim();
-    dataForm.value.transportOrderNo = (document.getElementById('input-transportOrderNo') as HTMLInputElement).value.trim();
-    dataForm.value.licensePlateNo = (document.getElementById('input-licensePlateNo') as HTMLInputElement).value.trim();
+        dataForm.value.goodsPicture = selectedGoods.value.goodsPicture || [];
+    dataForm.value.createDate = storageDate.value;
     submitLoading.value = true
     try {
-        // const payload = JSON.parse(JSON.stringify(dataForm.value))
         const response = await addInStorage(dataForm.value)
         const orderNo = response.data as string;
         await confirmInStorage(orderNo);
