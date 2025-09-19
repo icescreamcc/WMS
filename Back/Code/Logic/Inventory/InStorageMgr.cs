@@ -75,10 +75,24 @@ namespace Logic.Inventory
             var isAnyApproval = approvalModel == ApprovalModel.Any.ToString() && curApprover?.Count > 0;
             var data = Repository.ClientDb.Queryable<InvInStorage>()
                   .LeftJoin<InvWarehouse>((i, w) => w.WarehouseId == i.WarehouseId)
-                  .Where((i, w) => i.OrderNo.Contains(searchKey) || i.Remark.Contains(searchKey) || i.CreateUserName.Contains(searchKey)
-                 || SqlFunc.Subqueryable<InvInStorageDetail>().InnerJoin<BaseGoods>((d, g) => d.GoodsId == g.GoodsId).Where((d, g) => d.OrderNo == i.OrderNo && (d.GoodsName.Contains(searchKey) || g.GoodsNo.Contains(searchKey) || g.GoodsModel.Contains(searchKey))).Any())
-                  .Where((i, w) => i.GoodsClassify == goodsGroup && SqlFunc.ToDate(i.CreateDate) >= GetDateStart(dateStart) && SqlFunc.ToDate(i.CreateDate) <= GetDateEnd(dateEnd)) 
-                  .Select((i, w) => new InStorage
+                  .LeftJoin<InvInStorageDetail>((i, w, d) => d.OrderNo == i.OrderNo)
+                  .LeftJoin<BaseGoods>((i, w, d, g) => g.GoodsId == d.GoodsId)
+                  .LeftJoin<BaseUnits>((i, w, d, g, b) => d.UnitId == b.UnitId)
+                  .Where((i, w, d, g, b) =>
+                    i.OrderNo.Contains(searchKey) ||
+                    i.Remark.Contains(searchKey) ||
+                    i.CreateUserName.Contains(searchKey) ||
+                    g.GoodsName.Contains(searchKey) ||
+                    g.GoodsNo.Contains(searchKey) ||
+                    g.GoodsModel.Contains(searchKey))
+                .Where((i, w, d, g,b) =>
+                    i.GoodsClassify == goodsGroup &&
+                    SqlFunc.ToDate(i.CreateDate) >= GetDateStart(dateStart) &&
+                    SqlFunc.ToDate(i.CreateDate) <= GetDateEnd(dateEnd))
+                  // .Where((i, w) => i.OrderNo.Contains(searchKey) || i.Remark.Contains(searchKey) || i.CreateUserName.Contains(searchKey)
+                  //|| SqlFunc.Subqueryable<InvInStorageDetail>().InnerJoin<BaseGoods>((d, g) => d.GoodsId == g.GoodsId).Where((d, g) => d.OrderNo == i.OrderNo && (d.GoodsName.Contains(searchKey) || g.GoodsNo.Contains(searchKey) || g.GoodsModel.Contains(searchKey))).Any())
+                  // .Where((i, w) => i.GoodsClassify == goodsGroup && SqlFunc.ToDate(i.CreateDate) >= GetDateStart(dateStart) && SqlFunc.ToDate(i.CreateDate) <= GetDateEnd(dateEnd)) 
+                  .Select((i, w, d, g, b) => new InStorage
                   {
                       OrderNo = i.OrderNo,
                       InStorageType = i.InStorageType,
@@ -99,7 +113,12 @@ namespace Logic.Inventory
                       UpdateUserId = i.UpdateUserId,
                       UpdateUserName = i.UpdateUserName,
                       UpdateDate = i.UpdateDate,
+                      GoodsName = g.GoodsName,
+                      Quantity = d.Quantity,               // 计划数量
+                      ActualQuantity = d.ActualQuantity,    // 实际数量
+                      UnitName=b.UnitName,
                       ApprovalLastRank = SqlFunc.Subqueryable<ApprovalHis>().Where(h => h.PrimaryId == i.OrderNo && h.DataType == ApprovalDataType.InStorage.ToString()).Max(h => h.ApprovalRank)
+                      
                   })
                   .OrderBy($"{orderFiled} {orderType}")
                   .ToPageList(pgIndex, pgSize, ref total);
@@ -1177,10 +1196,6 @@ namespace Logic.Inventory
                             f.ShelfNo as 货架编码,
                             g.BinId as 货位ID,
                             g.BinNo as 货位编码,
-                            h.WorkbinId as 料箱ID,
-                            h.WorkbinNo as 料箱编码,
-                            i.CellId as 料箱单元格ID,
-                            i.CellNo as 料箱单元格编码,
                             a.CreateDate as 创建时间,
                             a.CreateUserName as 创建人,
                             a.`Status` as 状态 ,

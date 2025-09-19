@@ -63,7 +63,10 @@ namespace Models.Model.Inv
         public string ApprovalStatusDesc { get; set; }
 
         public int ApprovalLastRank { get; set; }
-
+        public string GoodsName { get; set; }
+        public float Quantity { get; set; }
+        public float ActualQuantity { get; set; }
+        public string UnitName { get; set; }
         public List<OutStorageDetail> Details { get; set; }
     }
 }

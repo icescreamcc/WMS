@@ -92,9 +92,9 @@ namespace WebApi.Controllers.Inv
         /// <returns></returns>
         [HttpPost]
         [BusinessLog("添加出库单", LogType.Add, _moduleName)]
-        public async Task AddOutStorage(OutStorage data)
+        public async Task<string> AddOutStorage(OutStorage data)
         {
-            await _outStorageMgr.AddOutStorage(data); 
+           return  await _outStorageMgr.AddOutStorage(data); 
         }
 
         /// <summary>

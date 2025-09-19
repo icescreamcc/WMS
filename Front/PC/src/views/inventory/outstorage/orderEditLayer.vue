@@ -288,7 +288,8 @@ onMounted(() => {
     }
     else {
       // 默认选中 RawMaterial
-      goodsClassifyData.value = res.data.goodsClassifyOptions.filter((f: any) => f.key == defaultClassifyKey);
+      //这里先显示成品，后期等毕成做完入库我这边就把成品拿掉
+      goodsClassifyData.value = res.data.goodsClassifyOptions.filter((f: any) => f.key == defaultClassifyKey|| f.key == 'FinishedProduct');
 
     }
 
@@ -464,8 +465,8 @@ const onSelectBin = (selectedElement: any) => {
     curEditDetail.value.minimumContainer = "";
   }
 }
-
-const onClassifyChanged = (val: any, isNew: boolean = false) => {
+const onClassifyChanged = (val: any, isNew: boolean = true) => {
+// const onClassifyChanged = (val: any, isNew: boolean = false) => { 毕陈修改后取肖注释
   if (val)
     invTitle.value = goodsClassifyData.value.find(f => f.key == val).value;
   let warehouseBygroup = warehouseDataBuffer.filter(f => f.warehouseType == ruleForm.value.goodsClassify);
@@ -481,7 +482,8 @@ const onClassifyChanged = (val: any, isNew: boolean = false) => {
   // 只有新增时才执行下面这段
   //add
   ruleForm.value.goodsClassify = val;
-  if (isNew && val === 'RawMaterial') {
+    if (isNew) {
+  // if (isNew && val === 'RawMaterial') {//毕成那边添加入库单后取消注释
     // 调接口拉取原材料数据
     getGoodsByKeyAndClassify(val, 0, "", "", 60).then((res: any) => {
       if (res.data?.length > 0) {

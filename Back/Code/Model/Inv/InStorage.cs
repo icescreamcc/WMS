@@ -64,7 +64,10 @@ namespace Models.Model.Inv
         public string ApprovalStatusDesc { get; set; }
         public string TransportOrderNo { get; set; }
         public string LicensePlateNo { get; set; }
-
+        public  string GoodsName { get; set; }
+        public float Quantity { get; set; }
+        public float ActualQuantity { get; set; }
+        public string UnitName { get; set; }
         public List<InStorageDetail> Details { get; set; }
     }
 }

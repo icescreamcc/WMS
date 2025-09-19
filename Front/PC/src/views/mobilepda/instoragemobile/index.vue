@@ -350,13 +350,17 @@ const dataForm = ref({
     details: [] as DetailItem[],
     createUserId: '',
     createUserName: '',
-    goodsPicture: [],  // 三方签字图片
+    goodsPicture: [] as GoodsPicture[],  // 三方签字图片
     remark: '',
     transportOrderNo: '',//运输单号
     licensePlateNo: '',//车牌单号
     createDate: '',//入库时间
     quantity: 0,//入库数量
 })
+interface GoodsPicture {
+    fileName: string;
+    url: string;
+}
 const uploadParams = ref({
     uploadApi: '/InStorage/UploadInstorgePic',
     limit: 3,
@@ -370,13 +374,25 @@ const uploadParams = ref({
 });
 
 const imgChanged = (imgList: Array<any>) => {
+    // if (selectedGoods.value) {
+    //     selectedGoods.value.goodsPicture = imgList.map(x => {
+    //         return {
+    //             FileName: x.name,  // 原文件名
+    //             Url: x.url,        // 图片 URL
+    //         }
+    //     })
+    // }
+    // 更新 dataForm 的图片
+    dataForm.value.goodsPicture = imgList.map(x => {
+        return {
+            fileName: x.name,  // 图片的原始文件名
+            url: x.url,        // 图片的 URL 地址
+        }
+    })
+
+    // 如果还需要同步到 selectedGoods（可选）
     if (selectedGoods.value) {
-        selectedGoods.value.goodsPicture = imgList.map(x => {
-            return {
-                FileName: x.name,  // 原文件名
-                Url: x.url,        // 图片 URL
-            }
-        })
+        selectedGoods.value.goodsPicture = dataForm.value.goodsPicture;
     }
 }
 
@@ -639,8 +655,13 @@ const onSubmit = async () => {
         msg.deftAuto('货位不能为空')
         return
     }
+    debugger
     if (!dataForm.value.quantity || dataForm.value.quantity <= 0) {
         msg.deftAuto('请输入正确的入库数量')
+        return
+    }
+    if (!dataForm.value.goodsPicture || dataForm.value.goodsPicture.length === 0) {
+        msg.deftAuto('请上传运输单签字附件')
         return
     }
 

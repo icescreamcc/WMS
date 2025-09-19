@@ -24,11 +24,11 @@ namespace Models.Model.Enum
         [Description("辅材")]
         Separator,
 
-        [Description("成品")]
-        FinishedProduct,
-
         [Description("原材料")]
         RawMaterial,
+
+        [Description("成品")]
+        FinishedProduct,
 
         [Description("半成品")]
         SemiFinishedProduct

@@ -42,7 +42,7 @@
       <Table ref="table" v-model:page="page" v-loading="loading" :showSelection="true" :data="tableData"
         @getTableData="getTableData" @selection-change="handleSelectionChange" @orderChanged="handleSortChange"
         @expandChange="handleExpandChange">
-        <el-table-column prop="orderNo" label="明细" type="expand" align="center" sortable :show-overflow-tooltip="true">
+        <!-- <el-table-column prop="orderNo" label="明细" type="expand" align="center" sortable :show-overflow-tooltip="true">
           <template #default="props">
             <div style="margin-bottom:10px">
               <span style="font-weight:600;">出库明细</span>
@@ -63,24 +63,29 @@
                     <span>{{ detail.row.actualQuantity + detail.row.unitName }}</span>
                   </template>
                 </el-table-column>
-                <!-- <el-table-column prop="packageCount" label="包装" >
-                          <template #default="scope">  
-                            <span v-if="scope.row.minPackageUnitName==scope.row.packageUnitName&&scope.row.packageUnitName==scope.row.maxPackageUnitName">{{scope.row.packageCount+scope.row.minPackageUnitName}}</span>
-                            <span v-else-if="scope.row.minPackageUnitName!=scope.row.packageUnitName&&scope.row.packageUnitName==scope.row.maxPackageUnitName">{{scope.row.packageCount+scope.row.minPackageUnitName+'/'+scope.row.packageUnitName}}</span>
-                            <span v-else-if="scope.row.minPackageUnitName==scope.row.packageUnitName&&scope.row.packageUnitName!=scope.row.maxPackageUnitName">{{scope.row.maxPackageCount+scope.row.packageUnitName+'/'+scope.row.maxPackageUnitName}}</span>
-                            <span v-else>{{scope.row.packageCount+scope.row.minPackageUnitName+'/'+scope.row.packageUnitName+','+scope.row.maxPackageCount+scope.row.packageUnitName+'/'+scope.row.maxPackageUnitName}}</span>
-                          </template>
-                      </el-table-column> -->
                 <el-table-column prop="warehouseName" label="出库仓库" />
-                <!-- <el-table-column prop="shelfName" label="出库货架"/> -->
                 <el-table-column prop="binName" label="出库货位" />
                 <el-table-column prop="workbinCellNo" label="出库料箱" />
               </el-table>
             </div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column prop="orderNo" label="出库单号" align="center" sortable="custom" min-width="100"
           :show-overflow-tooltip="true" />
+        <el-table-column prop="goodsName" label="名称" align="center" sortable="custom" min-width="100"
+          :show-overflow-tooltip="true" />
+        <!-- <el-table-column prop="quantity" label="计划入库数量" align="center" sortable="custom" min-width="100"
+          :show-overflow-tooltip="true">  
+                 <template #default="detail">
+                  <span>{{ detail.row.quantity + detail.row.unitName }}</span>
+                  </template>
+        </el-table-column> -->
+        <el-table-column prop="actualQuantity" label="实际入库数量" align="center" sortable="custom" min-width="100"
+          :show-overflow-tooltip="true">
+          <template #default="detail">
+            <span>{{ detail.row.quantity + detail.row.unitName }}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="warehouseName" label="出库仓库" align="center" sortable="custom" min-width="100"
           :show-overflow-tooltip="true" />
         <el-table-column prop="outStorageType" label="出库类型" align="center" sortable="custom" min-width="100"
@@ -111,8 +116,8 @@
               <el-popconfirm title="是否确认出库？" v-if="permission.isPermisstion('OUTSTORAGEORDERCONFIRM')"
                 @confirm="submitOutStorage(props.row)">
                 <template #reference>
-                  <el-button title="点击确认出库" type="warning"
-                    :loading="props.row.loading">{{ props.row.statusDesc }}</el-button>
+                  <el-button title="点击确认出库" type="warning" :loading="props.row.loading">{{ props.row.statusDesc
+                    }}</el-button>
                 </template>
               </el-popconfirm>
               <span v-else>{{ props.row.statusDesc }}</span>
@@ -126,8 +131,8 @@
           v-if="permission.isPermisstion('OUTSTORAGEORDERUPDATE', 'OUTSTORAGEORDERDEL')">
           <template #default="scope">
             <div v-if="scope.row.status == 'WaitOutStorage'">
-              <el-button @click="handleEdit(scope.row)"
-                v-if="permission.isPermisstion('OUTSTORAGEORDERUPDATE')">{{ $t("message.common.update") }}</el-button>
+              <el-button @click="handleEdit(scope.row)" v-if="permission.isPermisstion('OUTSTORAGEORDERUPDATE')">{{
+                $t("message.common.update") }}</el-button>
               <el-popconfirm v-if="permission.isPermisstion('OUTSTORAGEORDERDEL')" :title="$t('message.common.delTip')"
                 @confirm="handleDel([scope.row])">
                 <template #reference>
@@ -226,7 +231,7 @@ const getGoodsGroupData = () => {
       goodsGroupData.value = res.data.filter((f: any) => f.key == 'SparePart' || f.key == 'Consumables');
     }
     else {
-      goodsGroupData.value = res.data;
+      goodsGroupData.value = res.data.filter((f: any) => f.key == 'FinishedProduct' || f.key == 'RawMaterial');;
     }
   })
 }
@@ -357,6 +362,13 @@ const dataSave = (data: any, actionType: string) => {
   orderLayer.btnLoading = true;
   if (actionType == 'add') {
     addOutStorage(data).then(res => {
+      const orderNo = res.data;
+      if (data.goodsClassify == 'RawMaterial') {//原材料直接入库
+        if (orderNo.length > 0) {
+          confirmOutStorage(orderNo)
+        }
+      }
+
       orderLayer.show = false;
       getTableData(true);
     }).finally(() => orderLayer.btnLoading = false);

@@ -56,19 +56,25 @@
           </el-form-item>
         </el-col>
       </el-row>
-
+<!-- 
       <el-row>
         <el-col :span="11">
           <el-form-item label="三方签字图片">
-            <Upload :uploadParams="uploadParams" @handleImgChanged="imgChanged" />
+            <el-row v-if="ruleForm.photos && ruleForm.photos.length">
+              <el-col v-for="(photo, index) in ruleForm.photos" :key="index" :span="8">
+                <el-card>
+                  <img :src="photo.url" alt="图片预览" style="max-width: 100%; max-height: 150px; object-fit: contain;" />
+                  <div class="image-title" style="text-align: center; margin-top: 8px;">{{ photo.fileName }}</div>
+                </el-card>
+              </el-col>
+            </el-row>
           </el-form-item>
         </el-col>
         <el-col :span="11" :offset="2">
           <el-form-item label=" " style="height:50px;margin-left:20px">
           </el-form-item>
         </el-col>
-
-      </el-row>
+      </el-row> -->
 
       <el-scrollbar max-height="300px">
         <div class="option-content">
@@ -113,8 +119,8 @@
                       <el-table-column property="specName" label="规格" />
                       <el-table-column property="maxStock" label="最大堆放">
                         <template #default="scope">
-                          <span
-                            v-if="scope.row.maxStock > scope.row.stock">{{ scope.row.maxStock + scope.row.maxStockUnitName }}</span>
+                          <span v-if="scope.row.maxStock > scope.row.stock">{{ scope.row.maxStock +
+                            scope.row.maxStockUnitName }}</span>
                           <span v-else class="text-danger">{{ scope.row.maxStock + scope.row.maxStockUnitName }}</span>
                         </template>
                       </el-table-column>
@@ -286,14 +292,14 @@ onMounted(() => {
     // 入库类型 默认选中“生产入库”
     const defaultOption = inStorageTypeData.value.find((f: any) => f.key === "ProductIn");
     if (defaultOption.value) {
-      ruleForm.value.inStorageType = defaultOption.key;;
+      ruleForm.value.inStorageType = defaultOption.key;
     }
     // 物品类型 默认选中“成品”
     if (deftClassifyGroup == 'SparePart') {
       goodsClassifyData.value = res.data.goodsClassifyOptions.filter((f: any) => f.key == 'SparePart' || f.key == 'Consumables');
     }
     else {
-      goodsClassifyData.value = res.data.goodsClassifyOptions.filter((f: any) => f.key == 'FinishedProduct' || f.key == 'RawMaterial');
+      goodsClassifyData.value = res.data.goodsClassifyOptions.filter((f: any) => f.key == 'FinishedProduct');
       const dOption = goodsClassifyData.value.find((f: any) => f.key == "FinishedProduct");// f.value === "成品"
       if (dOption.value) {
         ruleForm.value.goodsClassify = dOption.key;
@@ -323,7 +329,7 @@ onMounted(() => {
 
 
       detailsData.value = props.layer.data.details;
-
+      debugger
       // 处理已有图片
       detailsData.value.forEach(detail => {
         detail.photos = detail.photos || [];
@@ -645,7 +651,7 @@ const submit = () => {
           } else {
             opt.photos = [];
           }
-          
+
         }
       }
       ruleForm.value.details = detailsData.value;
@@ -657,6 +663,7 @@ const submit = () => {
   })
 }
 const imgChanged = (imgList: Array<any>) => {
+  debugger
   ruleForm.value.photos = imgList.map(x => {
     return {
       fileName: x.name,
