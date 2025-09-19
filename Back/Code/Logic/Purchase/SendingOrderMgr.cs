@@ -125,10 +125,11 @@ namespace Logic.Purchase
         public async Task<List<KeyValueModel>> GetSendingAddressGroup()
         {
             var data = await Repository.ClientDb.Queryable<SendingOrder>()
-                .Where(m => !string.IsNullOrEmpty(m.SendingAddress))
-                .GroupBy(m => m.SendingAddress)
+                //.Where(m => !string.IsNullOrEmpty(m.SendingAddress))
+                //.GroupBy(m => m.SendingAddress)
                 .Select(m => new KeyValueModel { Key = m.SendingAddress, Value = m.SendingAddress })
                 .ToListAsync();
+
             return data;
         }
         public async Task AddSending(SendingOrderDto data)
@@ -151,6 +152,7 @@ namespace Logic.Purchase
             Repository.ClientDb.Insertable(SendingOrderModel).AddQueue();
 
             var SendingOrderDetailList = _mapper.Map<List<SendingOrderDetail>>(data.Details);
+            
             SendingOrderDetailList.ForEach(f =>
             {
                 f.OrderNo = SendingOrderModel.OrderNo;

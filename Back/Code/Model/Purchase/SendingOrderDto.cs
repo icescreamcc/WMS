@@ -58,5 +58,6 @@ namespace Models.Model.Purchase
         public string UrgentShipmentDesc { get; set; }
 
         public string SufficientStockDesc { get; set; }
+        public string CustomerOrderNo { get; set; }
     }
 }

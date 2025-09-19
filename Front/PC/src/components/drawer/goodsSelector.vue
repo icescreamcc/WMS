@@ -170,6 +170,7 @@ const handleKeyDown=(event:any)=> {
     }
 
 const selectGoods=(item:any)=>{ 
+  console.log( ' ### [selectGoods] item =  ',item)
   if(props.options.isMultiSelect){
     item.selected=!item.selected;
   }
