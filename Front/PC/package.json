@@ -21,6 +21,7 @@
     "echarts": "^5.1.1",
     "echarts-gl": "^2.0.9",
     "element-plus": "^1.0.2-beta.48",
+    "html5-qrcode": "^2.3.8",
     "js-base64": "^3.7.2",
     "jsbarcode": "^3.11.5",
     "mockjs": "^1.1.0",

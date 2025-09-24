@@ -21,7 +21,7 @@
                     <!-- 小类 -->
                     <el-row class="input-item">
                         <el-col :span="8">
-                            <div class="input-title">小类*</div>
+                            <div class="input-title">小类</div>
                         </el-col>
                         <el-col :span="16">
                             <el-select v-model="selectedGoodsClassifyId" class="input-cls"
@@ -34,7 +34,7 @@
 
                     <el-row class="input-item">
                         <el-col :span="8">
-                            <div class="input-title">物品名称*</div>
+                            <div class="input-title">物品名称</div>
                         </el-col>
                         <el-col :span="16">
                             <input id="input-goodsname" type="text" class="input-cls" :value="selectedGoods?.goodsName"
@@ -83,7 +83,7 @@
                     <!-- 入库时间 -->
                     <el-row class="input-item">
                         <el-col :span="8">
-                            <div class="input-title">入库时间*</div>
+                            <div class="input-title">入库时间</div>
                         </el-col>
                         <el-col :span="16">
                             <input id="input-storageDate" type="date" class="input-cls" placeholder="请选择入库时间"
@@ -95,8 +95,7 @@
                             <div class="input-title">运输单号</div>
                         </el-col>
                         <el-col :span="16">
-                            <input v-model="dataForm.transportOrderNo" type="text" class="input-cls"
-                                placeholder="请输入运输单号">
+                            <input v-model="dataForm.transportOrderNo" type="text" class="input-cls">
                         </el-col>
 
                     </el-row>
@@ -106,8 +105,7 @@
                             <div class="input-title">车牌号码</div>
                         </el-col>
                         <el-col :span="16">
-                            <input v-model="dataForm.licensePlateNo" type="text" class="input-cls"
-                                placeholder="请输入车牌号码">
+                            <input v-model="dataForm.licensePlateNo" type="text" class="input-cls">
                             <!-- <el-select  class="input-cls">
                                 
                             </el-select> -->
@@ -116,7 +114,7 @@
                     <!-- 入库数量 -->
                     <el-row class="input-item">
                         <el-col :span="8">
-                            <div class="input-title">入库数量(吨)*</div>
+                            <div class="input-title">入库数量(吨)</div>
                         </el-col>
                         <el-col :span="14">
                             <input type="number" v-model="dataForm.quantity" class="input-cls" placeholder="请输入入库数量">
@@ -134,7 +132,7 @@
                             <div class="input-title">备注</div>
                         </el-col>
                         <el-col :span="14">
-                            <input type="text" v-model="dataForm.remark" class="input-cls" placeholder="请输入备注">
+                            <input type="text" v-model="dataForm.remark" class="input-cls">
                         </el-col>
                         <el-col :span="2">
                             <div class="input-icon">
@@ -142,8 +140,11 @@
                             </div>
                         </el-col>
                     </el-row>
-                    <el-row class="input-item"> </el-row>
-                    <el-row class="input-item"> </el-row>
+                    <el-row>
+                        <el-col :span="24">
+                            <div>&nbsp;</div>
+                        </el-col>
+                    </el-row>
                     <el-row class="input-item">
                         <el-col :span="8">
                             <div class="input-titlenone">运输单签字附件</div>
@@ -153,6 +154,29 @@
                         </el-col>
                     </el-row>
                 </el-form>
+            </div>
+            <div>&nbsp;</div>
+            <div class="content-desc">
+                <div style="padding-top: 4%;">
+                    <div style="margin-bottom: 10px;">
+                        <el-icon>
+                            <InfoFilled />
+                        </el-icon>
+                        <span> 操作流程：</span>
+                    </div>
+                    <div>
+                        <p style="margin-top: -5px;">输入入库数量→上传运输单签字附件→点击确认→入库成功</p>
+                    </div>
+                </div>
+            </div>
+            <div class="content-btn">
+                <div v-if="permission.isPermisstion('INSTORAGEORDMOBILERADD')">
+                    <el-button type="success" round @click="onmessageinfo" style="width:82%;"
+                        :loading="submitLoading">确认</el-button>
+                </div>
+                <div style="margin-top: 4px;">
+                    <el-button round @click="onClearForm" style="width:82%;" :loading="submitLoading">重置信息</el-button>
+                </div>
             </div>
 
 
@@ -213,21 +237,9 @@
         <img src="/public/icon-img/right-circle-fill-dis.png" alt="下一页" v-else class="btn-page-next">
       </div>
     </div> -->
-            <div class="content-desc">
-                <div style="padding-top: 4%;">
-                    <div style="margin-bottom: 10px;">
-                        <el-icon>
-                            <InfoFilled />
-                        </el-icon>
-                        <span> 操作流程：</span>
-                    </div>
-                    <div>
-                        <p style="margin-top: -5px;">输入入库数量→上传运输单签字附件→点击确认→入库成功</p>
-                    </div>
-                </div>
-            </div>
+
         </div>
-        <div class="content-btn">
+        <!-- <div class="content-btn">
             <div v-if="permission.isPermisstion('INSTORAGEORDMOBILERADD')">
                 <el-button type="success" round @click="onmessageinfo" style="width:82%;"
                     :loading="submitLoading">确认</el-button>
@@ -235,7 +247,7 @@
             <div style="margin-top: 4px;">
                 <el-button round @click="onClearForm" style="width:82%;" :loading="submitLoading">重置信息</el-button>
             </div>
-        </div>
+        </div> -->
         <MessageDrawer :options="msgDrawerOptions" @cancel="onLockBinCancel" @confirm="onSubmit" />
 
     </div>

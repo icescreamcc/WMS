@@ -2,12 +2,14 @@
 using External.Common;
 using Logic.Inventory;
 using Logic.LogicBase;
-using Logic.LogicCommon; 
+using Logic.LogicCommon;
+using Logic.LogicCommon.FileStorage;
 using Microsoft.AspNetCore.Mvc;
 using Models.Model;
 using Models.Model.Enum;
 using Models.Model.Inv;
 using StackExchange.Redis;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApi.Filter; 
@@ -24,12 +26,14 @@ namespace WebApi.Controllers.Inv
         private readonly SysArgsService _sysArgsHelper;
 
         private const string _moduleName = "出库管理";
+        private readonly IFileStorage _fileStorage;
 
-        public OutStorageController(OutStorageMgr outStorageMgr, SelectOptionsService selectOptionsServer, SysArgsService sysArgsHelper)
+        public OutStorageController(OutStorageMgr outStorageMgr, SelectOptionsService selectOptionsServer, SysArgsService sysArgsHelper, IFileStorage fileStorage)
         {
             _outStorageMgr = outStorageMgr; 
             _selectOptionsServer = selectOptionsServer;
             _sysArgsHelper = sysArgsHelper;
+            _fileStorage = fileStorage;
         }
 
         /// <summary>
@@ -190,6 +194,32 @@ namespace WebApi.Controllers.Inv
         {
             await _outStorageMgr.ApprovalOutStorage(orderNo, isApprove, opinion, userId, userName); 
         }
-         
+
+        [HttpPost]
+        [Skip]
+        public async Task<string> UploadInstorgePic()
+        {
+            var files = HttpContext.Request.Form.Files;
+            if (files.Count > 0)
+            {
+                var file = files[0];
+                if (file.Length / 1024 < 1024 * 10)
+                {
+                    if (file.ContentType.Contains("image"))
+                    {
+                        var fileName = $"Outstorage{DateTime.Now.Ticks}.{file.FileName.Split('.')[1]}";
+                        using (var stream = file.OpenReadStream())
+                        {
+                            string fileUrl = await _fileStorage.SaveFile(fileName, stream, FileType.Image);
+                            return fileUrl;
+                        }
+                    }
+                    throw new BusinessException("上传文件不属于图片类型");
+                }
+                throw new BusinessException("图片不能大于5M");
+            }
+            throw new BusinessException("未获取到文件信息");
+        }
+
     }
 }

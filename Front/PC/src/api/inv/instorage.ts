@@ -13,8 +13,8 @@ return request.get(`/InStorage/GetArgs`);
 //获取入库单相关选项及参数数据
 export function getOptions() {
 return request.get(`/InStorage/GetOptions`);
-}
 
+}
 //获取入库单详细信息
 export function getOrderDetail(userId:string,orderNo:string) {
 return request.get(`/InStorage/GetOrderDetail?userId=${userId}&orderNo=${orderNo}`);

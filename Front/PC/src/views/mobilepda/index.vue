@@ -229,7 +229,7 @@ const speakText=()=> {
             background-color: #fff;
             .content-header{
                 height: 30%;
-                background-image: url('../../assets/images/mobile-newheader.png');
+                background-image: url('../../assets/images/mobile-newheader.jpeg');
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
@@ -309,7 +309,7 @@ const speakText=()=> {
             background-color: #fff;
             .content-header{
                 height: 30%;
-                background-image: url('../../assets/images/mobile-newheader.png');
+                background-image: url('../../assets/images/mobile-newheader.jpeg');
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
