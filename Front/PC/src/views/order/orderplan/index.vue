@@ -255,13 +255,14 @@
          orderLayer.row = row; 
          orderLayer.type='update'
          orderLayer.show = true;  
+         orderLayer.showButton = true;
     }
     const handleRead = (row: any) => {
       orderLayer.title = "查看订单计划";
       orderLayer.show = true;
       orderLayer.type='select'
       orderLayer.showButton = false;
-      orderLayer.data = row
+      orderLayer.row = row
 }
       const dataSave=(data:any,actionType:string)=>{ 
         orderLayer.btnLoading=true;

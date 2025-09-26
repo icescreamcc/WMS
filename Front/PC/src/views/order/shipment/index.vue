@@ -144,7 +144,7 @@
   
             <el-table-column  label="确认发货" v-if="permission.isPermisstion('SENDINGUPDATE')" align="center" sortable="custom" min-width="100" :show-overflow-tooltip="true">
                <template #default="props">
-                <el-button v-if="props.row.status=='WaitingShipment'" circle type="success" style="height: 30px;"  @click="handleConfirmShipment(props.row)" title="点击确认发货">
+                <el-button v-if="props.row.status=='WaitingNotification'" circle type="success" style="height: 30px;"  @click="handleConfirmShipment(props.row)" title="点击确认发货">
                   <el-icon><ShoppingCartFull /></el-icon>
                 </el-button> 
                 <span v-else>{{ props.row.statusDesc}}</span>
@@ -179,7 +179,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="客户标签" align="left" min-width="124"
+        <el-table-column label="客户标签" align="left" min-width="90"
           v-if="permission.isPermisstion('SENDINGUPLOAD', 'SENDINGNOTIFICATION')">
           <template #default="scope">
          <el-button 
@@ -231,7 +231,8 @@ import ImportModal from "@/components/layer/importLayer.vue";
 import UploadDocumentModal from "@/components/layer/uploadDocumentLayer.vue";
 import MailEditLayer from "@/components/layer/mailLayer.vue";
 import {Message,ShoppingCartFull,Checked,Promotion,View,EditPen ,Upload}  from '@element-plus/icons-vue';
-import printJS from 'print-js'
+import printJS from 'print-js';
+import QRCode from 'qrcode';
 
 const query = reactive({
   input: "",
@@ -500,7 +501,7 @@ const handleAdd = () => {
 }
 const handleConfirmShipment = (row: any) => {
   getOrderDetail(permission.getOperator().userId, row.orderNo).then((res: any) => {
-    orderLayer.title = "确认发货";
+    orderLayer.title = "发货";
     orderLayer.show = true;
     orderLayer.showButton = true;
     orderLayer.options = {
@@ -512,6 +513,7 @@ const handleConfirmShipment = (row: any) => {
     
     // 设置行数据和详情
     row.details = res.data;
+    row.status='WaitingShipment';
     orderLayer.data = row;
     
     // 添加标记，表示这是从确认发货按钮进入的
@@ -556,64 +558,182 @@ const handleRead = (row: any) => {
   })
 }
 
-const handleUpload = (row: any) => {
+const handleUpload = async (row: any) => {
   // 获取当前行的明细数据
   getOrderDetail(permission.getOperator().userId, row.orderNo).then((res: any) => {
     const details = res.data || [];
      getOrderPrint(row.orderNo, row.customerOrderNo)
-     .then((res: any) => {
+     .then(async(res: any) => {
      let data = res.data[0];
+
+     // 生成二维码
+      let qrCodeDataURL = '';
+      try {
+        // 二维码内容可以是发货单号，也可以包含更多信息
+        const qrContent = `发货单号: ${row.orderNo}\n订单号: ${row.customerOrderNo}\n日期: ${new Date().toLocaleDateString()}`;
+        qrCodeDataURL = await QRCode.toDataURL(qrContent, {
+          width: 80,
+          height: 80,
+          margin: 1
+        });
+      } catch (error) {
+        console.error('生成二维码失败:', error);
+      }
+
       //创建打印容器并插入到页面
       const printContainer = document.createElement('div');
       printContainer.id = 'print-content-' + Date.now(); // 唯一ID
-      printContainer.innerHTML = generatePrintContent(data, details);
+      printContainer.innerHTML = generatePrintContent(data, details,qrCodeDataURL, row.orderNo);
       //隐藏容器并添加到页面
       printContainer.style.position = 'fixed';
       printContainer.style.left = '-9999px';
       printContainer.style.top = '-9999px';
       document.body.appendChild(printContainer);
     // 打印该容器
-    printJS({
-      printable: printContainer.id,
-      type: 'html',
-      style: `
-        body { font-family: "Microsoft YaHei", sans-serif; margin: 20px; font-size: 14px; }
-        .print-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 10px; }
-        .print-title { font-size: 20px; font-weight: bold; margin-bottom: 10px; }
-        .print-section { margin-bottom: 15px; page-break-inside: avoid; }
-        .print-section-title { font-weight: bold; margin-bottom: 5px; border-left: 3px solid #409EFF; padding-left: 8px; background-color: #f8f9fa; padding: 5px 8px; }
-        .print-table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 12px; }
-        .print-table th, .print-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        .print-table th { background-color: #f5f5f5; font-weight: bold; }
-        .print-info { display: flex; flex-wrap: wrap; margin-bottom: 10px; }
-        .print-info-item { width: 50%; margin-bottom: 8px; padding: 2px 5px; }
-        .print-label { font-weight: bold; display: inline-block; width: 120px; }
-        .print-footer { margin-top: 30px; text-align: right; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 10px; }
-        @page { margin: 1cm; }
-        @media print {
-          body { margin: 0; -webkit-print-color-adjust: exact; }
-          .print-section { page-break-inside: avoid; }
-          .print-table { page-break-inside: auto; }
-          .print-table tr { page-break-inside: avoid; page-break-after: auto; }
+      printJS({
+        printable: printContainer.id,
+        type: 'html',
+        style: `
+          body { 
+            font-family: "Microsoft YaHei", sans-serif; 
+            margin: 0; 
+            padding: 15px;
+            font-size: 12px; 
+            -webkit-print-color-adjust: exact;
+          }
+          .print-container {
+            width: 100%;
+            position: relative;
+          }
+          .qr-code {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 70px;
+            height: 70px;
+            z-index: 1000;
+          }
+          .print-header { 
+            text-align: center; 
+            margin-bottom: 15px; 
+            border-bottom: 2px solid #000; 
+            padding-bottom: 8px;
+            margin-right: 80px; /* 为二维码留出空间 */
+          }
+          .print-title { 
+            font-size: 18px; 
+            font-weight: bold; 
+            margin-bottom: 5px; 
+          }
+          .print-section { 
+            margin-bottom: 12px; 
+            page-break-inside: avoid;
+          }
+          .print-section-title { 
+            font-weight: bold; 
+            margin-bottom: 5px; 
+            border-left: 3px solid #409EFF; 
+            padding-left: 8px; 
+            background-color: #f8f9fa; 
+            padding: 4px 8px; 
+            font-size: 13px;
+          }
+          .print-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 8px 0; 
+            font-size: 11px; 
+          }
+          .print-table th, .print-table td { 
+            border: 1px solid #ddd; 
+            padding: 6px; 
+            text-align: left; 
+          }
+          .print-table th { 
+            background-color: #f5f5f5; 
+            font-weight: bold; 
+          }
+          .print-info { 
+            display: flex; 
+            flex-wrap: wrap; 
+            margin-bottom: 8px; 
+          }
+          .print-info-item { 
+            width: 50%; 
+            margin-bottom: 6px; 
+            padding: 2px 5px; 
+            font-size: 11px;
+          }
+          .print-label { 
+            font-weight: bold; 
+            display: inline-block; 
+            width: 100px; 
+          }
+          .print-footer { 
+            margin-top: 20px; 
+            text-align: right; 
+            font-size: 11px; 
+            color: #666; 
+            border-top: 1px solid #ddd; 
+            padding-top: 8px; 
+          }
+          .signature-section {
+            margin: 15px 0;
+            font-size: 11px;
+          }
+          .signature-line {
+            margin: 8px 0;
+          }
+          @page {
+            size: A4;
+            margin: 0.5cm;
+          }
+          @media print {
+            body { 
+              margin: 0; 
+              padding: 10px;
+              font-size: 11px;
+            }
+            .print-container {
+              width: 100%;
+              height: 100%;
+            }
+            .qr-code {
+              position: fixed;
+              top: 10px;
+              right: 10px;
+              width: 60px;
+              height: 60px;
+            }
+            .print-header {
+              margin-right: 70px;
+            }
+            .print-section { 
+              page-break-inside: avoid;
+            }
+            .print-table {
+              page-break-inside: auto;
+            }
+            .print-table tr {
+              page-break-inside: avoid;
+            }
+          }
+        `,
+        onPrintDialogClose: () => {
+          if (document.body.contains(printContainer)) {
+            document.body.removeChild(printContainer);
+          }
+          row.printLoading = false;
+        },
+        onError: (error) => {
+          if (document.body.contains(printContainer)) {
+            document.body.removeChild(printContainer);
+          }
+          row.printLoading = false;
+          console.error('打印错误:', error);
+          msg.errorAuto('打印失败');
         }
-      `,
-      onPrintDialogClose: () => {
-        // 打印完成后移除临时元素
-        if (document.body.contains(printContainer)) {
-          document.body.removeChild(printContainer);
-        }
-        row.printLoading = false;
-      },
-      onError: (error) => {
-        // 错误处理
-        if (document.body.contains(printContainer)) {
-          document.body.removeChild(printContainer);
-        }
-        row.printLoading = false;
-        console.error('打印错误:', error);
-        msg.errorAuto('打印失败');
-      }
-    });
+      });
     })
     .catch(error => {
       row.printLoading = false;
@@ -623,12 +743,17 @@ const handleUpload = (row: any) => {
     })          
 }
 // 生成打印内容的函数
-const generatePrintContent = (data: any, details: any[]) => {
+const generatePrintContent = (data: any, details: any[], qrCodeDataURL: string, orderNo: string) => {
   //查询对应信息
+  const qrCodeHTML = qrCodeDataURL 
+    ? `<div class="qr-code"><img src="${qrCodeDataURL}" alt="二维码" style="width:80px;height:80px;" /></div>`
+    : '<div class="qr-code" style="width:80px;height:80px;border:1px solid #ccc;text-align:center;line-height:80px;font-size:10px;">二维码生成失败</div>';
   return `
       <div class="print-container">
+      ${qrCodeHTML}
         <div class="print-section">
           <div class="print-section-title">发货计划单</div>
+          
           <div class="print-info">
          
             <div class="print-info-item"><span class="print-label">订单号：</span>${data.customerOrderNo || ''}</div>
@@ -774,8 +899,7 @@ const exportData = (selField: Array<any>) => {
 </script>
 
 <style lang="scss" scoped>
-
-/* 打印样式 */
+/* 打印样式优化 */
 @media print {
   .layout-container,
   .layout-container-form,
@@ -790,24 +914,37 @@ const exportData = (selField: Array<any>) => {
     top: 0;
     width: 100%;
   }
-}
-
-.csm-link {
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-/* 打印按钮样式优化 */
-.el-button {
-  &.is-printed {
-    background-color: #67C23A;
-    border-color: #67C23A;
-    color: #fff;
-    
-    &:hover {
-      background-color: #5daf34;
-      border-color: #5daf34;
-    }
+  
+  /* 确保二维码在打印时位置正确 */
+  .qr-code {
+    position: fixed !important;
+    top: 10px !important;
+    right: 10px !important;
+    width: 60px !important;
+    height: 60px !important;
+    z-index: 1000 !important;
   }
+}
+
+/* 非打印时的二维码样式 */
+.qr-code {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 70px;
+  height: 70px;
+  z-index: 1000;
+}
+
+/* 确保表格内容不会溢出 */
+.print-table {
+  table-layout: fixed;
+  word-wrap: break-word;
+}
+
+.print-info-item {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

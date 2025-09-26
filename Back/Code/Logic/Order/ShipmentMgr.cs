@@ -280,11 +280,13 @@ namespace Logic.Order
             SendingOrderModel.UpdateDate = curDate;
             Repository.ClientDb.Updateable(SendingOrderModel).AddQueue();
 
+            float quantity = (float)Convert.ToSingle(data.PlanQuantity.ToString());
             var SendingOrderDetailList = _mapper.Map<List<SendingOrderDetail>>(data.Details);
             SendingOrderDetailList.ForEach(f =>
             {
                 f.OrderNo = SendingOrderModel.OrderNo;
                 f.DetailStatus = SendingOrderModel.Status;
+                f.Quantity = quantity;
             });
             Repository.ClientDb.Deleteable<SendingOrderDetail>(d => d.OrderNo == data.OrderNo).AddQueue();
             Repository.ClientDb.Insertable(SendingOrderDetailList).AddQueue();

@@ -221,7 +221,7 @@ const orderPlanData = ref(new Array<any>());
 const formRef = ref(ElForm || null);
 const ruleForm = ref({
   customerOrderNo: props.layer.data?.customerOrderNo,  // 客户订单号
-  planQuantity: props.layer.data?.planQuantity,  // 计划发货数量
+  planQuantity: props.layer.data?.details[0].quantity,  // 计划发货数量
   ActualQuantity: props.layer.data?.ActualQuantity,  // 实际发货数量
   orderNo: props.layer.data?.orderNo,
   sendingDate: props.layer.data?.sendingDate == "1900-01-01T00:00:00" ? "" : props.layer.data?.sendingDate,
@@ -241,7 +241,7 @@ const ruleForm = ref({
   createDate: props.layer.data?.createDate,
   isUrgentShipment: props.layer.data?.isUrgentShipment || "N",
   isSufficientStock: props.layer.data?.isSufficientStock || "N",
-  status: props.layer.data?.status || "WaitingShipment",
+  status: props.layer.data?.status || "WaitingNotification",
 
   details: props.layer.data?.details,  // 保存物料详细信息
 
