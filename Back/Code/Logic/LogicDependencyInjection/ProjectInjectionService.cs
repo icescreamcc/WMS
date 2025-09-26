@@ -14,6 +14,7 @@ using Logic.LogicCommon;
 using Logic.PlanMaterial;
 using Logic.ProductOffLine;
 using Logic.Purchase;
+using Logic.Order;
 using Logic.Report;
 using Logic.ScheduleJob;
 using Logic.ScheduleJob.Job;
@@ -119,6 +120,9 @@ namespace Logic.LogicDependencyInjection
             services.AddTransient<ReceivingOrderMgr>();
             services.AddTransient<SendingOrderMgr>();
             services.AddTransient<PurchaseOrderMgr>();
+
+            services.AddTransient<OrderPlanMgr>();
+            services.AddTransient<ShipmentMgr>();
 
             services.AddTransient<MaterialLabelDesignMgr>();
             services.AddTransient<LabelPrintMgr>();

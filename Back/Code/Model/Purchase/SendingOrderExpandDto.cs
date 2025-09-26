@@ -7,10 +7,14 @@ namespace Models.Model.Purchase
     public class SendingOrderExpandDto
     {
         public string OrderNo { get; set; }
+        public string CustomerOrderNo { get; set; }
 
+        public string ContractNo { get; set; }
         public DateTime SendingDate { get; set; }
 
         public DateTime RequestDate { get; set; }
+
+        public string PackageUnitName { get; set; }
 
         public string Status { get; set; }
 

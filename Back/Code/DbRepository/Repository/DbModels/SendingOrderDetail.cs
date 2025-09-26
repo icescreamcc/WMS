@@ -27,6 +27,9 @@ namespace DbRepository.Repository.DbModels
         [SugarColumn(IsNullable = true, ColumnDescription = "计划发货数量")]
         public float Quantity { get; set; }
 
+        [SugarColumn(ColumnDescription = "实际发货数量")]
+        public float ActualQuantity { get; set; }
+
         [SugarColumn(ColumnDescription = "发货托数")]
         public float PalletsQuantity { get; set; }
 

@@ -11,6 +11,6 @@ namespace Models.Model.Enum
     /// </summary>
     public enum FileInfoType
     {
-        GoodsPhoto, MaterialRequirementPlanAttachment, PurchaseQuoteLinkFile, PurchaseGoodsPhoto, SendingOrderAttachment, ReceivingOrderAttachment,InStoragePhoto
+        GoodsPhoto, MaterialRequirementPlanAttachment, PurchaseQuoteLinkFile, PurchaseGoodsPhoto, SendingOrderAttachment, ReceivingOrderAttachment,InStoragePhoto,SendingPhoto
     }
 }

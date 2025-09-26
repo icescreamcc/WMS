@@ -3,7 +3,7 @@
         <div class="content-main">
             <!-- 扫码入口 -->
             <div class="scan-entry" @click="startScanner">
-                <img src="/dist/icon-img/saoma.png" class="scan-icon" />
+                <img src="/icon-img/saoma.png" class="scan-icon" />
             </div>
 
             <!-- 扫码摄像头 -->
@@ -38,7 +38,7 @@
                         <el-col :span="8">
                             <div class="input-title">发货单号</div>
                         </el-col>
-                        <el-col :span="16"><input type="text" class="input-cls" :value="deliveryItem.goodsId"
+                        <el-col :span="16"><input type="text" class="input-cls" :value="deliveryItem.orderNo"
                                 disabled></el-col>
                     </el-row>
 
@@ -54,16 +54,28 @@
                         <el-col :span="8">
                             <div class="input-title">计划出库数量</div>
                         </el-col>
-                        <el-col :span="16"><input type="number" class="input-cls" :value="deliveryItem.quantity"
-                                disabled></el-col>
+                  
+                        <el-col :span="16">
+                            <el-input v-model="deliveryItem.quantity" type="number" class="input-cls" readonly>
+                                <template #append>{{ deliveryItem.packageUnitName }}</template>
+                            </el-input>
+                        </el-col>
+                        <!-- <el-col :span="16">
+                            <input type="number" class="input-cls" :value="deliveryItem.quantity"
+                                disabled> <template #append>{{ deliveryItem.packageUnitName }}</template>
+                        </el-col> -->
+
                     </el-row>
 
                     <el-row class="input-item">
                         <el-col :span="8">
                             <div class="input-title">实际出库数量</div>
                         </el-col>
-                        <el-col :span="16"><input type="number" class="input-cls"
-                                v-model="deliveryItem.actualQuantity"></el-col>
+                        <el-col :span="16">
+                            <el-input v-model="deliveryItem.actualQuantity" type="number" class="input-cls">
+                                <template #append>{{ deliveryItem.packageUnitName }}</template>
+                            </el-input>
+                        </el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="24">
@@ -134,13 +146,14 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { Html5Qrcode } from 'html5-qrcode'
-import { getOrderDetail } from "@/api/purchase/sendingorder";
+import { getOrderDetail, ConfirmSendingAndOutStorage } from "@/api/purchase/sendingorder";
 import permission from '@/utils/system/permission';
 import Upload from '@/components/imgUpload/muiltUpload.vue'
 import { ElMessage } from 'element-plus'
 import commonHelper from "@/utils/system/common-helper";
 import msg from "@/utils/system/message";
 import MessageDrawer from '../message-drawer.vue'
+import { addOutStorage } from "@/api/inv/outstorage";
 
 const storageKey = "outstoragemobile";
 const scanning = ref(false)
@@ -152,7 +165,7 @@ const deliveryItem = ref<any | null>(null)
 const submitting = ref(false)
 
 const uploadParams = ref({
-    uploadApi: '/OutStorage/UploadInstorgePic',
+    uploadApi: '/SendingOrder/UploadInstorgePic',
     limit: 3,
     imgUrlList: [],
     validFileType: 'image',
@@ -197,9 +210,10 @@ onMounted(() => {
     html5QrCode.value = new Html5Qrcode(readerId)
 
     // PC端调试用默认发货单号
-    const decodedText = 'S10000001'
+    const decodedText = 'S10000010'
     getOrderDetail(permission.getOperator().userId, decodedText).then(res => {
         deliveryItem.value = res.data[0]
+        debugger
         if (deliveryItem.value) deliveryItem.value.actualQuantity = deliveryItem.value.quantity
     })
 })
@@ -275,7 +289,7 @@ const submitDelivery = async () => {
         msg.deftAuto('请输入正确的入库数量')
         return
     }
-    if (deliveryItem.value.actualQuantity>deliveryItem.value.quantity) {//
+    if (deliveryItem.value.actualQuantity > deliveryItem.value.quantity) {//
         msg.deftAuto('实际出库数量不能大于计划出库数量')
         return
     }
@@ -286,12 +300,31 @@ const submitDelivery = async () => {
     submitting.value = true
     try {
         const formData = new FormData()
-        formData.append('deliveryNo', deliveryItem.value.deliveryNo)
+        formData.append('deliveryNo', deliveryItem.value.orderNo)
         deliveryItem.value.goodsPicture.forEach((file: any, idx: number) => {
             formData.append('file' + idx, file)
         })
 
-        await fetch('/api/delivery/complete', { method: 'POST', body: formData })
+        const sendingdata = {
+            OrderNo: deliveryItem.value.orderNo,        // 单号
+            GoodsName: deliveryItem.value.goodsName,
+            DetailStatus: deliveryItem.value.detailStatus,//发货状态
+            Quantity: deliveryItem.value.quantity,         // 计划数量（可选）
+            ActualQuantity: deliveryItem.value.actualQuantity, // 实际数量
+            CreateUserId: permission.getOperator().userId,
+            CreateUserName: permission.getOperator().userName,
+
+            GoodsPicture: deliveryItem.value.goodsPicture.map((p: any) => ({
+                FileName: p.fileName || p.name,
+                Url: p.url
+            }))
+        };
+        debugger
+        await ConfirmSendingAndOutStorage(sendingdata);
+
+        // addOutStorage(sendingdata).then(res => {
+        //     const orderNo = res.data;
+        // })
         ElMessage.success('发货提交成功！')
         resetForm()
     } catch (err) {

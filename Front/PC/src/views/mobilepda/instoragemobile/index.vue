@@ -169,7 +169,7 @@
                     </div>
                 </div>
             </div>
-            <div class="content-btn">
+            <!-- <div class="content-btn">
                 <div v-if="permission.isPermisstion('INSTORAGEORDMOBILERADD')">
                     <el-button type="success" round @click="onmessageinfo" style="width:82%;"
                         :loading="submitLoading">确认</el-button>
@@ -177,7 +177,7 @@
                 <div style="margin-top: 4px;">
                     <el-button round @click="onClearForm" style="width:82%;" :loading="submitLoading">重置信息</el-button>
                 </div>
-            </div>
+            </div> -->
 
 
             <!-- <div class="content-body">
@@ -239,7 +239,7 @@
     </div> -->
 
         </div>
-        <!-- <div class="content-btn">
+        <div class="content-btn">
             <div v-if="permission.isPermisstion('INSTORAGEORDMOBILERADD')">
                 <el-button type="success" round @click="onmessageinfo" style="width:82%;"
                     :loading="submitLoading">确认</el-button>
@@ -247,7 +247,7 @@
             <div style="margin-top: 4px;">
                 <el-button round @click="onClearForm" style="width:82%;" :loading="submitLoading">重置信息</el-button>
             </div>
-        </div> -->
+        </div>
         <MessageDrawer :options="msgDrawerOptions" @cancel="onLockBinCancel" @confirm="onSubmit" />
 
     </div>
@@ -667,7 +667,6 @@ const onSubmit = async () => {
         msg.deftAuto('货位不能为空')
         return
     }
-    debugger
     if (!dataForm.value.quantity || dataForm.value.quantity <= 0) {
         msg.deftAuto('请输入正确的入库数量')
         return
@@ -796,7 +795,7 @@ const onSubmit = async () => {
 
         .content-btn {
             height: 10%;
-
+              
         }
 
         .el-button--success {

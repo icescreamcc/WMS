@@ -32,6 +32,7 @@ namespace Logic.Inventory
             _messageService = messageService;
             _fileStorage = fileStorage;
             _logHelper = logHelper;
+            
         }
 
         /// <summary>

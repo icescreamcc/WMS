@@ -1885,6 +1885,401 @@
             <param name="userName"></param>
             <returns></returns>
         </member>
+        <member name="M:WebApi.Controllers.Order.OrderPlanController.GetOrders(System.String,System.Int32,System.Int32,System.String,System.String,System.String)">
+            <summary>
+            收货单分页查询
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Order.OrderPlanController.GetOptions">
+            <summary>
+            获取di单相关选项及参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Order.OrderPlanController.AddOrderPlan(Models.Model.Order.OrderPlanDto)">
+            <summary>
+            添加订单计划
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Order.OrderPlanController.UpdateOrderPlan(Models.Model.Order.OrderPlanDto)">
+            <summary>
+            修改订单计划
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Order.OrderPlanController.DelOrderPlan(System.String[])">
+            <summary>
+            删除订单计划
+            </summary>
+            <param name="detailsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.GetSending(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            发货单分页查询
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.GetYesOrNoGroup">
+            <summary>
+            是否紧急发货/是否有足够库存
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.GetCreateUserNameGroup">
+            <summary>
+            计划员
+            </summary>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:WebApi.Controllers.Purchase.ShipmentController.GetSendingAddressGroup" -->
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.GetDetailStatusGroup">
+            <summary>
+            单据状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.GetOptions">
+            <summary>
+            获取发货单相关选项及参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.AddSending(Models.Model.Purchase.SendingOrderDto)">
+            <summary>
+            添加发货单
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.UpdateSending(Models.Model.Purchase.SendingOrderDto)">
+            <summary>
+            修改发货单
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.DelSending(System.String[])">
+            <summary>
+            删除发货单
+            </summary>
+            <param name="orderNos"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.GetBaseFiles(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            获取文件存储信息
+            </summary>
+            <param name="userId"></param>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="searchKey"></param>
+            <param name="orderNo"></param>
+            <param name="fileInfoType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.DelSendingFiles(System.Int32[])">
+            <summary>
+            删除发货计划附件
+            </summary>
+            <param name="fileIds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.AdviceSending(System.String,Models.Model.MailModel)">
+            <summary>
+            发送邮件通知
+            </summary>
+            <param name="data"></param>
+            <param name="orderNo"></param>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.GetOrders(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String,System.Int32,System.String,System.String,System.Int32)">
+            <summary>
+            采购订单分页查询
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.GetArgs">
+            <summary>
+            获取采购订单相关参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.GetOptions">
+            <summary>
+            获取采购订单相关选项及参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.GetApprovalHis(System.String)">
+            <summary>
+            查询审批明细
+            </summary>
+            <param name="orderNo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.AddPurchaseOrder(Models.Model.Purchase.PurchaseOrderDto)">
+            <summary>
+            添加采购订单
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.UpdatePurchaseOrder(Models.Model.Purchase.PurchaseOrderDto)">
+            <summary>
+            修改仓库
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.DelPurchaseOrder(System.Int32[])">
+            <summary>
+            删除采购订单
+            </summary>
+            <param name="detailsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.AdviceReceiving(System.String,Models.Model.MailModel)">
+            <summary>
+            发送邮件通知收货
+            </summary>
+            <param name="data"></param>
+            <param name="orderNo"></param>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.SubmitReceivedWH(System.Collections.Generic.List{Models.Model.Purchase.PurchaseReceiveDto})">
+            <summary>
+            仓库确认收货
+            </summary>
+            <param name="detailsId"></param>        
+            <param name="userId"></param>
+            <param name="userName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.SubmitReceivedWK(System.Collections.Generic.List{Models.Model.Purchase.PurchaseReceiveDto})">
+            <summary>
+            WK确认收货
+            </summary>
+            <param name="detailsId"></param>        
+            <param name="userId"></param>
+            <param name="userName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.ApprovalPurchaseOrder(Models.Model.Purchase.PurchaseOrderDto)">
+            <summary>
+            审批采购订单
+            </summary>
+            <param name="orderNo"></param>
+            <param name="isApprove"></param>
+            <param name="opinion"></param>
+            <param name="userId"></param>
+            <param name="userName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetOrders(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            收货单分页查询
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetReceivingLevelGroup">
+            <summary>
+            优先级
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetCreateUserNameGroup">
+            <summary>
+            计划员
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetDetailStatusGroup">
+            <summary>
+            单据状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetArgs">
+            <summary>
+            获取收货单相关参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetOptions">
+            <summary>
+            获取收货单相关选项及参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetApprovalHis(System.String)">
+            <summary>
+            查询审批明细
+            </summary>
+            <param name="orderNo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.UpdateReceivingUrgency(System.Int32,System.Single)">
+            <summary>
+            修改紧急数量
+            </summary>
+            <param name="detailId"></param>
+            <param name="qty"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.AddReceivingOrder(Models.Model.Purchase.ReceivingOrderDto)">
+            <summary>
+            添加收货单
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.UpdateReceivingOrder(Models.Model.Purchase.ReceivingOrderDto)">
+            <summary>
+            修改仓库
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.DelReceivingOrder(System.Int32[])">
+            <summary>
+            删除收货单
+            </summary>
+            <param name="detailsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.AdviceReceiving(System.String,Models.Model.MailModel)">
+            <summary>
+            发送邮件通知收货
+            </summary>
+            <param name="data"></param>
+            <param name="orderNo"></param>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.SubmitReceived(System.Collections.Generic.List{Models.Model.Purchase.ReceivingActualDto})">
+            <summary>
+            确认收货
+            </summary>
+            <param name="detailsId"></param>        
+            <param name="userId"></param>
+            <param name="userName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.ApprovalReceivingOrder(System.String[],System.Boolean,System.String,System.String,System.String)">
+            <summary>
+            审批入库单
+            </summary>
+            <param name="orderNo"></param>
+            <param name="isApprove"></param>
+            <param name="opinion"></param>
+            <param name="userId"></param>
+            <param name="userName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetBaseFiles(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            获取文件存储信息
+            </summary>
+            <param name="userId"></param>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="searchKey"></param>
+            <param name="orderNo"></param>
+            <param name="fileInfoType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.DelSendingFiles(System.Int32[])">
+            <summary>
+            删除收货计划图片
+            </summary>
+            <param name="fileIds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.GetSending(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            发货单分页查询
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.GetYesOrNoGroup">
+            <summary>
+            是否紧急发货/是否有足够库存
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.GetCreateUserNameGroup">
+            <summary>
+            计划员
+            </summary>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:WebApi.Controllers.Purchase.SendingOrderController.GetSendingAddressGroup" -->
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.GetDetailStatusGroup">
+            <summary>
+            单据状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.GetOptions">
+            <summary>
+            获取发货单相关选项及参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.AddSending(Models.Model.Purchase.SendingOrderDto)">
+            <summary>
+            添加发货单
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.UpdateSending(Models.Model.Purchase.SendingOrderDto)">
+            <summary>
+            修改发货单
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.DelSending(System.String[])">
+            <summary>
+            删除发货单
+            </summary>
+            <param name="orderNos"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.GetBaseFiles(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            获取文件存储信息
+            </summary>
+            <param name="userId"></param>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="searchKey"></param>
+            <param name="orderNo"></param>
+            <param name="fileInfoType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.DelSendingFiles(System.Int32[])">
+            <summary>
+            删除发货计划附件
+            </summary>
+            <param name="fileIds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.AdviceSending(System.String,Models.Model.MailModel)">
+            <summary>
+            发送邮件通知
+            </summary>
+            <param name="data"></param>
+            <param name="orderNo"></param>
+        </member>
         <member name="T:WebApi.Controllers.ProductOffLine.BufferWarehouseDashboardController">
             <summary>
             缓存仓看板API
@@ -2179,288 +2574,6 @@
             <param name="userName"></param>
             <param name="matchingCode"></param>
             <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.GetOrders(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String,System.Int32,System.String,System.String,System.Int32)">
-            <summary>
-            采购订单分页查询
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.GetArgs">
-            <summary>
-            获取采购订单相关参数数据
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.GetOptions">
-            <summary>
-            获取采购订单相关选项及参数数据
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.GetApprovalHis(System.String)">
-            <summary>
-            查询审批明细
-            </summary>
-            <param name="orderNo"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.AddPurchaseOrder(Models.Model.Purchase.PurchaseOrderDto)">
-            <summary>
-            添加采购订单
-            </summary>
-            <param name="data"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.UpdatePurchaseOrder(Models.Model.Purchase.PurchaseOrderDto)">
-            <summary>
-            修改仓库
-            </summary>
-            <param name="data"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.DelPurchaseOrder(System.Int32[])">
-            <summary>
-            删除采购订单
-            </summary>
-            <param name="detailsId"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.AdviceReceiving(System.String,Models.Model.MailModel)">
-            <summary>
-            发送邮件通知收货
-            </summary>
-            <param name="data"></param>
-            <param name="orderNo"></param>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.SubmitReceivedWH(System.Collections.Generic.List{Models.Model.Purchase.PurchaseReceiveDto})">
-            <summary>
-            仓库确认收货
-            </summary>
-            <param name="detailsId"></param>        
-            <param name="userId"></param>
-            <param name="userName"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.SubmitReceivedWK(System.Collections.Generic.List{Models.Model.Purchase.PurchaseReceiveDto})">
-            <summary>
-            WK确认收货
-            </summary>
-            <param name="detailsId"></param>        
-            <param name="userId"></param>
-            <param name="userName"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.ApprovalPurchaseOrder(Models.Model.Purchase.PurchaseOrderDto)">
-            <summary>
-            审批采购订单
-            </summary>
-            <param name="orderNo"></param>
-            <param name="isApprove"></param>
-            <param name="opinion"></param>
-            <param name="userId"></param>
-            <param name="userName"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetOrders(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
-            <summary>
-            收货单分页查询
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetReceivingLevelGroup">
-            <summary>
-            优先级
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetCreateUserNameGroup">
-            <summary>
-            计划员
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetDetailStatusGroup">
-            <summary>
-            单据状态
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetArgs">
-            <summary>
-            获取收货单相关参数数据
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetOptions">
-            <summary>
-            获取收货单相关选项及参数数据
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetApprovalHis(System.String)">
-            <summary>
-            查询审批明细
-            </summary>
-            <param name="orderNo"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.UpdateReceivingUrgency(System.Int32,System.Single)">
-            <summary>
-            修改紧急数量
-            </summary>
-            <param name="detailId"></param>
-            <param name="qty"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.AddReceivingOrder(Models.Model.Purchase.ReceivingOrderDto)">
-            <summary>
-            添加收货单
-            </summary>
-            <param name="data"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.UpdateReceivingOrder(Models.Model.Purchase.ReceivingOrderDto)">
-            <summary>
-            修改仓库
-            </summary>
-            <param name="data"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.DelReceivingOrder(System.Int32[])">
-            <summary>
-            删除收货单
-            </summary>
-            <param name="detailsId"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.AdviceReceiving(System.String,Models.Model.MailModel)">
-            <summary>
-            发送邮件通知收货
-            </summary>
-            <param name="data"></param>
-            <param name="orderNo"></param>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.SubmitReceived(System.Collections.Generic.List{Models.Model.Purchase.ReceivingActualDto})">
-            <summary>
-            确认收货
-            </summary>
-            <param name="detailsId"></param>        
-            <param name="userId"></param>
-            <param name="userName"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.ApprovalReceivingOrder(System.String[],System.Boolean,System.String,System.String,System.String)">
-            <summary>
-            审批入库单
-            </summary>
-            <param name="orderNo"></param>
-            <param name="isApprove"></param>
-            <param name="opinion"></param>
-            <param name="userId"></param>
-            <param name="userName"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetBaseFiles(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String)">
-            <summary>
-            获取文件存储信息
-            </summary>
-            <param name="userId"></param>
-            <param name="pgSize"></param>
-            <param name="pgIndex"></param>
-            <param name="orderFiled"></param>
-            <param name="orderType"></param>
-            <param name="searchKey"></param>
-            <param name="orderNo"></param>
-            <param name="fileInfoType"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.DelSendingFiles(System.Int32[])">
-            <summary>
-            删除收货计划图片
-            </summary>
-            <param name="fileIds"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.GetSending(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
-            <summary>
-            发货单分页查询
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.GetYesOrNoGroup">
-            <summary>
-            是否紧急发货/是否有足够库存
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.GetCreateUserNameGroup">
-            <summary>
-            计划员
-            </summary>
-            <returns></returns>
-        </member>
-        <!-- Badly formed XML comment ignored for member "M:WebApi.Controllers.Purchase.SendingOrderController.GetSendingAddressGroup" -->
-        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.GetDetailStatusGroup">
-            <summary>
-            单据状态
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.GetOptions">
-            <summary>
-            获取发货单相关选项及参数数据
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.AddSending(Models.Model.Purchase.SendingOrderDto)">
-            <summary>
-            添加发货单
-            </summary>
-            <param name="data"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.UpdateSending(Models.Model.Purchase.SendingOrderDto)">
-            <summary>
-            修改发货单
-            </summary>
-            <param name="data"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.DelSending(System.String[])">
-            <summary>
-            删除发货单
-            </summary>
-            <param name="orderNos"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.GetBaseFiles(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String)">
-            <summary>
-            获取文件存储信息
-            </summary>
-            <param name="userId"></param>
-            <param name="pgSize"></param>
-            <param name="pgIndex"></param>
-            <param name="orderFiled"></param>
-            <param name="orderType"></param>
-            <param name="searchKey"></param>
-            <param name="orderNo"></param>
-            <param name="fileInfoType"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.DelSendingFiles(System.Int32[])">
-            <summary>
-            删除发货计划附件
-            </summary>
-            <param name="fileIds"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.AdviceSending(System.String,Models.Model.MailModel)">
-            <summary>
-            发送邮件通知
-            </summary>
-            <param name="data"></param>
-            <param name="orderNo"></param>
         </member>
         <member name="T:WebApi.Controllers.ScheduleJobController">
             <summary>
