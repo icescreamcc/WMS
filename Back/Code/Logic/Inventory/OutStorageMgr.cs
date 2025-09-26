@@ -9,6 +9,7 @@ using Microsoft.VisualBasic;
 using Models.Model;
 using Models.Model.Enum;
 using Models.Model.Inv;
+using Models.Model.Purchase;
 using Models.Model.Sys;
 using SqlSugar;
 using StackExchange.Redis;
@@ -334,6 +335,7 @@ namespace Logic.Inventory
             {
                 throw new BusinessException("保存失败,请添加出库单明细"); 
             }
+
             var oldOutStorage = await Repository.ClientDb.Queryable<InvOutStorage>().SingleAsync(u => u.OrderNo == data.OrderNo);
             if (string.IsNullOrEmpty(oldOutStorage?.OrderNo))
             {
@@ -818,6 +820,6 @@ namespace Logic.Inventory
             Repository.ClientDb.Insertable(approvalHisList).AddQueue();
             await Repository.ClientDb.SaveQueuesAsync();
         }
-         
+
     }
 }

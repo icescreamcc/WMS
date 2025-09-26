@@ -2,6 +2,7 @@
 using Logic.BaseInfo;
 using Logic.LogicBase;
 using Logic.LogicCommon;
+using Logic.LogicCommon.FileStorage;
 using Logic.Purchase;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using Models.Model.Baseinfo;
 using Models.Model.Enum;
 using Models.Model.Purchase;
 using Models.Model.Sys;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -28,13 +30,15 @@ namespace WebApi.Controllers.Purchase
         private readonly SelectOptionsService _selectOptionsServer;
 
         private const string _moduleName = "发货计划";
+        private readonly IFileStorage _fileStorage;
 
-        public SendingOrderController(SendingOrderMgr sendingOrderMgr, GoodsMgr goodsMgr, SelectOptionsService selectOptionsServer, SupplierMgr supplierMgr)
+        public SendingOrderController(SendingOrderMgr sendingOrderMgr, GoodsMgr goodsMgr, SelectOptionsService selectOptionsServer, SupplierMgr supplierMgr, IFileStorage fileStorage)
         {
             _sendingOrderMgr = sendingOrderMgr; 
             _goodsMgr = goodsMgr;
             _selectOptionsServer = selectOptionsServer;
             _supplierMgr = supplierMgr;
+            _fileStorage = fileStorage;
         }
 
         /// <summary>
@@ -286,6 +290,39 @@ namespace WebApi.Controllers.Purchase
         public void AdviceSending(string orderNo, MailModel data)
         {
             _sendingOrderMgr.AdviceSending(data, orderNo);
+        }
+
+        [HttpPost]
+        [Skip]
+        public async Task<string> UploadInstorgePic()
+        {
+            var files = HttpContext.Request.Form.Files;
+            if (files.Count > 0)
+            {
+                var file = files[0];
+                if (file.Length / 1024 < 1024 * 10)
+                {
+                    if (file.ContentType.Contains("image"))
+                    {
+                        var fileName = $"SendingOrder{DateTime.Now.Ticks}.{file.FileName.Split('.')[1]}";
+                        using (var stream = file.OpenReadStream())
+                        {
+                            string fileUrl = await _fileStorage.SaveFile(fileName, stream, FileType.Image);
+                            return fileUrl;
+                        }
+                    }
+                    throw new BusinessException("上传文件不属于图片类型");
+                }
+                throw new BusinessException("图片不能大于5M");
+            }
+            throw new BusinessException("未获取到文件信息");
+        }
+
+        [HttpPost]
+        [BusinessLog("扫描二维码,发货单", LogType.Update, _moduleName)]
+        public async void ConfirmSendingAndOutStorage(SendingOrderDto data)
+        {
+            await _sendingOrderMgr.ConfirmSendingAndOutStorage(data);
         }
 
     }

@@ -71,4 +71,8 @@ export function getBaseFiles(userId:string, pgSize:Number,  pgIndex:Number,  ord
 export function adviceSending(orderNo:string,data:any){
 return request.put(`/SendingOrder/AdviceSending?orderNo=${orderNo}`,data);
 }
-  
+
+//扫描二维码 如计划发货和实际不同 修改发货数量  
+export function ConfirmSendingAndOutStorage(data:any){
+return request.post(`/SendingOrder/ConfirmSendingAndOutStorage`,data);
+}

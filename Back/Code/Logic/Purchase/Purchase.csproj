@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Inventory\Inventory.csproj" />
     <ProjectReference Include="..\LogicBase\LogicBase.csproj" />
     <ProjectReference Include="..\LogicCommon\LogicCommon.csproj" />
   </ItemGroup>

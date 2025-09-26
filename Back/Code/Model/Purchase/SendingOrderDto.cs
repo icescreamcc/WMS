@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Models.Model.Baseinfo;
+using System;
 using System.Collections.Generic;
 
 namespace Models.Model.Purchase
@@ -6,6 +7,23 @@ namespace Models.Model.Purchase
     public class SendingOrderDto
     {
         public string OrderNo { get; set; }
+        /// <summary>
+        /// 计划发货数量
+        /// </summary>
+        public float Quantity { get; set; }
+        /// <summary>
+        /// 实际发货数量
+        /// </summary>
+        public float ActualQuantity { get; set; }
+
+        /// <summary>
+        /// 发货状态
+        /// </summary>
+        public string DetailStatus { get; set; }
+        /// <summary>
+        /// 图片
+        /// </summary>
+        public List<FileInfoDto> GoodsPicture { get; set; }
 
         public DateTime SendingDate { get; set; }
 

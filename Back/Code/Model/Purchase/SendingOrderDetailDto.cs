@@ -17,6 +17,7 @@ namespace Models.Model.Purchase
         public string CustomerIdentificationCode { get; set; }
 
         public float Quantity { get; set; }
+        public float ActualQuantity { get; set; }
 
         public float PalletsQuantity { get; set; }
 

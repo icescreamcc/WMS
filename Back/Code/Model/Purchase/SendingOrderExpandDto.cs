@@ -12,6 +12,8 @@ namespace Models.Model.Purchase
 
         public DateTime RequestDate { get; set; }
 
+        public string PackageUnitName { get; set; }
+
         public string Status { get; set; }
 
         public string IsUrgentShipment { get; set; }
