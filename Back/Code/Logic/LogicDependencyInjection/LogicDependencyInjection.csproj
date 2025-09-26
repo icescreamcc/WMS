@@ -16,6 +16,7 @@
     <ProjectReference Include="..\BaseInfo\BaseInfo.csproj" />
     <ProjectReference Include="..\Inventory\Inventory.csproj" />
     <ProjectReference Include="..\Label\Label.csproj" />
+    <ProjectReference Include="..\Order\Order.csproj" />
     <ProjectReference Include="..\PlanMaterial\PlanMaterial.csproj" /> 
     <ProjectReference Include="..\ProdctOffLine\ProductOffLine.csproj" /> 
     <ProjectReference Include="..\Purchase\Purchase.csproj" /> 

@@ -16,6 +16,8 @@ namespace Models.Model.Enum
         Image, 
         TXT, 
         PDF, 
-        DOC
+        DOC,
+        WORD,
+        MP4
     }
 }
