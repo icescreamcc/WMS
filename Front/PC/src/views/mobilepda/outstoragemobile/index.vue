@@ -3,7 +3,7 @@
         <div class="content-main">
             <!-- 扫码入口 -->
             <div class="scan-entry" @click="startScanner">
-                <img src="/dist/icon-img/saoma.png" class="scan-icon" />
+                <img src="/icon-img/saoma.png" class="scan-icon" />
             </div>
 
             <!-- 扫码摄像头 -->
@@ -210,7 +210,7 @@ onMounted(() => {
     html5QrCode.value = new Html5Qrcode(readerId)
 
     // PC端调试用默认发货单号
-    const decodedText = 'S10000009'
+    const decodedText = 'S10000010'
     getOrderDetail(permission.getOperator().userId, decodedText).then(res => {
         deliveryItem.value = res.data[0]
         debugger
