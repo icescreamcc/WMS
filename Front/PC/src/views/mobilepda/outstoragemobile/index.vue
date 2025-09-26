@@ -210,7 +210,7 @@ onMounted(() => {
     html5QrCode.value = new Html5Qrcode(readerId)
 
     // PC端调试用默认发货单号
-    const decodedText = 'S10000001'
+    const decodedText = 'S10000009'
     getOrderDetail(permission.getOperator().userId, decodedText).then(res => {
         deliveryItem.value = res.data[0]
         debugger

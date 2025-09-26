@@ -235,6 +235,10 @@ namespace Logic.Purchase
                         {
                             throw new BusinessException("保存失败,当前发货计划不存在或已删除");
                         }
+                        if(oldSending.Status== SendingOrderStatus.Shipment.ToString())
+                        {
+                            throw new BusinessException("单号已发货");
+                        }
 
                         var curDate = DateTime.Now;
                         oldSending.UpdateDate = curDate;
@@ -245,22 +249,47 @@ namespace Logic.Purchase
                         Repository.ClientDb.Updateable(oldSending).AddQueue();
 
                         // 更新实际出库数量
-                        if (data.Details != null && data.Details.Count > 0)
-                        {
-                            foreach (var item in data.Details)
-                            {
-                                await Repository.ClientDb.Updateable<SendingOrderDetail>()
-                                    .SetColumns(s => s.Quantity == item.Quantity && s.ActualQuantity==item.ActualQuantity)
-                                    .Where(s => s.OrderNo == data.OrderNo
-                                             && s.GoodsId == item.GoodsId)
-                                    .ExecuteCommandAsync();
 
-                                //await Repository.ClientDb.Updateable<OrderPlan>()
-                                //    .SetColumns(op => op.ShippedNum == op.ShippedNum + (item.ActualQuantity ?? 0))
-                                //    .Where(op => op.OrderNo == data.OrderNo && op.GoodsId == item.GoodsId)
-                                //    .ExecuteCommandAsync();
-                            }
-                        }
+                        await Repository.ClientDb.Updateable<SendingOrderDetail>()
+                                .SetColumns(s => new SendingOrderDetail
+                                {
+                                    Quantity = data.Quantity,
+                                    ActualQuantity = data.ActualQuantity
+                                })
+                                .Where(s => s.OrderNo == data.OrderNo)
+                                .ExecuteCommandAsync();
+
+
+                        //根据发货单号 累计已发重量
+                        var a = oldSending.CustomerOrderNo;
+                        await Repository.ClientDb.Updateable<OrderPlan>()
+                                .SetColumns(op => new OrderPlan
+                                {
+                                    ShippedNum = op.ShippedNum + data.ActualQuantity
+                                })
+                                .Where(op => op.OrderNo == oldSending.CustomerOrderNo)
+                                .ExecuteCommandAsync();
+
+
+
+                        //if (data.Details != null && data.Details.Count > 0)
+                        //{
+                        //    foreach (var item in data.Details)
+                        //    {
+                        //        await Repository.ClientDb.Updateable<SendingOrderDetail>()
+                        //            .SetColumns(s => s.Quantity == item.Quantity && s.ActualQuantity==item.ActualQuantity)
+                        //            .Where(s => s.OrderNo == data.OrderNo
+                        //                     && s.GoodsId == item.GoodsId)
+                        //            .ExecuteCommandAsync();
+
+                        //        //根据发货单号 累计已发重量
+                        //        await Repository.ClientDb.Updateable<OrderPlan>()
+                        //        .SetColumns(op => op.ShippedNum == op.ShippedNum + (item.ActualQuantity ?? 0f))
+                        //        .Where(op => op.OrderNo == data.OrderNo)
+                        //        .ExecuteCommandAsync();
+
+                        //    }
+                        //}
 
                         //保存图片
                         if (data.GoodsPicture != null && data.GoodsPicture.Count > 0)
@@ -315,7 +344,7 @@ namespace Logic.Purchase
                             {
                                 OrderNo = GetPrimaryId("O", lastData),
                                 SourceOrderNo = oldSending.OrderNo,//发货单 
-                                OutStorageType = "Normal",
+                                OutStorageType = OutStorageType.ReceiveOut + "",
                                 GoodsClassify = oldSending.GoodsClassify,
                                 CreateDate = DateTime.Now,
                                 CreateUserId = oldSending.CreateUserId,
@@ -392,6 +421,7 @@ namespace Logic.Purchase
                             {
                                 var g = goodsInfo.FirstOrDefault(x => x.GoodsId == d.GoodsId);
                                 var bin = bins.FirstOrDefault(); // 这里简单取第一个，如果有多个可以加逻辑
+                                float actualQty = d.ActualQuantity > 0 ? d.ActualQuantity : d.Quantity;
                                 return new InvOutStorageDetail
                                 {
                                     OrderNo = outStorageModel.OrderNo,
@@ -403,7 +433,7 @@ namespace Logic.Purchase
                                     WorkbinId = 0,
                                     WorkbinCellId = 0,
                                     Quantity = data.Quantity,
-                                    ActualQuantity = data.ActualQuantity,
+                                    ActualQuantity = actualQty,
                                     UnitId = g.PackageUnitId,//标准单位
                                     Remark = oldSending.Remark,
                                     UnitPrice = goodsInfo.Single(s => s.GoodsId == d.GoodsId).CostPrice,
