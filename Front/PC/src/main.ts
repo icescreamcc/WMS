@@ -12,10 +12,13 @@ import router from './router'
 import i18n from './locale'  
 import '@/assets/iconfont/iconfont.css'
 import '@/assets/iconfont/iconfont.js' 
+import Vant from 'vant'
+import 'vant/lib/index.css'
 const app = createApp(App)
 app.use(ElementPlus, { size: store.state.app.elementSize })
 app.use(store)
 app.use(router)
 app.use(i18n)  
+app.use(Vant)
 // app.config.performance = true
 app.mount('#app')
