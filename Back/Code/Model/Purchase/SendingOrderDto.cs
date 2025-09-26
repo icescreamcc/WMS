@@ -7,6 +7,8 @@ namespace Models.Model.Purchase
     {
         public string OrderNo { get; set; }
 
+        public string  PlanQuantity { get; set; }
+
         public DateTime SendingDate { get; set; }
 
         public DateTime RequestDate { get; set; }

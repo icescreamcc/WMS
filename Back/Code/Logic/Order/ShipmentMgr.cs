@@ -6,28 +6,32 @@ using External.Common.Extension;
 using Logic.LogicBase;
 using Logic.LogicCommon;
 using Logic.LogicCommon.FileStorage;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Minio.DataModel;
 using Models.Model;
 using Models.Model.Baseinfo;
 using Models.Model.Enum;
 using Models.Model.Inv;
+using Models.Model.Order;
 using Models.Model.Purchase;
+using NPOI.SS.Formula.Functions;
 using SqlSugar;
 using StackExchange.Redis;
 using System.Data;
+using System.Globalization;
 using System.Text;
 
-namespace Logic.Purchase
+namespace Logic.Order
 {
-    public class SendingOrderMgr : ApprovalHandler
+    public class ShipmentMgr : ApprovalHandler
     {
         private readonly IMapper _mapper;
         private readonly IFileStorage _fileStorage;
         private readonly IConfiguration _configuration;
         private readonly EmailService _emailService;
 
-        public SendingOrderMgr(Repository repository, IMapper mapper, IFileStorage fileStorage, IConfiguration configuration, EmailService emailService) : base(repository)
+        public ShipmentMgr(Repository repository, IMapper mapper, IFileStorage fileStorage, IConfiguration configuration, EmailService emailService) : base(repository)
         {
             _mapper = mapper;
             _fileStorage = fileStorage;
@@ -41,19 +45,27 @@ namespace Logic.Purchase
             orderFiled = string.IsNullOrEmpty(orderFiled) ? "OrderNo" : orderFiled;
             searchKey = string.IsNullOrEmpty(searchKey) ? "" : searchKey.Trim();
             isUrgentShipment = string.IsNullOrEmpty(isUrgentShipment) ? "" : isUrgentShipment.Trim();
+           // createUserName = string.IsNullOrEmpty(createUserName) ? "" : createUserName.Trim();
             detailStatus = string.IsNullOrEmpty(detailStatus) ? "" : detailStatus.Trim();
             sendingAddress = string.IsNullOrEmpty(sendingAddress) ? "" : sendingAddress.Trim();
             var data = Repository.ClientDb.Queryable<SendingOrder>()
+                  //.InnerJoin<SendingOrderDetail>((p, d) => p.OrderNo == d.OrderNo)
                   .LeftJoin<BaseSuppliers>((p, b) => p.SupplierId == b.SupplierId)
+                   .LeftJoin<OrderPlan>((p, b,o) => p.CustomerOrderNo == o.OrderNo)
+                   .LeftJoin<BaseSuppliers>((p, b, o,e) => p.ReceivingResponsableUserInfo == e.SupplierId)
+                  //.WhereIF(!string.IsNullOrEmpty(searchKey), (p, b) => p.OrderNo.Contains(searchKey) || p.Remark.Contains(searchKey) || p.SpecialRequest.Contains(searchKey) || p.CreateUserName.Contains(searchKey) || p.ReceivingResponsableUserInfo.Contains(searchKey))
                   .WhereIF(!string.IsNullOrEmpty(isUrgentShipment), (p, b) => p.IsUrgentShipment.Contains(isUrgentShipment))
-                  .Where((p, b) => p.SendingAddress.Contains(sendingAddress))
+                  //.Where((p, b) => p.CreateUserId.Contains(createUserName))
+                  //.Where((p, b) => p.SendingAddress.Contains(sendingAddress))
                   .WhereIF(!string.IsNullOrEmpty(detailStatus), (p, b) => p.Status.Equals(detailStatus))
-                  .Where((p, b) => p.GoodsClassify == goodsGroup && p.SendingDate.Date >= GetDateStart(dateStart).Date && p.SendingDate.Date <= GetDateEnd(dateEnd).Date)
+                  .Where((p, b, o) => p.GoodsClassify == goodsGroup && p.SendingDate.Date >= GetDateStart(dateStart).Date && p.SendingDate.Date <= GetDateEnd(dateEnd).Date)
                   .WhereIF(!string.IsNullOrEmpty(searchKey), (p, b) => SqlFunc.Subqueryable<SendingOrderDetail>().Where(s => s.OrderNo==p.OrderNo 
                   &&(s.GoodsNo.Contains(searchKey) || s.CustomerGoodsNo.Contains(searchKey) || s.CustomerIdentificationCode.Contains(searchKey))).Any())
-                  .Select((p, b) => new SendingOrderExpandDto
+                  .Select((p, b,o,e) => new SendingOrderExpandDto
                   {
                       OrderNo = p.OrderNo,
+                      CustomerOrderNo=p.CustomerOrderNo,
+                      ContractNo=o.ContractNo,
                       SendingDate = p.SendingDate,
                       RequestDate = p.RequestDate,
                       Status = p.Status,
@@ -65,7 +77,7 @@ namespace Logic.Purchase
                       SendingResponsableUserId = p.SendingResponsableUserId,
                       SendingResponsableUserName = p.SendingResponsableUserName,
                       SendingResponsableUserEmail = p.SendingResponsableUserEmail,
-                      ReceivingResponsableUserInfo = p.ReceivingResponsableUserInfo,
+                      ReceivingResponsableUserInfo = e.SupplierName,
                       SendingAddress = p.SendingAddress,
                       GoodsClassify = p.GoodsClassify,
                       CreateDate = p.CreateDate,
@@ -86,6 +98,7 @@ namespace Logic.Purchase
             data.ForEach(row =>
             {
                 row.StatusDesc = EnumHelper.GetDescFromEnumVal<SendingOrderStatus>(row.Status);
+                //row.DetailStatusDesc = EnumHelper.GetDescFromEnumVal<SendingOrderStatus>(row.DetailStatus);
                 row.UrgentShipmentDesc = EnumHelper.GetDescFromEnumVal<YesOrNo>(row.IsUrgentShipment);
                 row.SufficientStockDesc = EnumHelper.GetDescFromEnumVal<YesOrNo>(row.IsSufficientStock);
                 row.GoodsClassifyName = EnumHelper.GetDescFromEnumVal<BaseTypeGroup>(row.GoodsClassify);
@@ -104,6 +117,68 @@ namespace Logic.Purchase
                  .Where((i) => i.OrderNo == orderNo)
                  .Select<SendingOrderExpandDto>().ToListAsync();
             return orderDetail;
+        }
+
+        public async Task<List<OrderPrintDto>> GetOrderPrint(string orderNo, string customerOrderNo)
+        {
+            var printDetail = await Repository.ClientDb.Queryable<SendingOrderDetail>()
+                .LeftJoin<SendingOrder>((i, s) => i.OrderNo == s.OrderNo)
+                .LeftJoin<BaseGoods>((i, s, g) => i.GoodsId == g.GoodsId)
+                .LeftJoin<BaseSuppliers>((i, s, g, bs) => bs.SupplierId == s.SupplierId)//运输
+                .LeftJoin<BaseSuppliers>((i, s, g, bs,kh) => s.ReceivingResponsableUserInfo == kh.SupplierId)//客户
+                .LeftJoin<OrderPlan>((i, s, g, bs, kh, or) =>s.CustomerOrderNo==or.OrderNo)
+                .LeftJoin<BaseUnits>((i, s, g, bs, kh, or, u) => or.Unit == u.UnitId.ToString())
+                .Where((i, s, g, bs, kh, or, u) => i.OrderNo == orderNo)
+                .Select((i, s, g, bs, kh, or, u) => new OrderPrintDto
+                {
+                    OrderNo = i.OrderNo,
+                    CustomerOrderNo=s.CustomerOrderNo,
+                    SendingDate=s.SendingDate.ToString(), /// 发货日期
+                    SendingAddress = s.SendingAddress,/// 目的地
+                    GoodsName = g.GoodsName,/// 物品名称
+                    Quantity = i.Quantity.ToString(),/// 计划发货数量
+                    Unit = u.UnitName,/// 单位
+                    Remarks = s.Remark,/// 备注
+                    ContractNo = or.ContractNo, /// 合同号
+                    Status = s.Status,/// 状态
+                    Customer = kh.SupplierName,/// 客户信息
+                    CustomerName = kh.Consignee,/// 客户联系人
+                    CustomerTelephone = kh.ConsigneeTel,/// 客户联系电话
+                    //OurCompany = s.SendingAddress, /// 我方公司信息
+                    //OurCompanyName = s.SendingAddress,/// 我方联系人信息
+                    //OurCompanyTelephone = s.SendingAddress,/// 我方联系电话
+                    Supplier = bs.SupplierName,/// 运输公司
+                    SupplierNo = bs.ConsigneeTel,/// 货船编号
+                    SupplierName = bs.Consignee,/// 船长姓名
+                })
+                .ToListAsync();
+
+            var dataCompany =  Repository.ClientDb.Queryable<SysCompany>().ToList();
+            for (int i = 0; i < printDetail.Count; i++)
+            {
+                if (printDetail[i].Status == "WaitingShipment")
+                {
+                    printDetail[i].Status = "待发货";
+                }
+                else if (printDetail[i].Status == "Shipment")
+                {
+                    printDetail[i].Status = "已发货";
+                }
+                else if (printDetail[i].Status == "CancelShipment")
+                {
+                    printDetail[i].Status = "取消发货";
+                }
+                else if (printDetail[i].Status == "WaitingNotification")
+                {
+                    printDetail[i].Status = "等通知发货";
+                }
+                printDetail[i].OurCompany = dataCompany[0].CompanyName;
+                printDetail[i].OurCompanyName = dataCompany[0].Remark;
+                printDetail[i].OurCompanyTelephone = dataCompany[0].Phone;
+
+            }
+
+            return printDetail;
         }
 
         public async Task<List<KeyValueModel>> GetCreateUserNameGroup()
@@ -129,32 +204,63 @@ namespace Logic.Purchase
         }
         public async Task AddSending(SendingOrderDto data)
         {
-            if (data.Details.Count == 0)
-            {
-                throw new BusinessException("保存失败,请添加发货计划明细");
-            }
-            var sameGoods = data.Details.GroupBy(d => new { d.GoodsNo, d.QuantityUnitName }).Count();
-            if (sameGoods != data.Details.Count)
-            {
-                throw new BusinessException("保存失败,同一天发货日期中若存在相同物料编号，建议将其汇总后再添加到系统");
-            }
+            //if (data.Details.Count == 0)
+            //{
+            //    throw new BusinessException("保存失败,请添加发货计划明细");
+            //}
+            //var sameGoods = data.Details.GroupBy(d => new { d.GoodsNo, d.QuantityUnitName }).Count();
+            //if (sameGoods != data.Details.Count)
+            //{
+            //    throw new BusinessException("保存失败,同一天发货日期中若存在相同物料编号，建议将其汇总后再添加到系统");
+            //}
             var curDate = DateTime.Now;
             var lastData = await Repository.ClientDb.Queryable<SendingOrder>().MaxAsync(x => x.OrderNo);
-            var SendingOrderModel = _mapper.Map<SendingOrder>(data);
-            SendingOrderModel.OrderNo = GetPrimaryId("S", lastData);
-            SendingOrderModel.YearAndMonth = curDate.ToStringYYMMExtension();
-            SendingOrderModel.CreateDate = curDate;
-            Repository.ClientDb.Insertable(SendingOrderModel).AddQueue();
 
-            var SendingOrderDetailList = _mapper.Map<List<SendingOrderDetail>>(data.Details);
-            
-            SendingOrderDetailList.ForEach(f =>
+            //根据订单号查询订单信息
+            string orderNo = data.CustomerOrderNo;
+            var orderPlanData = Repository.ClientDb.Queryable<OrderPlan>().Where(m => m.OrderNo== orderNo).ToList();
+            if (orderPlanData.Count>0)
             {
-                f.OrderNo = SendingOrderModel.OrderNo;
-                f.DetailStatus = SendingOrderModel.Status;
-            });
-            Repository.ClientDb.Insertable(SendingOrderDetailList).AddQueue();
-            await Repository.ClientDb.SaveQueuesAsync();
+                DateTime deliveryDate = DateTime.ParseExact(orderPlanData[0].DeliveryDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                var supplierData = Repository.ClientDb.Queryable<BaseSuppliers>().Where(m => m.SupplierId == orderPlanData[0].CustomerName).ToList();
+                var goodsData = Repository.ClientDb.Queryable<BaseGoods>().Where(m => m.GoodsId == orderPlanData[0].GoodsName).ToList();
+                if (supplierData.Count>0&&goodsData.Count>0)
+                {
+                    
+                    float quantity = (float)Convert.ToSingle(data.PlanQuantity.ToString());
+                    var SendingOrderModel = _mapper.Map<SendingOrder>(data);
+                    SendingOrderModel.OrderNo = GetPrimaryId("S", lastData);
+                    SendingOrderModel.YearAndMonth = curDate.ToStringYYMMExtension();
+                    SendingOrderModel.CreateDate = curDate;
+                    SendingOrderModel.RequestDate = deliveryDate;//要求到货日期
+                    SendingOrderModel.SendingAddress = supplierData[0].Address;//到货地址
+                    SendingOrderModel.ReceivingResponsableUserInfo = orderPlanData[0].CustomerName;
+                    Repository.ClientDb.Insertable(SendingOrderModel).AddQueue();
+                    
+                    var SendingOrderDetailList = new List<SendingOrderDetail>();
+                    var model = new SendingOrderDetail();
+                    model.OrderNo= SendingOrderModel.OrderNo;
+                    model.DetailStatus= SendingOrderModel.Status;
+                    model.GoodsId = orderPlanData[0].GoodsName;
+                    model.GoodsNo = goodsData[0].GoodsNo;
+                    model.Quantity = quantity;
+                    model.QuantityUnitId = Int32.Parse(orderPlanData[0].Unit);
+                    //var SendingOrderDetailList = _mapper.Map<List<SendingOrderDetail>>(data.Details);
+
+                    //SendingOrderDetailList.ForEach(f =>
+                    //{
+                    //    f.OrderNo = SendingOrderModel.OrderNo;
+                    //    f.DetailStatus = SendingOrderModel.Status;
+                    //});
+
+                    //await Repository.AddAsync(model);
+
+                    SendingOrderDetailList.Add(model);
+                    Repository.ClientDb.Insertable(SendingOrderDetailList).AddQueue();
+                    await Repository.ClientDb.SaveQueuesAsync();
+
+                }
+            }
         }
 
         public async Task UpdateSending(SendingOrderDto data)
@@ -191,6 +297,15 @@ namespace Logic.Purchase
             Repository.ClientDb.Deleteable(details).AddQueue();
             Repository.ClientDb.Deleteable<SendingOrder>(b => orderNos.Contains(b.OrderNo)).AddQueue();
             await Repository.ClientDb.SaveQueuesAsync();
+        }
+
+        public async Task<List<KeyValueModel>> GetOrderPlan()
+        {
+            var res = await Repository.ClientDb.Queryable<OrderPlan>()
+                //.Where(c => c.IsValid)
+                .Select(c => new KeyValueModel { Key = c.OrderNo, Value = c.OrderNo, Remark = c.ContractNo })
+                .ToListAsync();
+            return res.OrderBy(x => x.Remark).ToList();
         }
 
         public List<FieldModel> GetExportFields()

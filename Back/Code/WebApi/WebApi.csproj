@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Logic\LogicDependencyInjection\LogicDependencyInjection.csproj" />
+    <ProjectReference Include="..\Logic\Order\Order.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
 
