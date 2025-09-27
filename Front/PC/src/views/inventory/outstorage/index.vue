@@ -108,6 +108,23 @@
           </template>
         </el-table-column>
         <el-table-column prop="remark" label="备注" align="center" sortable="custom" :show-overflow-tooltip="true" />
+        <el-table-column label="签字附件" align="center" min-width="80">
+          <template #default="scope">
+            <div style="display: flex; flex-wrap: wrap; gap: 5px">
+              <!-- 使用统一处理方法 -->
+              <template v-for="(img, index) in normalizeImages(scope.row.goodsPicture)" :key="index">
+                <el-image style="width: 50px; height: 50px; border: 1px solid #eee" :src="img.url || img"
+                  :preview-src-list="[img.url || img]">
+                  <template #error>
+                    <div class="image-error">
+                      <i class="el-icon-picture-outline"></i>
+                    </div>
+                  </template>
+                </el-image>
+              </template>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column prop="status" label="状态" align="center" sortable="custom" :show-overflow-tooltip="true">
           <template #default="props">
             <div v-if="props.row.status == 'QualityFailed' || props.row.status == 'Reject'" class="text-danger">
@@ -117,7 +134,7 @@
                 @confirm="submitOutStorage(props.row)">
                 <template #reference>
                   <el-button title="点击确认出库" type="warning" :loading="props.row.loading">{{ props.row.statusDesc
-                    }}</el-button>
+                  }}</el-button>
                 </template>
               </el-popconfirm>
               <span v-else>{{ props.row.statusDesc }}</span>
@@ -231,10 +248,15 @@ const getGoodsGroupData = () => {
       goodsGroupData.value = res.data.filter((f: any) => f.key == 'SparePart' || f.key == 'Consumables');
     }
     else {
-      goodsGroupData.value = res.data.filter((f: any) => f.key == 'FinishedProduct' || f.key == 'RawMaterial');;
+      goodsGroupData.value = res.data.filter((f: any) => f.key == 'FinishedProduct' || f.key == 'RawMaterial');
+      // 默认选中 FinishedProduct
+      selectedGoodsGroup.value = 'FinishedProduct'
+      getTableData(true);
     }
   })
 }
+
+
 
 const getTableData = (init: Boolean) => {
   loading.value = true
@@ -420,6 +442,49 @@ const exportData = () => {
     document.body.removeChild(link)
   }).finally(() => exportLayer.btnLoading = false)
 }
+
+const normalizeImages = (imgData: any) => {
+  // 空值处理
+  if (!imgData) return []
+ // 如果是数组，直接取 url
+  if (Array.isArray(imgData)) {
+    return imgData.map(item => ({
+      name: item.fileName || 'image',
+      url: item.url
+    }))
+  }
+  try {
+    // 情况1：直接URL字符串 http://minio-api.cw01.contiwan.com/equipmentsystem/Image/CompanyLogo638598451199717467.png
+    if (typeof imgData === 'string' && imgData.startsWith('http')) {
+       return [{ name: 'image', url: imgData }]
+    }
+
+    // 情况2：JSON字符串格式 [{"name":"image.jpg","url":"https://minio-api.cw01.contiwan.com/equipmentsystem/Image/CompanyLogo638822490746638142.jpg"}]
+    let parsed = JSON.parse(imgData)
+
+    // 处理双重编码情况
+    if (typeof parsed === 'string') {
+      parsed = JSON.parse(parsed)
+    }
+
+    // 统一返回对象数组格式
+    if (Array.isArray(parsed)) {
+      return parsed.map(item => ({
+        name: item.name || 'image',
+        url: item.url || item
+      }))
+    }
+
+    // 单对象情况
+    return [{
+      name: parsed.name || 'image',
+      url: parsed.url || parsed
+    }]
+  } catch (e) {
+    // 格式无法解析时尝试作为直接URL
+    return [imgData]
+  }
+};
 </script>
 
 <style lang="scss" scoped>

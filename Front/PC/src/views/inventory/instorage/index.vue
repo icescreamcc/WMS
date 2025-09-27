@@ -274,7 +274,7 @@ onMounted(() => {
     isInStorageApproval.value = res.data.isInStorageApproval
   })
   getGoodsGroupData();
-  getTableData(true);
+  getTableData(true);-
 })
 
 const getGoodsGroupData = () => {
@@ -284,6 +284,8 @@ const getGoodsGroupData = () => {
     }
     else {
       goodsGroupData.value = res.data.filter((f:any)=>f.key == 'FinishedProduct'||f.key == 'RawMaterial');
+      selectedGoodsGroup.value='RawMaterial';
+      getTableData(true);
     }
   })
 }
