@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Models.Model.Baseinfo;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace Models.Model.Inv
 {
    public class OutStorage
     {
+        public List<FileInfoDto> GoodsPicture { get; set; }
         public string OrderNo { get; set; }
 
         public string SourceOrderNo { get; set; }

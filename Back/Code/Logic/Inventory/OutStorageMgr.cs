@@ -7,6 +7,7 @@ using Logic.LogicCommon;
 using Logic.LogicCommon.FileStorage;
 using Microsoft.VisualBasic;
 using Models.Model;
+using Models.Model.Baseinfo;
 using Models.Model.Enum;
 using Models.Model.Inv;
 using Models.Model.Purchase;
@@ -121,6 +122,29 @@ namespace Logic.Inventory
                 row.GoodsClassifyDesc = EnumHelper.GetDescFromEnumVal<BaseTypeGroup>(row.GoodsClassify);
                 row.ApprovalStatusDesc = EnumHelper.GetDescFromEnumVal<ApprovalStatus>(row.ApprovalStatus);
                 row.IsApproval = (isAnyApproval && row.Status == OutStorageStatus.Pending.ToString()) || (curApprover?.Count > 0 && curApproverRank.Contains(row.ApprovalLastRank + 1) && (row.Status == OutStorageStatus.Pending.ToString() || row.Status == OutStorageStatus.Approvaling.ToString()));
+            });
+
+            var sourceOrderNos = data.Select(d => d.SourceOrderNo).ToList();
+            var photos = await Repository.ClientDb.Queryable<BaseFiles>()
+          .Where(p => sourceOrderNos.Contains(p.PrimaryId) && p.FileInfoType == FileInfoType.SendingPhoto.ToString())
+          .ToListAsync();
+
+            // 逐个挂载到单据上
+            data.ForEach(row =>
+            {
+                row.GoodsPicture = photos
+                    .Where(p => p.PrimaryId == row.SourceOrderNo)
+                    .Select(p => new FileInfoDto
+                    {
+                        FileId = p.FileId,
+                        FileName = p.FileName,
+                        Url = p.Url,
+                        FileInfoType = p.FileInfoType,
+                        Path = p.Path,
+                        PrimaryId = p.PrimaryId,
+                        Remark = p.Remark
+                    })
+                    .ToList();
             });
             var res = new TableModel<OutStorage>() { Total = total, Rows = data };
             return await Task.FromResult(res);
