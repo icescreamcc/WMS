@@ -1,0 +1,16 @@
+CREATE TABLE `LabelDesign`(
+`LabelId` varchar(50) NOT NULL   COMMENT '标签ID' ,
+`LabelName` varchar(50) NOT NULL   COMMENT '标签名称' ,
+`GoodsClassifyGroup` varchar(50) NOT NULL   COMMENT '物料类型分组' ,
+`Width` float NOT NULL   COMMENT '宽度mm' ,
+`Height` float NOT NULL   COMMENT '高度mm' ,
+`BackgroundColor` varchar(50) DEFAULT NULL   COMMENT '背景色' ,
+`IsDeft` tinyint(1) NOT NULL   COMMENT '是否默认' ,
+`Remark` varchar(200) DEFAULT NULL   COMMENT '备注' ,
+`IsValid` tinyint(1) NOT NULL   COMMENT '是否启用' ,
+`UpdateUserId` varchar(50) DEFAULT NULL   COMMENT '上次修改人ID' ,
+`UpdateUserName` varchar(50) DEFAULT NULL   COMMENT '上次修改人姓名' ,
+`UpdateDate` datetime NOT NULL   COMMENT '上次修改时间' ,
+`CreateUserId` varchar(50) DEFAULT NULL   COMMENT '创建人ID' ,
+`CreateUserName` varchar(50) DEFAULT NULL   COMMENT '创建人姓名' ,
+`CreateDate` datetime NOT NULL   COMMENT '创建时间'  , Primary key(`LabelId`))

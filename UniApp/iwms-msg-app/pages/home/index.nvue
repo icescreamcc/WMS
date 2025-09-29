@@ -1,0 +1,288 @@
+<template> 
+	<div class="page" :style="{width:windowWidth,height:windowHeight}"> 
+	<div class="page-head" :style="{width:windowWidth}">欢迎使用IWMS消息通知APP</div> 
+		<div class="page-body" :style="{width:windowWidth,height:windowHeight*.8}">
+			<scroll-view scroll-y="true">
+				<div class="body-item" :style="{width:windowWidth}" v-for="item in msgContent">
+					<view flex-direction:row :style="{width:windowWidth*.99}">
+						<img class="item-icon" style="height: 40px;" src="/static/image/xiaoxi1.png" >
+						<div class="item-info" :style="{width:windowWidth}">
+							<div class="info-date">{{item.Date}}</div>
+							<div class="info-title">{{item.Name}}</div> 
+							<div class="info-content">{{item.Message}}</div>
+						</div>
+					</view> 
+				</div>
+			</scroll-view> 
+		</div> 
+	</div>
+</template>
+
+<script> 
+	export default { 
+		data() {
+			return {
+				windowWidth:366,
+				windowHeight:342,
+				connected: false,
+				connecting: false,
+				msg: false,
+				roomId: '',
+				msgContent:[]
+			}
+		},
+		onReady(){
+			
+			uni.getSystemInfo().then(res=>{
+				this.windowWidth=res.windowWidth;
+				this.windowHeight=res.windowHeight; 
+			}) 
+			//this.connectSocket2();
+			this.connect();  
+			// var isActiveNotification =  this.notificationsPermission(); 
+			// if(!isActiveNotification){
+			// 		uni.showModal({
+			// 			content: '系统未开启消息通知权限，请在系统设置中开启消息通知',
+			// 			success: (res)=>{
+			// 				if(res.confirm){
+			// 					var main = plus.android.runtimeMainActivity();
+			// 					var pkName = main.getPackageName();
+			// 					var uid = main.getApplicationInfo().plusGetAttribute("uid");
+			// 					var Intent = plus.android.importClass('android.content.Intent');
+			// 					var Build = plus.android.importClass("android.os.Build"); 
+			// 					if (Number(Build.VERSION.SDK_INT) >= 26) {
+			// 					 var intent = new Intent('android.settings.APP_NOTIFICATION_SETTINGS');
+			// 					  intent.putExtra('android.provider.extra.APP_PACKAGE', pkName);
+			// 					} 
+			// 					else if (Number(Build.VERSION.SDK_INT) >= 21) { 
+			// 						//android 5.0-7.0
+			// 					  var intent = new Intent('android.settings.APP_NOTIFICATION_SETTINGS');
+			// 					  intent.putExtra("app_package", pkName);
+			// 					  intent.putExtra("app_uid", uid);
+			// 					} 
+			// 					else { 
+			// 						//(<21)其他--跳转到该应用管理的详情页
+			// 					  var Settings = plus.android.importClass("android.provider.Settings");
+			// 					  var Uri = plus.android.importClass("android.net.Uri");
+			// 					  var intent = new Intent();
+			// 					  intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+			// 					  var uri = Uri.fromParts("package", main.getPackageName(), null);
+			// 					  intent.setData(uri);
+			// 					}
+			// 					// 跳转到该应用的系统通知设置页
+			// 					main.startActivity(intent);
+			// 				}
+			// 			}
+			// 		}) 
+			// }
+			// else{
+			// 	 this.connect(); 
+			// } 
+		},
+		computed: {
+			showMsg() {
+				if (this.connected) {
+					if (this.msg) {
+						return '收到消息：' + this.msg
+					} else {
+						return '等待接收消息'
+					}
+				} else {
+					return '尚未连接'
+				}
+			}
+		}, 
+		methods: {   
+			notificationsPermission(){
+				var main = plus.android.runtimeMainActivity();
+				var pkName = main.getPackageName();
+				var NotificationManagerCompat = plus.android.importClass(
+				"androidx.core.app.NotificationManagerCompat"); 
+				var isEnabled = NotificationManagerCompat.from(main).areNotificationsEnabled();
+				return isEnabled;
+			},
+			pushMsg(title, msg){
+				let content=msg;
+				let option={
+				   'cover':false,
+				   'when':new Date(),
+				   'title':title,
+				   'sound':'system'
+				}
+				let body={
+				   'id':'1234',
+				   'key':'key12345'
+				}
+				let payload=JSON.stringify(body);
+				plus.push.createMessage(content,payload,option);
+			},
+		    connect() {
+				console.log("socket连接",this.connected)
+		    	if (this.connected || this.connecting) {
+		    		uni.showToast({
+		    			title: '正在连接或者已经连接，请勿重复连接',
+		    			icon: 'none'
+		    		})
+		    		return false
+		    	}
+		    	this.connecting = true
+		    	uni.showLoading({
+		    		title: 'Socket连接中...'
+		    	})
+		    	uni.connectSocket({
+		    		url: 'ws://10.24.78.64:8030',
+		    		data() {
+		    			return {
+		    				msg: 'Hello'
+		    			}
+		    		},
+		    		// #ifdef MP
+		    		header: {
+		    			'content-type': 'application/json'
+		    		},
+		    		// #endif
+		    		// #ifdef MP-WEIXIN
+		    		method: 'GET',
+		    		// #endif
+		    		success(res) {
+		    			// 这里是接口调用成功的回调，不是连接成功的回调，请注意
+					 
+		    		},
+		    		fail(err) {
+		    			// 这里是接口调用失败的回调，不是连接失败的回调，请注意
+						uni.showToast({
+							title: `Socket接口调用失败,${err}`,
+							icon: 'none'
+						});
+		    		}
+		    	})
+		    	uni.onSocketOpen((res) => {
+		    		this.connecting = false
+		    		this.connected = true
+		    		uni.hideLoading()
+					console.log("与服务器连接成功")
+		    		uni.showToast({
+		    			icon: 'none',
+		    			title: '与服务器连接成功'
+		    		}); 
+		    	})
+		    	uni.onSocketError((err) => {
+		    		this.connecting = false
+		    		this.connected = false
+		    		uni.hideLoading() 
+					uni.showModal({
+						content:`与服务器连接失败:${JSON.stringify(err)}`,
+						confirmText:"重新连接",
+						confirmColor:'#007aff',
+						success:(res)=>{
+							if(res.confirm){
+								this.connect();
+							} 
+						}
+					}) 
+		    	})
+		    	uni.onSocketMessage((res) => {
+		    		this.msg = res.data;
+					 let data=JSON.parse(res.data);  
+					this.msgContent.push(data); 
+					this.pushMsg(data.Name,data.Message);
+					uni.vibrateLong();
+		    	});
+		    	uni.onSocketClose((res) => {
+		    		this.connected = false
+		    		this.startRecive = false
+		    		this.msg = false 
+		    	});
+		    },
+		    send() {
+		    	uni.sendSocketMessage({
+		    		data: 'from ' + platform + ' : ' + parseInt(Math.random() * 10000).toString(),
+		    		success(res) {
+		    			console.log(res);
+		    		},
+		    		fail(err) {
+		    			console.log(err);
+		    		}
+		    	});
+		    },
+		    close() {
+		    	uni.closeSocket();
+		    },
+			connectSocket2(){
+			   let connectString='ws://10.24.78.64:8030';
+			   let socketClient=new WebSocket(connectString);
+				socketClient.addEventListener('open',(event)=>{ 
+					if(event.isTrusted&&event.type=='open'){  
+						  console.log('event',event)
+						  uni.showToast({
+						  	title: '连接成功',
+						  	icon: 'none'
+						  })
+						   socketClient.addEventListener('message',(event)=>{ 
+							let data=JSON.parse(event.data); 
+							   console.log('event',data)
+							   uni.showToast({
+							   	title: data.Message,
+							   	icon: 'none'
+							   })
+						   });
+					} 
+					else{
+					 
+					}
+				});
+			}
+	}
+	}
+</script>
+
+<style lang="scss" scoped>
+	.page{
+		background-color: #6b96a1;
+		height: 100%;
+		width: 100%;
+		position: absolute; 
+		.page-head{
+			text-align: center;
+			color: #e6a23c;
+			padding: 5px 0;
+			background-color:#00ffb7;
+			text-align: center;
+		}
+		.page-body{ 
+			padding: 0 10px; 
+			overflow-y: scroll;
+			.body-item{  
+				position: relative;
+				.item-icon{
+					height: 40px;
+					position: absolute;
+					right: 1%;
+				}
+				.item-info{
+					margin-top: 10%;
+					width: 90%;
+					padding: 5% 0%;
+					background-color: #fff;
+					border-radius: 5px;
+					.info-title{
+						padding: 0 5px;
+						color: #e6a23c;
+						font-weight: 600;
+						margin-bottom: 5px;
+						font-size: 13px;
+					}
+					.info-date{
+						padding: 0 5px;font-size: 12px;
+						text-align: right;
+						margin-bottom: 10px;
+					}
+					.info-content{
+						padding: 0 5px;
+						font-size: 13px;
+					}
+				}
+			}
+		}
+	}
+</style>

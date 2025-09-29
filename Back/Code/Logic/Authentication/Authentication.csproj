@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>Logic.Authentication</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Model\Model.csproj" />
+    <ProjectReference Include="..\LogicBase\LogicBase.csproj" />
+    <ProjectReference Include="..\LogicCommon\LogicCommon.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Logic.AutomationDevice</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\External\HIK_RCS\HIK_RCS.csproj" />
+    <ProjectReference Include="..\LogicBase\LogicBase.csproj" />
+    <ProjectReference Include="..\LogicCommon\LogicCommon.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>Logic.LogicCommon</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\External\Aliyun\Aliyun.csproj" />
+    <ProjectReference Include="..\..\External\MinIOService\MinIOService.csproj" />
+    <ProjectReference Include="..\LogicBase\LogicBase.csproj" />
+  </ItemGroup>
+
+</Project>

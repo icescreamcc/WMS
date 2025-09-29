@@ -1,0 +1,39 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "OSSUrl": "https://minio-api.ex-factory-test.automotive-wan.com",
+  "CasServerW3": {
+    "Enable": false,
+    "GetTicketUrl": "http://DLASFAAvma.cw01.contiwan.com:9080/login.html",
+    "GetAccountUrl": "http://DLASFAAvma.cw01.contiwan.com:9080/AuthTicket.aspx?ticket="
+  },
+  "UserPlatformW3": {
+    "Porvider": "IWMS-UAT",
+    "Secret": "399B37B6C2CFB1790BC15F2D090E91B3",
+    "Host": "http://master-data-api-uat.w3.automotive-wan.com"
+  },
+  "MinIOW3": {
+    "Endpoint": "minio-svc.ex-factory-test:9000",
+    "AccessKey": "vKQWGv63aOMI2h8vZHqK",
+    "SecretKey": "hU3czWTAg3htWqSEChHe0nQg9P7qe2BS3depP4LR",
+    "BucketName": "i-wms",
+    "FileName": "i-wms",
+    "FileUrl": "https://minio-api.ex-factory.automotive-wan.com/i-wms/Excel/"
+
+  },
+  "AllowCors": "http://localhost:3001,http://127.0.0.1:3001,http://10.24.78.64:5003,http://10.24.78.8:5003",
+  "Sqlsugar": {
+    "ConnectionString": "server=10.24.78.8;port=30130;Database=5r-dl-uat;Uid=5r-dl;Pwd=5r@2024;charset=utf8mb4;AllowLoadLocalInfile=true;Convert Zero Datetime=True",
+
+    // "ConnectionString": "server=10.24.78.62;port=3306;Database=iwms_local;Uid=root;Pwd=root;charset=utf8mb4;AllowLoadLocalInfile=true;Convert Zero Datetime=True", //WES测试环境
+
+    "DbType": "MySql", //ORM连接数据库类型SqlServer MySql Oracle
+    "Develop": true //开发模式下连接字符串不需要加密，否则需要用加密工具进行Des加密
+  }
+
+}

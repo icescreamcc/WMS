@@ -1,0 +1,18 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "Job": {
+    "enable": true, // 是否开启定时任务
+    "AICaringJob": {
+      "enable": false // 是否开启生日祝福发送任务
+    },
+    "UserSyncJob": {
+      "enable": false // 是否开启用户同步S任务
+    }
+  }
+}

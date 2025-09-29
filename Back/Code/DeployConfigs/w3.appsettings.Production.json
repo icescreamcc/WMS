@@ -1,0 +1,25 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "CasServer": {
+    "Enable": true,
+    "GetTicketUrl": "http://dlcas01vma.cw01.contiwan.com:9070/login.html",
+    "GetAccountUrl": "http://dlcas01vma.cw01.contiwan.com:9070/AuthTicket.aspx?ticket="
+  },
+
+  //"urls": "http://10.24.78.18:8100",
+  "AllowCors": "http://localhost:3001,http://127.0.0.1:3001,http://10.24.78.64:5003,http://10.24.78.8:5003",
+  "Sqlsugar": {
+    "ConnectionString": "server=10.24.78.8;port=30130;Database=5r-dl;Uid=5r-dl;Pwd=5r@2024;charset=utf8mb4;AllowLoadLocalInfile=true;Convert Zero Datetime=True",
+    // "ConnectionString": "server=10.24.78.62;port=3306;Database=5rs_db;Uid=5RSystem;Pwd=1qaz!QAZ2023;charset=utf8mb4;AllowLoadLocalInfile=true;Convert Zero Datetime=True",
+    "DbType": "MySql", //ORM连接数据库类型SqlServer MySql Oracle
+    //"ConnectionString": "D2F0C8632CA6C522F363AE3AC8BD87C389667CCD2115906E0BB3156A6F71BB0311F86F19445677A4709A028A635E0F07D942E723C087D107DDCD1952E4BB5A59F03F8D4FFD62F838461213F003763784",
+    "Develop": true //开发模式下连接字符串不需要加密，否则需要用加密工具进行Des加密
+  }
+
+}

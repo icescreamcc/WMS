@@ -1,0 +1,3053 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WebApi</name>
+    </assembly>
+    <members>
+        <member name="M:WebApi.Controllers.AuthController.GetAccessToken(Models.Model.Sys.ExternalProviderAuthDto)">
+            <summary>
+            获取身份认证的token(外部系统鉴权）
+            </summary>
+            <param name="externalAuthDto"></param>
+            <returns></returns>
+            <exception cref="T:Logic.LogicBase.BusinessException"></exception>
+        </member>
+        <member name="M:WebApi.Controllers.AuthController.GetTicketUrl">
+            <summary>
+            casSever获取ticket的url地址
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.AuthController.GetWindowsUser(System.String)">
+            <summary>
+            从cas中获取客户端windows登录账户
+            </summary>
+            <param name="ticket"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.AuthController.Login(Models.Model.LoginInfo)">
+            <summary>
+            账号密码登录
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.AuthController.LoginOut(System.String)">
+            <summary>
+            退出登录
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.A_DbSetController.CreateDatabase(System.Boolean)">
+            <summary>
+            数据库迁移-初始化数据库
+            </summary>
+            <param name="existDb">是否已存在数据库</param>
+        </member>
+        <member name="M:WebApi.Controllers.A_DbSetController.AlterTable(System.Boolean,System.String[])">
+            <summary>
+            数据库迁移-新增、修改、删除表
+            </summary>
+            <param name="isInitData">是否初始化指定表名的数据</param>
+            <param name="tableName">新增、修改、删除指定的表结构</param>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ClientController.GetClients(System.String,System.Int32,System.Int32,System.String,System.String,System.String)">
+            <summary>
+            获取所有客户列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ClientController.GetEnableSpareFields">
+            <summary>
+            获取客户表启用的闲置字段信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ClientController.GetClientDetail(System.String)">
+            <summary>
+            获取客户明细
+            </summary>
+            <param name="clientId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ClientController.GetOptions">
+            <summary>
+            获取客户相关选项的数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ClientController.AddClient(Models.Model.Baseinfo.ClientDetail)">
+            <summary>
+            添加客户
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ClientController.UpdateClient(Models.Model.Baseinfo.ClientDetail)">
+            <summary>
+            修改客户
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ClientController.DelClient(System.String[])">
+            <summary>
+            删除客户
+            </summary>
+            <param name="clientsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ClientController.ExportClients(System.String,System.String,System.String,System.Collections.Generic.List{Models.Model.KeyValueModel})">
+            <summary>
+            导出客户
+            </summary> 
+            <param name="searchKey"></param>
+            <param name="orderField"></param>
+            <param name="orderType"></param>
+            <param name="fields"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ClientController.GetAllowField(System.String)">
+            <summary>
+            获取当前用户导出供应商列表被允许的字段
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ConsumablesController.GetConsumablesClassifyData">
+            <summary>
+            获取所有耗材类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ConsumablesController.AddConsumablesType(Models.Model.Baseinfo.BaseTypeDto)">
+            <summary>
+            添加耗材类型
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ConsumablesController.UpdateConsumablesType(Models.Model.Baseinfo.BaseTypeDto)">
+            <summary>
+            修改耗材类型
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ConsumablesController.DelConsumablesType(System.Int32)">
+            <summary>
+            删除耗材类型
+            </summary>
+            <param name="typeId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ConsumablesController.GetConsumablesList(System.String,System.Int32,System.Int32,System.String,System.String,System.Int32,System.String)">
+            <summary>
+            获取所有耗材列表
+            </summary>
+            <param name="userId"></param>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="goodsClassifyId"></param>
+            <param name="searchKey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ConsumablesController.GetEnableSpareFields">
+            <summary>
+            获取耗材表启用的闲置字段信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ConsumablesController.GetConsumablesDetail(System.String)">
+            <summary>
+            获取耗材明细
+            </summary>
+            <param name="spareId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ConsumablesController.GetOptions">
+            <summary>
+            获取耗材相关选项的数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ConsumablesController.AddConsumables(Models.Model.Baseinfo.ConsumablesDto)">
+            <summary>
+            添加耗材
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ConsumablesController.UpdateConsumables(Models.Model.Baseinfo.ConsumablesDto)">
+            <summary>
+            修改耗材
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ConsumablesController.DelConsumables(System.String[])">
+            <summary>
+            删除耗材
+            </summary>
+            <param name="ConsumablesId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ConsumablesController.ExportConsumables(System.String,System.String,System.String,System.Int32,System.Collections.Generic.List{Models.Model.KeyValueModel})">
+            <summary>
+            导出耗材
+            </summary>
+            <param name="searchKey"></param>
+            <param name="orderField"></param>
+            <param name="orderType"></param>
+            <param name="goodsClassifyId"></param>
+            <param name="fields"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.ConsumablesController.GetAllowField">
+            <summary>
+            获取当前用户导出用户列表被允许的字段
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.FinishedProductController.GetFinishedProductClassifyData">
+            <summary>
+            获取所有成品类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.FinishedProductController.AddFinishedProductClassify(Models.Model.Baseinfo.BaseTypeDto)">
+            <summary>
+            添加成品类型
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.FinishedProductController.UpdateFinishedProductClassify(Models.Model.Baseinfo.BaseTypeDto)">
+            <summary>
+            修改成品类型
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.FinishedProductController.DelFinishedProductClassify(System.Int32)">
+            <summary>
+            删除成品类型
+            </summary>
+            <param name="typeId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.FinishedProductController.GetFinishedProductList(System.String,System.Int32,System.Int32,System.String,System.String,System.Int32,System.String)">
+            <summary>
+            获取所有成品列表
+            </summary>
+            <param name="userId"></param>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="typeId"></param>
+            <param name="searchKey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.FinishedProductController.GetEnableSpareFields">
+            <summary>
+            获取成品表启用的闲置字段信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.FinishedProductController.GetFinishedProductDetail(System.String)">
+            <summary>
+            获取成品明细
+            </summary>
+            <param name="sampleId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.FinishedProductController.GetOptions">
+            <summary>
+            获取成品相关选项的数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.FinishedProductController.AddFinishedProduct(Models.Model.Baseinfo.FinishedProductDto)">
+            <summary>
+            添加成品
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.FinishedProductController.UpdateFinishedProduct(Models.Model.Baseinfo.FinishedProductDto)">
+            <summary>
+            修改成品
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.FinishedProductController.DelFinishedProduct(System.String[])">
+            <summary>
+            删除成品
+            </summary>
+            <param name="productId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.FinishedProductController.GetBOMList(System.String)">
+            <summary>
+            查询成品BOM
+            </summary>
+            <param name="goodsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.FinishedProductController.UpdateBOM(System.Collections.Generic.List{Models.Model.Baseinfo.BOMDto})">
+            <summary>
+            修改成品BOM
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.FinishedProductController.ExportFinishedProduct(System.String,System.String,System.String,System.Int32,System.Collections.Generic.List{Models.Model.KeyValueModel})">
+            <summary>
+            导出成品
+            </summary>
+            <param name="searchKey"></param>
+            <param name="orderField"></param>
+            <param name="orderType"></param>
+            <param name="goodsClassifyId"></param>
+            <param name="fields"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.FinishedProductController.GetAllowField">
+            <summary>
+            获取当前用户导出用户列表被允许的字段
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.GoodsController.GetGoodsList(System.Int32,System.Int32,System.String,System.String,System.String,System.Int32,System.String,System.Int32,System.String)">
+            <summary>
+            查询货品列表
+            </summary>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="goodsGroup"></param>
+            <param name="goodsClassifyId"></param>
+            <param name="shelfId"></param>
+            <param name="binId"></param>
+            <param name="searchKey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.GoodsController.GetGoodsDetail(System.String)">
+            <summary>
+            获取货品明细
+            </summary>
+            <param name="goodsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.GoodsController.UpdateGoodsPhoto(System.String,System.Collections.Generic.List{Models.Model.Baseinfo.FileInfoDto})">
+            <summary>
+            修改货品图片
+            </summary>
+            <param name="goodsId"></param>
+            <param name="Photos"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.GoodsController.GetGoodsTreeMapData(System.String)">
+            <summary>
+            获取货品分类关系图
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.PackingMaterialController.GetPackingMaterialClassifyData">
+            <summary>
+            获取所有包材类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.PackingMaterialController.AddPackingMaterialClassify(Models.Model.Baseinfo.BaseTypeDto)">
+            <summary>
+            添加包材类型
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.PackingMaterialController.UpdatePackingMaterialClassify(Models.Model.Baseinfo.BaseTypeDto)">
+            <summary>
+            修改包材类型
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.PackingMaterialController.DelPackingMaterialClassify(System.Int32)">
+            <summary>
+            删除包材类型
+            </summary>
+            <param name="typeId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.PackingMaterialController.GetPackingMaterialList(System.String,System.Int32,System.Int32,System.String,System.String,System.Int32,System.String)">
+            <summary>
+            获取所有包材列表
+            </summary>
+            <param name="userId"></param>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="typeId"></param>
+            <param name="searchKey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.PackingMaterialController.GetEnableSpareFields">
+            <summary>
+            获取包材表启用的闲置字段信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.PackingMaterialController.GetPackingMaterialDetail(System.String)">
+            <summary>
+            获取包材明细
+            </summary>
+            <param name="sampleId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.PackingMaterialController.GetOptions">
+            <summary>
+            获取包材相关选项的数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.PackingMaterialController.AddPackingMaterial(Models.Model.Baseinfo.PackingMaterialDto)">
+            <summary>
+            添加包材
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.PackingMaterialController.UpdatePackingMaterial(Models.Model.Baseinfo.PackingMaterialDto)">
+            <summary>
+            修改包材
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.PackingMaterialController.DelPackingMaterial(System.String[])">
+            <summary>
+            删除包材
+            </summary>
+            <param name="productId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.PackingMaterialController.ExportPackingMaterial(System.String,System.String,System.String,System.Int32,System.Collections.Generic.List{Models.Model.KeyValueModel})">
+            <summary>
+            导出包材
+            </summary>
+            <param name="searchKey"></param>
+            <param name="orderField"></param>
+            <param name="orderType"></param>
+            <param name="goodsClassifyId"></param>
+            <param name="fields"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.PackingMaterialController.GetAllowField">
+            <summary>
+            获取当前用户导出用户列表被允许的字段
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.RawMaterialController.GetRawMaterialClassifyData">
+            <summary>
+            获取所有原材料类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.RawMaterialController.AddRawMaterialClassify(Models.Model.Baseinfo.BaseTypeDto)">
+            <summary>
+            添加原材料类型
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.RawMaterialController.UpdateRawMaterialClassify(Models.Model.Baseinfo.BaseTypeDto)">
+            <summary>
+            修改原材料类型
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.RawMaterialController.DelRawMaterialClassify(System.Int32)">
+            <summary>
+            删除原材料类型
+            </summary>
+            <param name="typeId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.RawMaterialController.GetRawMaterialList(System.String,System.Int32,System.Int32,System.String,System.String,System.Int32,System.String)">
+            <summary>
+            获取所有原材料列表
+            </summary>
+            <param name="userId"></param>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="typeId"></param>
+            <param name="searchKey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.RawMaterialController.GetEnableSpareFields">
+            <summary>
+            获取原材料表启用的闲置字段信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.RawMaterialController.GetRawMaterialDetail(System.String)">
+            <summary>
+            获取原材料明细
+            </summary>
+            <param name="sampleId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.RawMaterialController.GetOptions">
+            <summary>
+            获取原材料相关选项的数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.RawMaterialController.AddRawMaterial(Models.Model.Baseinfo.RawMaterialDto)">
+            <summary>
+            添加原材料
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.RawMaterialController.UpdateRawMaterial(Models.Model.Baseinfo.RawMaterialDto)">
+            <summary>
+            修改原材料
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.RawMaterialController.DelRawMaterial(System.String[])">
+            <summary>
+            删除原材料
+            </summary>
+            <param name="productId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.RawMaterialController.ExportRawMaterial(System.String,System.String,System.String,System.Int32,System.Collections.Generic.List{Models.Model.KeyValueModel})">
+            <summary>
+            导出原材料
+            </summary>
+            <param name="searchKey"></param>
+            <param name="orderField"></param>
+            <param name="orderType"></param>
+            <param name="goodsClassifyId"></param>
+            <param name="fields"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.RawMaterialController.GetAllowField">
+            <summary>
+            获取当前用户导出用户列表被允许的字段
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SamplePieceController.GetSamplePieceClassifyData">
+            <summary>
+            获取所有样件类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SamplePieceController.AddSamplePieceClassify(Models.Model.Baseinfo.BaseTypeDto)">
+            <summary>
+            添加样件类型
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SamplePieceController.UpdateSamplePieceClassify(Models.Model.Baseinfo.BaseTypeDto)">
+            <summary>
+            修改样件类型
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SamplePieceController.DelSamplePieceClassify(System.Int32)">
+            <summary>
+            删除样件类型
+            </summary>
+            <param name="typeId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SamplePieceController.GetSamplePieceList(System.String,System.Int32,System.Int32,System.String,System.String,System.Int32,System.String)">
+            <summary>
+            获取所有样件列表
+            </summary>
+            <param name="userId"></param>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="typeId"></param>
+            <param name="searchKey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SamplePieceController.GetEnableSpareFields">
+            <summary>
+            获取样件表启用的闲置字段信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SamplePieceController.GetSamplePieceDetail(System.String)">
+            <summary>
+            获取样件明细
+            </summary>
+            <param name="sampleId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SamplePieceController.GetOptions">
+            <summary>
+            获取样件相关选项的数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SamplePieceController.AddSamplePiece(Models.Model.Baseinfo.SamplePieceDto)">
+            <summary>
+            添加样件
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SamplePieceController.UpdateSamplePiece(Models.Model.Baseinfo.SamplePieceDto)">
+            <summary>
+            修改样件
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SamplePieceController.DelSamplePiece(System.String[])">
+            <summary>
+            删除样件
+            </summary>
+            <param name="productId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SamplePieceController.ExportSamplePiece(System.String,System.String,System.String,System.Int32,System.Collections.Generic.List{Models.Model.KeyValueModel})">
+            <summary>
+            导出样件
+            </summary>
+            <param name="searchKey"></param>
+            <param name="orderField"></param>
+            <param name="orderType"></param>
+            <param name="goodsClassifyId"></param>
+            <param name="fields"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SamplePieceController.GetAllowField">
+            <summary>
+            获取当前用户导出用户列表被允许的字段
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SeparatorController.GetSeparatorClassifyData">
+            <summary>
+            获取所有辅材类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SeparatorController.AddSeparatorClassify(Models.Model.Baseinfo.BaseTypeDto)">
+            <summary>
+            添加辅材类型
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SeparatorController.UpdateSeparatorClassify(Models.Model.Baseinfo.BaseTypeDto)">
+            <summary>
+            修改辅材类型
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SeparatorController.DelSeparatorClassify(System.Int32)">
+            <summary>
+            删除辅材类型
+            </summary>
+            <param name="typeId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SeparatorController.GetSeparatorList(System.String,System.Int32,System.Int32,System.String,System.String,System.Int32,System.String)">
+            <summary>
+            获取所有辅材列表
+            </summary>
+            <param name="userId"></param>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="typeId"></param>
+            <param name="searchKey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SeparatorController.GetEnableSpareFields">
+            <summary>
+            获取辅材表启用的闲置字段信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SeparatorController.GetSeparatorDetail(System.String)">
+            <summary>
+            获取辅材明细
+            </summary>
+            <param name="sampleId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SeparatorController.GetOptions">
+            <summary>
+            获取辅材相关选项的数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SeparatorController.AddSeparator(Models.Model.Baseinfo.SeparatorDto)">
+            <summary>
+            添加辅材
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SeparatorController.UpdateSeparator(Models.Model.Baseinfo.SeparatorDto)">
+            <summary>
+            修改辅材
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SeparatorController.DelSeparator(System.String[])">
+            <summary>
+            删除辅材
+            </summary>
+            <param name="productId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SeparatorController.ExportSeparator(System.String,System.String,System.String,System.Int32,System.Collections.Generic.List{Models.Model.KeyValueModel})">
+            <summary>
+            导出辅材
+            </summary>
+            <param name="searchKey"></param>
+            <param name="orderField"></param>
+            <param name="orderType"></param>
+            <param name="goodsClassifyId"></param>
+            <param name="fields"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SeparatorController.GetAllowField">
+            <summary>
+            获取当前用户导出用户列表被允许的字段
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SparePartController.GetSparePartClassifyData">
+            <summary>
+            获取所有备件类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SparePartController.AddSparePartType(Models.Model.Baseinfo.BaseTypeDto)">
+            <summary>
+            添加备件类型
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SparePartController.UpdateSparePartType(Models.Model.Baseinfo.BaseTypeDto)">
+            <summary>
+            修改备件类型
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SparePartController.DelSparePartType(System.Int32)">
+            <summary>
+            删除备件类型
+            </summary>
+            <param name="typeId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SparePartController.GetSparePartList(System.String,System.Int32,System.Int32,System.String,System.String,System.Int32,System.String)">
+            <summary>
+            获取所有备件列表
+            </summary>
+            <param name="userId"></param>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="goodsClassifyId"></param>
+            <param name="searchKey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SparePartController.GetEnableSpareFields">
+            <summary>
+            获取备件表启用的闲置字段信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SparePartController.GetSparePartDetail(System.String)">
+            <summary>
+            获取备件明细
+            </summary>
+            <param name="spareId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SparePartController.GetOptions">
+            <summary>
+            获取备件相关选项的数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SparePartController.AddSparePart(Models.Model.Baseinfo.SparePartDto)">
+            <summary>
+            添加备件
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SparePartController.UpdateSparePart(Models.Model.Baseinfo.SparePartDto)">
+            <summary>
+            修改备件
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SparePartController.DelSparePart(System.String[])">
+            <summary>
+            删除备件
+            </summary>
+            <param name="SparePartId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SparePartController.ExportSparePart(System.String,System.String,System.String,System.Int32,System.Collections.Generic.List{Models.Model.KeyValueModel})">
+            <summary>
+            导出备件
+            </summary>
+            <param name="searchKey"></param>
+            <param name="orderField"></param>
+            <param name="orderType"></param>
+            <param name="goodsClassifyId"></param>
+            <param name="fields"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SparePartController.GetAllowField">
+            <summary>
+            获取当前用户导出用户列表被允许的字段
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SupplierController.GetSuppliers(System.String,System.Int32,System.Int32,System.String,System.String,System.String)">
+            <summary>
+            获取所有供应商列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SupplierController.GetEnableSpareFields">
+            <summary>
+            获取供应商表启用的闲置字段信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SupplierController.GetSupplierDetail(System.String)">
+            <summary>
+            获取供应商明细
+            </summary>
+            <param name="supplierId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SupplierController.GetOptions">
+            <summary>
+            获取供应商相关选项的数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SupplierController.AddSupplier(Models.Model.Baseinfo.SupplierDto)">
+            <summary>
+            添加供应商
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SupplierController.UpdateSupplier(Models.Model.Baseinfo.SupplierDto)">
+            <summary>
+            修改供应商
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SupplierController.DelSupplier(System.String[])">
+            <summary>
+            删除供应商
+            </summary>
+            <param name="suppliersId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SupplierController.ExportSuppliers(System.String,System.String,System.String,System.Collections.Generic.List{Models.Model.KeyValueModel})">
+            <summary>
+            导出供应商
+            </summary> 
+            <param name="searchKey"></param>
+            <param name="orderField"></param>
+            <param name="orderType"></param>
+            <param name="fields"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.SupplierController.GetAllowField(System.String)">
+            <summary>
+            获取当前用户导出供应商列表被允许的字段
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.UnitController.GetUnits(System.Int32,System.Int32,System.String,System.String,System.String)">
+            <summary>
+            获取所有单位列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.UnitController.GetAboutUnitOptions">
+            <summary>
+            获取单位相关选项数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.UnitController.AddUnit(Models.Model.Baseinfo.UnitDetail)">
+            <summary>
+            添加单位
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.UnitController.UpdateUnit(Models.Model.Baseinfo.UnitDetail)">
+            <summary>
+            修改单位
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Baseinfo.UnitController.DelUnit(System.Int32[])">
+            <summary>
+            删除单位
+            </summary>
+            <param name="unitsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetSysVersion">
+            <summary>
+            获取系统版本号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetDictionarys">
+            <summary>
+            获取所有字典列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetDictionaryOption(System.String)">
+            <summary>
+            根据参数Key获取字典选项
+            </summary>
+            <param name="argskey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetFieldTypes">
+            <summary>
+            获取字段类型列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetProvinces">
+            <summary>
+            获取所有省份
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetCitysByProvince(System.Int32)">
+            <summary>
+            根据省份获取城市
+            </summary>
+            <param name="provinceId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetWarehouses">
+            <summary>
+            获取所有仓库
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetElementByWarehouse(System.String)">
+            <summary>
+            查询仓库中所有货架、货位
+            </summary>
+            <param name="warehouseId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetShelfByWarehouse(System.String)">
+            <summary>
+            根据仓库获取货架
+            </summary>
+            <param name="warehouseId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetBinByWarehouse(System.String)">
+            <summary>
+            根据仓库获取库位
+            </summary>
+            <param name="warehouseId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetBinByShelf(System.String)">
+            <summary>
+            根据货架获取库位
+            </summary>
+            <param name="shelfId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetWorkbinCellsByBin(System.Int32)">
+            <summary>
+            根据货位获取料箱
+            </summary>
+            <param name="binId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetStorageDetailsByBin(System.Int32)">
+            <summary>
+            根据库位查询库存信息
+            </summary>
+            <param name="binId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetWorkbinSpec">
+            <summary>
+            获取料箱规格
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetGoodsGroup">
+            <summary>
+            获取物品大类
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetGoodsClassify(System.String)">
+            <summary>
+            获取物品小类
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetUserByKey(System.String,System.Int32)">
+            <summary>
+            根据关键字查询用户
+            </summary>
+            <param name="keyword"></param>
+            <param name="limit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetGoodsByKey(System.String,System.String,System.Int32)">
+            <summary>
+            根据关键字查询商品
+            </summary>
+            <param name="goodsClassify"></param>
+            <param name="keyword"></param>
+            <param name="limit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetGoodsByKeyAndClassify(System.String,System.Int32,System.String,System.String,System.Int32)">
+            <summary>
+            根据关键字查询商品(模糊查询、大类、小类、是否在SAP)
+            </summary> 
+            <param name="goodsClassify"></param>
+            <param name="goodsClassifyId"></param>
+            <param name="isSAP"></param>
+            <param name="keyword"></param>
+            <param name="limit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetGoodsById(System.String,System.String)">
+            <summary>
+            根据物料编码查询物料信息
+            </summary>
+            <param name="goodsId"></param>
+            <param name="goodsClassify"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetGoodsAutoSort(System.String,System.Int32,System.String,System.String,System.Int32)">
+            <summary>
+            根据关键字查询商品(模糊查询、大类、小类、区域)
+            同时进行智能排序：按top领用、最近领用记录排序
+            </summary> 
+            <param name="goodsClassify"></param>
+            <param name="goodsClassifyId"></param>
+            <param name="area"></param>
+            <param name="keyword"></param>
+            <param name="limit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetGoodsPageByKeyAndClassify(System.Int32,System.Int32,System.String,System.String,System.String,System.Int32,System.String,System.String)">
+            <summary>
+            根据关键字分页查询商品(模糊查询、大类、小类、是否在SAP)
+            </summary>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="goodsClassify"></param>
+            <param name="goodsClassifyId"></param>
+            <param name="isSAP"></param>
+            <param name="keyword"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetSupplierByKey(System.String,System.Int32)">
+            <summary>
+            根据关键字查询供应商
+            </summary>
+            <param name="keyword"></param>
+            <param name="limit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetUnits(System.String)">
+            <summary>
+            根据单位类型获取单位
+            </summary>
+            <param name="unitType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetAreas">
+            <summary>
+            获取所有工厂区域
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetLines">
+            <summary>
+            获取所有产线
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.GetPhotoLimit">
+            <summary>
+            获取允许上传货品照片的上限数
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.UploadGoodsPhoto">
+            <summary>
+            上传货品图片
+            </summary>
+            <returns></returns>
+            <exception cref="T:Logic.LogicBase.BusinessException"></exception>
+        </member>
+        <member name="M:WebApi.Controllers.CommonController.UploadFile">
+            <summary>
+            上传文件
+            </summary>
+            <returns></returns>
+            <exception cref="T:Logic.LogicBase.BusinessException"></exception>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageController.GetOrders(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            入库单分页查询
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageController.GetArgs">
+            <summary>
+            获取入库单相关参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageController.GetOptions">
+            <summary>
+            获取入库单相关选项及参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageController.GetOrderDetail(System.String,System.String)">
+            <summary>
+            获取入库单明细
+            </summary>
+            <param name="userId"></param>
+            <param name="orderNo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageController.GetWorkbinRecommend(System.String)">
+            <summary>
+            根据物品查询推荐入库料箱
+            </summary>
+            <param name="goodsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageController.GetBinRecommend(System.String,System.Int32)">
+            <summary>
+            查询指定仓库和规格的货架、货位
+            </summary>
+            <param name="warehouseId"></param>
+            <param name="specId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageController.AddInStorage(Models.Model.Inv.InStorage)">
+            <summary>
+            添加入库单
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageController.UpdateInStorage(Models.Model.Inv.InStorage)">
+            <summary>
+            修改仓库
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageController.DelInStorage(System.String[])">
+            <summary>
+            删除入库单
+            </summary>
+            <param name="orderNo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageController.ConfirmInStorage(System.String)">
+            <summary>
+            入库确认
+            </summary>
+            <param name="orderNo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageController.ExportInStorage(System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            导出入库单
+            </summary>
+            <param name="searchKey"></param>
+            <param name="orderField"></param>
+            <param name="orderType"></param>
+            <param name="dateStart"></param>
+            <param name="dateEnd"></param>
+            <param name="goodsGroup"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageController.GetAllowField(System.String)">
+            <summary>
+            获取当前用户导出入库单表被允许的字段
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageController.ApprovalInStorage(System.String[],System.Boolean,System.String,System.String,System.String)">
+            <summary>
+            审批入库单
+            </summary>
+            <param name="orderNo"></param>
+            <param name="isApprove"></param>
+            <param name="opinion"></param>
+            <param name="userId"></param>
+            <param name="userName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageLabelsController.GetGoodsByKey(System.Int32,System.Int32,System.String,System.String,System.String,System.Int32,System.String)">
+            <summary>
+            查询所有物品列表
+            </summary>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="goodsGroup"></param>
+            <param name="goodsClassifyId"></param> 
+            <param name="keyword"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageLabelsController.GetWorkbinRecommend(System.String)">
+            <summary>
+            根据物品查询推荐入库货位
+            </summary>
+            <param name="goodsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageLabelsController.GetUnSubmitCodes(System.String)">
+            <summary>
+            查询当前物品已扫码未提交的数据
+            </summary>
+            <param name="goodsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageLabelsController.SubmitScan(Models.Model.Inv.InStorageLabelsDto)">
+            <summary>
+            扫码记录
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageLabelsController.SubmitCode(Models.Model.Inv.InStorageLabelSubmitDto)">
+            <summary>
+            扫码提交
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.GetOrders(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            入库单分页查询
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.GetArgs">
+            <summary>
+            获取入库单相关参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.GetOptions">
+            <summary>
+            获取入库单相关选项及参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.GetOrderDetail(System.String,System.String)">
+            <summary>
+            获取入库单明细
+            </summary>
+            <param name="userId"></param>
+            <param name="orderNo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.GetWorkbinRecommend(System.String)">
+            <summary>
+            根据物品查询推荐入库料箱
+            </summary>
+            <param name="goodsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.GetBinRecommend(System.String,System.Int32)">
+            <summary>
+            查询指定仓库和规格的货架、货位
+            </summary>
+            <param name="warehouseId"></param>
+            <param name="specId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.AddInStorage(Models.Model.Inv.InStorage)">
+            <summary>
+            添加入库单
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.UpdateInStorage(Models.Model.Inv.InStorage)">
+            <summary>
+            修改仓库
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.DelInStorage(System.String[])">
+            <summary>
+            删除入库单
+            </summary>
+            <param name="orderNo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.ConfirmInStorage(System.String)">
+            <summary>
+            入库确认
+            </summary>
+            <param name="orderNo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.ExportInStorage(System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            导出入库单
+            </summary>
+            <param name="searchKey"></param>
+            <param name="orderField"></param>
+            <param name="orderType"></param>
+            <param name="dateStart"></param>
+            <param name="dateEnd"></param>
+            <param name="goodsGroup"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.GetAllowField(System.String)">
+            <summary>
+            获取当前用户导出入库单表被允许的字段
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.InStorageMobileController.ApprovalInStorage(System.String[],System.Boolean,System.String,System.String,System.String)">
+            <summary>
+            审批入库单
+            </summary>
+            <param name="orderNo"></param>
+            <param name="isApprove"></param>
+            <param name="opinion"></param>
+            <param name="userId"></param>
+            <param name="userName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.OutStorageController.GetOrders(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            出库单分页查询
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.OutStorageController.GetArgs">
+            <summary>
+            获取出库单相关参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.OutStorageController.GetOptions">
+            <summary>
+            获取出库单相关选项及参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.OutStorageController.GetOrderDetail(System.String,System.String)">
+            <summary>
+            获取出库单明细
+            </summary>
+            <param name="userId"></param>
+            <param name="orderNo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.OutStorageController.AddOutStorage(Models.Model.Inv.OutStorage)">
+            <summary>
+            添加出库单
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.OutStorageController.UpdateOutStorage(Models.Model.Inv.OutStorage)">
+            <summary>
+            修改仓库
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.OutStorageController.DelOutStorage(System.String[])">
+            <summary>
+            删除出库单
+            </summary>
+            <param name="orderNo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.OutStorageController.ConfirmOutStorage(System.String)">
+            <summary>
+            出库确认
+            </summary>
+            <param name="orderNo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.OutStorageController.ExportOutStorage(System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            导出出库单
+            </summary>
+            <param name="searchKey"></param>
+            <param name="orderField"></param>
+            <param name="orderType"></param>
+            <param name="dateStart"></param>
+            <param name="dateEnd"></param>
+            <param name="goodsGroup"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.OutStorageController.GetAllowField(System.String)">
+            <summary>
+            获取当前用户导出出库单表被允许的字段
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.OutStorageController.ApprovalOutStorage(System.String[],System.Boolean,System.String,System.String,System.String)">
+            <summary>
+            审批出库单
+            </summary>
+            <param name="orderNo"></param>
+            <param name="isApprove"></param>
+            <param name="opinion"></param>
+            <param name="userId"></param>
+            <param name="userName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.ShelfBinController.GetWarehouseTree">
+            <summary>
+            仓库、货架、库位树形结构数据查看
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.ShelfBinController.GetWarehouseDetail(System.String)">
+            <summary>
+            仓库明细查询
+            </summary>
+            <param name="warehouseId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.ShelfBinController.GetShelfDetail(System.String)">
+            <summary>
+            货架明细查询
+            </summary>
+            <param name="shelfId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.ShelfBinController.GetBinDetail(System.Int32)">
+            <summary>
+            货位明细查询
+            </summary>
+            <param name="binId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.ShelfBinController.AddShelf(Models.Model.Inv.Shelf)">
+            <summary>
+            添加货架
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.ShelfBinController.UpdateShelf(Models.Model.Inv.Shelf)">
+            <summary>
+            修改货架
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.ShelfBinController.DelShelf(System.String)">
+            <summary>
+            删除货架
+            </summary>
+            <param name="shelfId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.ShelfBinController.AddBin(Models.Model.Inv.Bin)">
+            <summary>
+            添加货位
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.ShelfBinController.UpdateBin(Models.Model.Inv.Bin)">
+            <summary>
+            修改货位
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.ShelfBinController.DelBin(System.Int32)">
+            <summary>
+            删除货位
+            </summary>
+            <param name="binId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.StorageController.GetStorageList(System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            库存汇总分页查询
+            </summary> 
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="searchKey"></param>
+            <param name="warehouseId"></param>
+            <param name="goodsGroup"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.StorageController.GetStorageDetailList(System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            库存明细分页查询
+            </summary>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="searchKey"></param>
+            <param name="warehouseId"></param>
+            <param name="goodsGroup"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.StorageController.GetStorageFlowList(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            库存流水分页查询
+            </summary>
+            <param name="goodsId"></param>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="searchKey"></param>
+            <param name="flowType"></param>
+            <param name="dateStart"></param>
+            <param name="dateEnd"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.StorageController.GetOptions">
+            <summary>
+            获取库存相关选项及参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.StorageController.GetStorageDetails(System.String)">
+            <summary>
+            获取库存明细
+            </summary>
+            <param name="goodsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.StorageController.StorageStatistics(System.String,System.String)">
+            <summary>
+            库存汇总计算
+            </summary>
+            <param name="userId"></param>
+            <param name="userName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.StorageController.AddAllocationStorage(Models.Model.Inv.AllocationOrder)">
+            <summary>
+            添加库存调拨
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.StorageController.ExportStorage(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            导出库存汇总信息
+            </summary>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="searchKey"></param>
+            <param name="warehouseId"></param>
+            <param name="goodsGroup"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.StorageController.ExportStorageDetail(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            导出库存明细信息
+            </summary>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="searchKey"></param>
+            <param name="warehouseId"></param>
+            <param name="goodsGroup"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.StorageController.ExportStorageFlow(System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            导出库存流水信息
+            </summary>
+            <param name="goodsId"></param>
+            <param name="orderFieled"></param>
+            <param name="orderType"></param>
+            <param name="searchKey"></param>
+            <param name="flowType"></param>
+            <param name="dateStart"></param>
+            <param name="dateEnd"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WebApi.Controllers.Inv.TakeStockController">
+            <summary>
+            盘点
+            </summary>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.TakeStockController.GetExpendTrend(System.String)">
+            <summary>
+            查询消耗趋势
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.TakeStockController.GetTakeStockLockGoods(System.Int32,System.Int32,System.String,System.String,System.Int32,System.String)">
+            <summary>
+            获取当前盘点被锁定的物品
+            </summary>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="typeId"></param>
+            <param name="searchKey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.TakeStockController.GetTakeStockHis(System.Int32,System.Int32,System.String,System.String,System.String,System.Int32,System.Int32,System.String)">
+            <summary>
+            查询历史盘点记录
+            </summary>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="goodsGroup"></param>
+            <param name="goodsClassifyId"></param>
+            <param name="month"></param>
+            <param name="searchKey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.TakeStockController.GetOptions">
+            <summary>
+            获取盘点相关选项参数
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.TakeStockController.ExportTakeStockHis(System.String,System.String,System.String,System.Int32,System.Int32,System.String)">
+            <summary>
+            导出盘点记录
+            </summary>
+            <param name="searchKey"></param>
+            <param name="orderField"></param>
+            <param name="orderType"></param>
+            <param name="goodsGroup"></param>
+            <param name="goodsClassifyId"></param>
+            <param name="month"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.TakeStockController.GetGoodsByKey(System.Int32,System.Int32,System.String,System.String,System.String,System.Int32,System.String,System.String,System.Boolean)">
+            <summary>
+            查询所有物品列表
+            </summary>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="goodsGroup"></param>
+            <param name="goodsClassifyId"></param>
+            <param name="warehouseId"></param>
+            <param name="keyword"></param>
+            <param name="isTakeStockCurDate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.TakeStockController.GetGoodsTakeStockStatus(System.String)">
+            <summary>
+            查询当前物品是否在盘点中
+            </summary>
+            <param name="goodsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.TakeStockController.SetTakeStockLockByGoods(System.Collections.Generic.List{System.String})">
+            <summary>
+            盘点锁定物品
+            </summary>
+            <param name="goodsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.TakeStockController.GetGoodsInventoryDetail(System.String)">
+            <summary>
+            查询指定物品的存储明细
+            </summary>
+            <param name="goodsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.TakeStockController.AddTaskStockOrderByGoods(Models.Model.Inv.TakeStockGoodsDto)">
+            <summary>
+            盘点保存（按物品盘点）
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.TakeStockController.GetTakeStockLockInvBin(System.Int32,System.Int32,System.String,System.String,System.String)">
+            <summary>
+            获取当前盘点被锁定的库位
+            </summary>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="searchKey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.TakeStockController.GetBins(System.Int32,System.Int32,System.String,System.String,System.Int32,System.String,System.String,System.String,System.String,System.Boolean)">
+            <summary>
+            分页查询货位信息
+            </summary>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="warehouseId"></param>
+            <param name="shelfId"></param>
+            <param name="workbinSpecId"></param>
+            <param name="goodsGroup"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="keyword"></param>
+            <param name="isTakeStockCurDate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.TakeStockController.GetBinTakeStockStatus(System.Int32)">
+            <summary>
+            查询当前货位是否在盘点中
+            </summary>
+            <param name="binId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.TakeStockController.SetTakeStockLockByBin(System.Collections.Generic.List{System.Int32})">
+            <summary>
+            盘点锁定库位
+            </summary>
+            <param name="binId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.TakeStockController.GetBinInventoryDetail(System.Int32)">
+            <summary>
+            查询指定库位存储明细
+            </summary>
+            <param name="binId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.TakeStockController.AddTaskStockOrderByBin(Models.Model.Inv.BinTakeStockDetailDto)">
+            <summary>
+            盘点保存（按货位盘点）
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.WarehouseBinController.GetWarehouses(System.String,System.Int32,System.Int32,System.String,System.String,System.String)">
+            <summary>
+            获取所有仓库列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.WarehouseBinController.GetEnableSpareFields">
+            <summary>
+            获取仓库表启用的闲置字段信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.WarehouseBinController.GetOptions">
+            <summary>
+            获取仓库相关选项的数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.WarehouseBinController.GetWarehouseBins(System.String)">
+            <summary>
+            根据仓库查询库位
+            </summary>
+            <param name="warehouseId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.WarehouseBinController.AddWarehouseBin(Models.Model.Inv.WarehouseDetail)">
+            <summary>
+            添加客户
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.WarehouseBinController.UpdateWarehouseBin(Models.Model.Inv.WarehouseDetail)">
+            <summary>
+            修改仓库
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.WarehouseBinController.DelWarehouseBin(System.String[])">
+            <summary>
+            删除仓库
+            </summary>
+            <param name="warehousesId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.WarehouseLayoutController.GetWarehouseTree">
+            <summary>
+            仓库、货架、库位树形结构数据查看
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.WarehouseLayoutController.GetElementByWarehouse(System.String)">
+            <summary>
+            获取仓库下的所有货架或货位
+            </summary>
+            <param name="warehouseId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.WarehouseLayoutController.GetElementByShelf(System.String)">
+            <summary>
+            获取货架下所有货位
+            </summary>
+            <param name="shelfId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.WarehouseLayoutController.GetWorkbinCells(System.Int32)">
+            <summary>
+            获取货位对应的料箱单元格
+            </summary>
+            <param name="binId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.WarehouseLayoutController.GetStockInfoByBin(System.Int32)">
+            <summary>
+            根据库位查询存放信息
+            </summary>
+            <param name="binId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Inv.WarehouseLayoutController.UnlockBin(System.Int32,System.String)">
+            <summary>
+            解锁库位
+            </summary>
+            <param name="binId"></param>
+            <param name="userName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Order.OrderPlanController.GetOrders(System.String,System.Int32,System.Int32,System.String,System.String,System.String)">
+            <summary>
+            收货单分页查询
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Order.OrderPlanController.GetOptions">
+            <summary>
+            获取di单相关选项及参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Order.OrderPlanController.AddOrderPlan(Models.Model.Order.OrderPlanDto)">
+            <summary>
+            添加订单计划
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Order.OrderPlanController.UpdateOrderPlan(Models.Model.Order.OrderPlanDto)">
+            <summary>
+            修改订单计划
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Order.OrderPlanController.DelOrderPlan(System.String[])">
+            <summary>
+            删除订单计划
+            </summary>
+            <param name="detailsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.GetSending(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            发货单分页查询
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.GetYesOrNoGroup">
+            <summary>
+            是否紧急发货/是否有足够库存
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.GetCreateUserNameGroup">
+            <summary>
+            计划员
+            </summary>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:WebApi.Controllers.Purchase.ShipmentController.GetSendingAddressGroup" -->
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.GetDetailStatusGroup">
+            <summary>
+            单据状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.GetOptions">
+            <summary>
+            获取发货单相关选项及参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.AddSending(Models.Model.Purchase.SendingOrderDto)">
+            <summary>
+            添加发货单
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.UpdateSending(Models.Model.Purchase.SendingOrderDto)">
+            <summary>
+            修改发货单
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.DelSending(System.String[])">
+            <summary>
+            删除发货单
+            </summary>
+            <param name="orderNos"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.GetBaseFiles(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            获取文件存储信息
+            </summary>
+            <param name="userId"></param>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="searchKey"></param>
+            <param name="orderNo"></param>
+            <param name="fileInfoType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.DelSendingFiles(System.Int32[])">
+            <summary>
+            删除发货计划附件
+            </summary>
+            <param name="fileIds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ShipmentController.AdviceSending(System.String,Models.Model.MailModel)">
+            <summary>
+            发送邮件通知
+            </summary>
+            <param name="data"></param>
+            <param name="orderNo"></param>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.GetOrders(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String,System.Int32,System.String,System.String,System.Int32)">
+            <summary>
+            采购订单分页查询
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.GetArgs">
+            <summary>
+            获取采购订单相关参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.GetOptions">
+            <summary>
+            获取采购订单相关选项及参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.GetApprovalHis(System.String)">
+            <summary>
+            查询审批明细
+            </summary>
+            <param name="orderNo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.AddPurchaseOrder(Models.Model.Purchase.PurchaseOrderDto)">
+            <summary>
+            添加采购订单
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.UpdatePurchaseOrder(Models.Model.Purchase.PurchaseOrderDto)">
+            <summary>
+            修改仓库
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.DelPurchaseOrder(System.Int32[])">
+            <summary>
+            删除采购订单
+            </summary>
+            <param name="detailsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.AdviceReceiving(System.String,Models.Model.MailModel)">
+            <summary>
+            发送邮件通知收货
+            </summary>
+            <param name="data"></param>
+            <param name="orderNo"></param>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.SubmitReceivedWH(System.Collections.Generic.List{Models.Model.Purchase.PurchaseReceiveDto})">
+            <summary>
+            仓库确认收货
+            </summary>
+            <param name="detailsId"></param>        
+            <param name="userId"></param>
+            <param name="userName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.SubmitReceivedWK(System.Collections.Generic.List{Models.Model.Purchase.PurchaseReceiveDto})">
+            <summary>
+            WK确认收货
+            </summary>
+            <param name="detailsId"></param>        
+            <param name="userId"></param>
+            <param name="userName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.PurchaseOrderController.ApprovalPurchaseOrder(Models.Model.Purchase.PurchaseOrderDto)">
+            <summary>
+            审批采购订单
+            </summary>
+            <param name="orderNo"></param>
+            <param name="isApprove"></param>
+            <param name="opinion"></param>
+            <param name="userId"></param>
+            <param name="userName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetOrders(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            收货单分页查询
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetReceivingLevelGroup">
+            <summary>
+            优先级
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetCreateUserNameGroup">
+            <summary>
+            计划员
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetDetailStatusGroup">
+            <summary>
+            单据状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetArgs">
+            <summary>
+            获取收货单相关参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetOptions">
+            <summary>
+            获取收货单相关选项及参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetApprovalHis(System.String)">
+            <summary>
+            查询审批明细
+            </summary>
+            <param name="orderNo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.UpdateReceivingUrgency(System.Int32,System.Single)">
+            <summary>
+            修改紧急数量
+            </summary>
+            <param name="detailId"></param>
+            <param name="qty"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.AddReceivingOrder(Models.Model.Purchase.ReceivingOrderDto)">
+            <summary>
+            添加收货单
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.UpdateReceivingOrder(Models.Model.Purchase.ReceivingOrderDto)">
+            <summary>
+            修改仓库
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.DelReceivingOrder(System.Int32[])">
+            <summary>
+            删除收货单
+            </summary>
+            <param name="detailsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.AdviceReceiving(System.String,Models.Model.MailModel)">
+            <summary>
+            发送邮件通知收货
+            </summary>
+            <param name="data"></param>
+            <param name="orderNo"></param>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.SubmitReceived(System.Collections.Generic.List{Models.Model.Purchase.ReceivingActualDto})">
+            <summary>
+            确认收货
+            </summary>
+            <param name="detailsId"></param>        
+            <param name="userId"></param>
+            <param name="userName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.ApprovalReceivingOrder(System.String[],System.Boolean,System.String,System.String,System.String)">
+            <summary>
+            审批入库单
+            </summary>
+            <param name="orderNo"></param>
+            <param name="isApprove"></param>
+            <param name="opinion"></param>
+            <param name="userId"></param>
+            <param name="userName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.GetBaseFiles(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            获取文件存储信息
+            </summary>
+            <param name="userId"></param>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="searchKey"></param>
+            <param name="orderNo"></param>
+            <param name="fileInfoType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.ReceivingOrderController.DelSendingFiles(System.Int32[])">
+            <summary>
+            删除收货计划图片
+            </summary>
+            <param name="fileIds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.GetSending(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            发货单分页查询
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.GetYesOrNoGroup">
+            <summary>
+            是否紧急发货/是否有足够库存
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.GetCreateUserNameGroup">
+            <summary>
+            计划员
+            </summary>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:WebApi.Controllers.Purchase.SendingOrderController.GetSendingAddressGroup" -->
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.GetDetailStatusGroup">
+            <summary>
+            单据状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.GetOptions">
+            <summary>
+            获取发货单相关选项及参数数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.AddSending(Models.Model.Purchase.SendingOrderDto)">
+            <summary>
+            添加发货单
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.UpdateSending(Models.Model.Purchase.SendingOrderDto)">
+            <summary>
+            修改发货单
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.DelSending(System.String[])">
+            <summary>
+            删除发货单
+            </summary>
+            <param name="orderNos"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.GetBaseFiles(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            获取文件存储信息
+            </summary>
+            <param name="userId"></param>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="searchKey"></param>
+            <param name="orderNo"></param>
+            <param name="fileInfoType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.DelSendingFiles(System.Int32[])">
+            <summary>
+            删除发货计划附件
+            </summary>
+            <param name="fileIds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Purchase.SendingOrderController.AdviceSending(System.String,Models.Model.MailModel)">
+            <summary>
+            发送邮件通知
+            </summary>
+            <param name="data"></param>
+            <param name="orderNo"></param>
+        </member>
+        <member name="T:WebApi.Controllers.ProductOffLine.BufferWarehouseDashboardController">
+            <summary>
+            缓存仓看板API
+            </summary>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.BufferWarehouseDashboardController.GetMatchingInfo(System.Int32,System.Int32)">
+            <summary>
+            查询所有配对小车信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.BufferWarehouseDashboardController.GetBufferWarehouseElement">
+            <summary>
+            查询缓存仓库位信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.BufferWarehouseDashboardController.GetStockInfoByBin(System.Int32)">
+            <summary>
+            根据库位查询存放信息
+            </summary>
+            <param name="binId"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WebApi.Controllers.ProductOffLine.PDACarLoadController">
+            <summary>
+            PDA扫码装车
+            </summary>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.PDACarLoadController.GetProductionOrderInfo(System.String)">
+            <summary>
+            根据小车唯一码查询已分配小车的交接单信息
+            </summary>
+            <param name="carSoleCode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.PDACarLoadController.GetFreeBin(System.String)">
+            <summary>
+            根据小车唯一码查询推荐存放的缓存库位
+            </summary>
+            <param name="carSoleCode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.PDACarLoadController.LockBin(Models.Model.Prod.CarLoadDto)">
+            <summary>
+            锁定库位
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.PDACarLoadController.SubmitCarLoad(Models.Model.Prod.CarLoadDto)">
+            <summary>
+            确认装车
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WebApi.Controllers.ProductOffLine.PDAMessageController">
+            <summary>
+            PDA消息查询
+            </summary>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.PDAMessageController.GetMessages(System.Int32,System.Int32,System.String)">
+            <summary>
+            消息分页查询
+            </summary>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.PDAMessageController.GetNotReadMessageCount(System.String)">
+            <summary>
+            获取未读消息的数量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.PDAMessageController.SetRead(System.Int32[],System.String)">
+            <summary>
+            将未读消息修改成已读
+            </summary>
+            <param name="messageId"></param>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.PDAMessageController.GetSubscribeMessageType(System.String)">
+            <summary>
+            获取订阅消息的类型
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.PDAMessageController.SubmitSubscribeMessageType(System.String[],System.String)">
+            <summary>
+            设置订阅消息类型
+            </summary>
+            <param name="userId"></param>
+            <param name="messageTypes"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WebApi.Controllers.ProductOffLine.PDAOrderQueryController">
+            <summary>
+            PDA扫码查询订单
+            </summary>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.PDAOrderQueryController.GetProductionOrderByCarCode(System.String)">
+            <summary>
+            根据小车唯一码、交接单码、库位码查询交接单信息
+            </summary>
+            <param name="carSoleCode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.PDAOrderQueryController.UnlockBin(System.String,System.String)">
+            <summary>
+            解锁库位
+            </summary>
+            <param name="binNo"></param>
+            <param name="userName"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WebApi.Controllers.ProductOffLine.PDAPutawayController">
+            <summary>
+            PDA扫码上架
+            </summary>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.PDAPutawayController.GetProductionOrderInfo(System.String)">
+            <summary>
+            根据小车唯一码查询已开始装车的生产交接单信息
+            </summary>
+            <param name="carSoleCode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.PDAPutawayController.CheckPutaway(System.String,System.String)">
+            <summary>
+            扫码上架,校验小车唯一码和库位码
+            </summary>
+            <param name="carSoleCode"></param>
+            <param name="binNo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.PDAPutawayController.SubmitPutaway(Models.Model.Prod.CarLoadDto)">
+            <summary>
+            提交上架
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WebApi.Controllers.ProductOffLine.PDAPutoutController">
+            <summary>
+            PDA扫码下架
+            </summary>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.PDAPutoutController.GetProductionOrderInfo(System.String)">
+            <summary>
+            根据小车唯一码查询已配对的生产交接单信息
+            </summary>
+            <param name="carSoleCode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.PDAPutoutController.CheckPutout(System.String,System.String)">
+            <summary>
+            扫码下架
+            校验小车唯一码和库位码
+            校验配对码
+            </summary>
+            <param name="carSoleCode"></param>
+            <param name="binNo"></param>
+            <returns></returns> 
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.PDAPutoutController.SubmitPutout(Models.Model.Prod.CarLoadDto)">
+            <summary>
+            提交下架 
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WebApi.Controllers.ProductOffLine.PDAUnstackController">
+            <summary>
+            PDA扫码下架
+            </summary>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.PDAUnstackController.GetProductionOrderInfo(System.String)">
+            <summary>
+            根据小车唯一码查询已下架的生产交接单信息
+            </summary>
+            <param name="carSoleCode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.PDAUnstackController.CheckOnUnstack(System.String,System.String)">
+            <summary>
+            上架拆垛机检查 
+            </summary>
+            <param name="carSoleCode"></param>
+            <param name="binNo"></param>
+            <returns></returns> 
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.PDAUnstackController.SubmitOnUnStack(Models.Model.Prod.CarLoadDto)">
+            <summary>
+            上架拆垛机提交 
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WebApi.Controllers.ProductOffLine.ProductionOrderController">
+            <summary>
+            生产订单管理接口
+            </summary>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.ProductionOrderController.GetOrders(System.Int32,System.Int32,System.String,System.String,System.String)">
+            <summary>
+            生产订单分页查询
+            </summary>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="searchKey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.ProductionOrderController.GetOrderDetail(System.String)">
+            <summary>
+            生产订单明细查询
+            </summary>
+            <param name="deliverNo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.ProductionOrderController.GetOptions">
+            <summary>
+            获取生产订单编辑所需的选项数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.ProductionOrderController.AddOrder(Models.Model.Prod.ProdOrdersDto)">
+            <summary>
+            添加生产订单
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.ProductionOrderController.UpdateOrder(Models.Model.Prod.ProdOrdersDto)">
+            <summary>
+            修改生产订单
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.ProductionOrderController.DelOrder(System.String[])">
+            <summary>
+            删除生产订单
+            </summary>
+            <param name="deliverNoArr"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.ProductionOrderController.CreateCarCode(System.Int32)">
+            <summary>
+            创建小车唯一码
+            </summary>
+            <param name="orderId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.ProductionOrderController.UpdatePrintDate(System.Int32)">
+            <summary>
+            修改打印日期
+            </summary>
+            <param name="orderId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.ProductionOrderController.UpdateOrderClosed(System.String,System.String)">
+            <summary>
+            关闭生产订单
+            </summary>
+            <param name="deliverNo"></param>
+            <param name="userName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.ProductPackageController.GetMatchingInfo(System.Int32,System.Int32,System.String,System.String,System.String,System.Boolean)">
+            <summary>
+            配对信息分页查询
+            </summary>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="searchKey"></param>
+            <param name="isPackage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ProductOffLine.ProductPackageController.SubmitMatchPackage(System.String,System.String)">
+            <summary>
+            包装完成提交
+            </summary>
+            <param name="userName"></param>
+            <param name="matchingCode"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WebApi.Controllers.ScheduleJobController">
+            <summary>
+            后台作业手动触发控制器
+            </summary>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.ApprovalController.GetApprovalSubject">
+            <summary>
+            获取审批项目列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.ApprovalController.GetProcess(System.String)">
+            <summary>
+            根据审批数据类型获取审批流程
+            </summary>
+            <param name="approvalDataType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.ApprovalController.GetRoles">
+            <summary>
+            获取所有角色信息
+            </summary> 
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.ApprovalController.GetApprovalModels">
+            <summary>
+            获取审批模式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.ApprovalController.UpdateProcess(System.Collections.Generic.List{Models.Model.Sys.ApprovalProcessModel})">
+            <summary>
+            保存审批设置
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.BusinessDicController.GetArgs(System.String)">
+            <summary>
+            获取所有字典列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.BusinessDicController.AddArgs(Models.Model.Sys.Args)">
+            <summary>
+            添加字典
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.BusinessDicController.UpdateArgs(Models.Model.Sys.Args)">
+            <summary>
+            修改字典
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.BusinessDicController.DelArgs(System.String)">
+            <summary>
+            删除字典
+            </summary>
+            <param name="argsKey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.FieldsManageController.GetTableFieldList">
+            <summary>
+            获取所有表及备用字段信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.FieldsManageController.GetSpareField(System.String)">
+            <summary>
+            获取指定表字段详细信息
+            </summary>
+            <param name="fieldsManageId"></param> 
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.FieldsManageController.SetSpareField(Models.Model.Sys.FieldsManage)">
+            <summary>
+            修改表字段信息
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.FieldsPermissionController.GetPermissionTbFields">
+            <summary>
+            获取所有表及字段信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.FieldsPermissionController.GetPermissioField(System.String)">
+            <summary>
+            获取指定表字段信息
+            </summary> 
+            <param name="fieldsManageId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.FieldsPermissionController.GetRoles">
+            <summary>
+            获取所有角色
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.FieldsPermissionController.SetPermissioFieldRole(Models.Model.Sys.FieldPermissions)">
+            <summary>
+            修改表字段权限
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.LogInfoController.GetLogs(System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            分页查询操作日志
+            </summary>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="searchKey"></param>
+            <param name="dateStart"></param>
+            <param name="dateEnd"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.MenuController.GetMenusData">
+            <summary>
+            获取菜单树形结构
+            </summary> 
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.MenuController.GetMenuInfo(System.String)">
+            <summary>
+            获取菜单详细信息
+            </summary>
+            <param name="menuId"></param> 
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.MenuController.AddMenu(Models.Model.Sys.Menu)">
+            <summary>
+            添加菜单
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.MenuController.UpdateMenu(Models.Model.Sys.Menu)">
+            <summary>
+            修改菜单
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.MenuController.DelMenu(System.String,System.String,System.String)">
+            <summary>
+            删除菜单
+            </summary>
+            <param name="menuId"></param>
+            <param name="parentId"></param>
+            <param name="menuType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.MessageCompanyController.GetMessages(System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            获取系统参数列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.MessageCompanyController.GetNewMessageDetail">
+            <summary>
+            查询最新发布的公告明细
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.MessageCompanyController.AddMessage(Models.Model.Sys.MessageCompany)">
+            <summary>
+            添加(发布)公告
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.MessageCompanyController.UpdateMessage(Models.Model.Sys.MessageCompany)">
+            <summary>
+            修改公告
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.MessageCompanyController.DelMessage(System.Int32[])">
+            <summary>
+            删除公告
+            </summary>
+            <param name="msgId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.OrganizationController.GetOrganizationData">
+            <summary>
+            查询公司组织架构数据并组建成树形结构模型
+            </summary> 
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.OrganizationController.GetUsersByOrganizationType(System.String,System.String)">
+            <summary>
+            根据组织架构类型查询用户
+            </summary>
+            <param name="searchId"></param>
+            <param name="organizationType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.OrganizationController.AddDept(Models.Model.Sys.Department)">
+            <summary>
+            添加部门
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.OrganizationController.UpdateDept(Models.Model.Sys.Department)">
+            <summary>
+            修改部门
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.OrganizationController.DelDept(System.String)">
+            <summary>
+            删除部门
+            </summary>
+            <param name="deptId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.OrganizationController.AddRole(Models.Model.Sys.Role)">
+            <summary>
+            添加角色
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.OrganizationController.UpdateRole(Models.Model.Sys.Role)">
+            <summary>
+            修改角色
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.OrganizationController.DelRole(System.String)">
+            <summary>
+            删除角色
+            </summary>
+            <param name="roleId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.OrganizationController.GetCompanyInfo">
+            <summary>
+            获取企业信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.OrganizationController.UpdateCompany(Models.Model.Sys.Company)">
+            <summary>
+            修改公司信息
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.OrganizationController.UploadCompanyLogo">
+            <summary>
+            上传公司LOGO
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.SysArgsController.GetArgs">
+            <summary>
+            获取系统参数列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.SysArgsController.UpdateArgs(System.Collections.Generic.List{Models.Model.Sys.Args})">
+            <summary>
+            修改参数
+            </summary>
+            <param name="dataList"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.SysArgsController.UploadSystemHomePageLogo">
+            <summary>
+            上传系统主页Logo
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.UserController.GetUserMenus(System.String)">
+            <summary>
+            获取用户详细信息,包括角色,权限菜单
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.UserController.GetUserDetail(System.String)">
+            <summary>
+            获取用户详细信息
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.UserController.GetUserRoles(System.String)">
+            <summary>
+            获取用户角色
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.UserController.GetUsers(System.Int32,System.Int32,System.String,System.String,System.String,System.String)">
+            <summary>
+            用户分页查询
+            </summary>
+            <param name="pgSize"></param>
+            <param name="pgIndex"></param>
+            <param name="orderFiled"></param>
+            <param name="orderType"></param>
+            <param name="searchKey"></param>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.UserController.GetAboutUserOptions">
+            <summary>
+            获取用户相关选项的数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.UserController.GetCitysByProvince(System.Int32)">
+            <summary>
+            根据省份获取城市
+            </summary>
+            <param name="provinceId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.UserController.AddUser(Models.Model.Sys.UserDetail)">
+            <summary>
+            添加用户
+            </summary>
+            <param name="user"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.UserController.UpdateUser(Models.Model.Sys.UserDetail)">
+            <summary>
+            修改用户
+            </summary>
+            <param name="user"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.UserController.UpdateUserRole(System.String,System.String[])">
+            <summary>
+            修改用户角色
+            </summary>
+            <param name="userId"></param>
+            <param name="roleId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.UserController.UpdateUserPassword(Models.Model.Sys.UserPaasswordEditModel)">
+            <summary>
+            修改用户密码
+            </summary>
+            <param name="passwordInfo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.UserController.InitUserPassword(System.String)">
+            <summary>
+            初始化用户密码
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.UserController.UpdateUserStatus(System.String,System.Boolean)">
+            <summary>
+            修改用户状态
+            </summary>
+            <param name="userId"></param>
+            <param name="isVaild"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.UserController.DelUser(System.String[])">
+            <summary>
+            删除用户(允许批量删除)
+            </summary>
+            <param name="userIds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.UserController.ExportUsers(System.String,System.String,System.String,System.Collections.Generic.List{Models.Model.KeyValueModel})">
+            <summary>
+            导出用户
+            </summary> 
+            <param name="searchKey"></param>
+            <param name="orderField"></param>
+            <param name="orderType"></param>
+            <param name="fields"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.UserController.GetAllowField(System.String)">
+            <summary>
+            获取当前用户导出用户列表被允许的字段
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.UserPermissionController.GetOrganizationData">
+            <summary>
+            查询公司组织架构数据并组建成树形结构模型
+            </summary> 
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.UserPermissionController.GetPermissionMenus(System.String)">
+            <summary>
+            所有菜单,并标识当前角色的权限菜单
+            </summary>
+            <param name="roleId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.Sys.UserPermissionController.UpdatePermissions(System.String,System.Collections.Generic.List{Models.Model.Sys.PermissionMenus})">
+            <summary>
+            修改角色权限
+            </summary>
+            <param name="roleId"></param>
+            <param name="permissionMenus"></param>
+            <returns></returns>
+        </member>
+        <member name="F:WebApi.Response.ResponseStatus.Success">
+            <summary>
+             成功
+            </summary>
+        </member>
+        <member name="F:WebApi.Response.ResponseStatus.Failed">
+            <summary>
+            失败
+            </summary>
+        </member>
+        <member name="F:WebApi.Response.ResponseStatus.Error">
+            <summary>
+            错误
+            </summary>
+        </member>
+        <member name="F:WebApi.Response.ResponseStatus.Denied">
+            <summary>
+            请求被拒绝
+            </summary>
+        </member>
+        <member name="F:WebApi.Response.ResponseStatus.NoPermission">
+            <summary>
+            请求无权限
+            </summary>
+        </member>
+        <member name="F:WebApi.Response.ResponseStatus.Occupied">
+            <summary>
+            验证票据被占用(在其他客户端重复登录)
+            </summary>
+        </member>
+        <member name="M:WebApi.Token.TokenHelper.BulidToken(System.String,System.String,System.String,System.String)">
+            <summary>
+            生成加密token字符串
+            </summary>
+            <param name="userId"></param>
+            <param name="userName"></param>
+            <param name="signature"></param>
+            <param name="device"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Token.TokenHelper.GetTokenInfo(System.String)">
+            <summary>
+            解密token
+            </summary>
+            <param name="str"></param> 
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Token.TokenHelper.BulidSignature(System.String)">
+            <summary>
+            生成验签凭证
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

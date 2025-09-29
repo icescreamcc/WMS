@@ -1,0 +1,18 @@
+CREATE TABLE `LabelDesignDetails`(
+`ItemId` int NOT NULL  AUTO_INCREMENT,
+`LabelId` varchar(50) NOT NULL   COMMENT '标签ID' ,
+`ItemName` varchar(50) NOT NULL   COMMENT '名称' ,
+`ItemType` varchar(50) NOT NULL   COMMENT '分类' ,
+`IsUsed` tinyint(1) NOT NULL   COMMENT '是否已应用到模板' ,
+`DeftValue` varchar(1000) DEFAULT NULL   COMMENT '默认值' ,
+`ShowName` tinyint(1) NOT NULL   COMMENT '是否显示名称' ,
+`ItemValueType` varchar(50) DEFAULT NULL   COMMENT '值类型' ,
+`ItemValueField` varchar(500) DEFAULT NULL   COMMENT '绑定字段' ,
+`ItemValueFieldInfo` varchar(1000) DEFAULT NULL   COMMENT '绑定字段' ,
+`ValuePerfix` varchar(50) DEFAULT NULL   COMMENT '值的前缀' ,
+`ValueSuffix` varchar(50) DEFAULT NULL   COMMENT '值的后缀' ,
+`FieldSeparator` varchar(10) DEFAULT NULL   COMMENT '字段分隔符' ,
+`ItemValueFormat` varchar(1000) DEFAULT NULL   COMMENT '格式化值' ,
+`Style` varchar(1000) NOT NULL   COMMENT '样式' ,
+`Args` varchar(1000) NOT NULL   COMMENT '其他参数' ,
+`Remark` varchar(500) NOT NULL   COMMENT '备注'  , Primary key(`ItemId`))
