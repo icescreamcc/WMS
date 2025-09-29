@@ -173,7 +173,7 @@ namespace Logic.Order
                     printDetail[i].Status = "等通知发货";
                 }
                 printDetail[i].OurCompany = dataCompany[0].CompanyName;
-                printDetail[i].OurCompanyName = dataCompany[0].Remark;
+                printDetail[i].OurCompanyName = dataCompany[0].User;
                 printDetail[i].OurCompanyTelephone = dataCompany[0].Phone;
 
             }

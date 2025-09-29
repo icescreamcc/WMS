@@ -210,7 +210,7 @@
 
 <script lang="ts" setup>
 defineOptions({
-  name: "sending"
+  name: "shipment"
 })
 import { onMounted, ref, reactive } from "vue";
 import { Page } from "@/components/table/type";
@@ -570,7 +570,7 @@ const handleUpload = async (row: any) => {
       let qrCodeDataURL = '';
       try {
         // 二维码内容可以是发货单号，也可以包含更多信息
-        const qrContent = `发货单号: ${row.orderNo}\n订单号: ${row.customerOrderNo}\n日期: ${new Date().toLocaleDateString()}`;
+        const qrContent = `${row.orderNo}`;
         qrCodeDataURL = await QRCode.toDataURL(qrContent, {
           width: 80,
           height: 80,
@@ -589,136 +589,128 @@ const handleUpload = async (row: any) => {
       printContainer.style.left = '-9999px';
       printContainer.style.top = '-9999px';
       document.body.appendChild(printContainer);
-    // 打印该容器
-      printJS({
-        printable: printContainer.id,
-        type: 'html',
-        style: `
+      //打印该容器
+     printJS({
+      printable: printContainer.id,
+      type: 'html',
+      style: `
+        body { 
+          font-family: "Microsoft YaHei", sans-serif; 
+          margin: 0; 
+          padding: 15px;
+          font-size: 12px; 
+          -webkit-print-color-adjust: exact;
+          position: relative;
+        }
+        .print-container {
+          width: 100%;
+          position: relative;
+        }
+        .print-section-title { 
+          font-weight: bold; 
+          margin-bottom: 15px; 
+          border-bottom: 2px solid #000; 
+          padding-bottom: 8px;
+          text-align: center;
+          font-size: 18px;
+        }
+        .qr-label {
+          width: 150px !important;
+          font-weight: bold;
+          background-color: #f5f5f5;
+        }
+        .qr-image {
+          width: 150px !important;
+        }
+        .qr-code-img {
+          display: inline-block;
+          text-align: center;
+        }
+        .qr-code-img img {
+          max-width: 100%;
+          height: auto;
+        }
+        /* 固定宽度表格样式 */
+        .print-table.fixed-width {
+          width: 100%;
+          table-layout: fixed;
+          border-collapse: collapse;
+          margin: 8px 0;
+          font-size: 11px;
+        }
+        .print-table.fixed-width td {
+          border: 1px solid #ddd;
+          padding: 6px;
+          vertical-align: top;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+        }
+        .fixed-label {
+          width: 150px !important;
+          font-weight: bold;
+          background-color: #f5f5f5;
+          text-align: right;
+        }
+        .fixed-value {
+          width: 150px !important;
+          text-align: left;
+        }
+        /* 签收信息表格样式 */
+        .print-table:not(.fixed-width):not(.qr-table) {
+          width: 100%;
+          table-layout: fixed;
+          border-collapse: collapse;
+          margin: 8px 0;
+          font-size: 11px;
+        }
+        .print-table:not(.fixed-width):not(.qr-table) td {
+          border: 1px solid #ddd;
+          padding: 6px;
+          vertical-align: top;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+        }
+        .info-label {
+          width: 150px !important;
+          font-weight: bold;
+          background-color: #f5f5f5;
+          vertical-align: top;
+        }
+        .info-content {
+          line-height: 1.6;
+          vertical-align: top;
+        }
+        @page {
+          size: A4;
+          margin: 0.5cm;
+        }
+        @media print {
           body { 
-            font-family: "Microsoft YaHei", sans-serif; 
             margin: 0; 
-            padding: 15px;
-            font-size: 12px; 
-            -webkit-print-color-adjust: exact;
+            padding: 10px;
+            font-size: 11px;
           }
           .print-container {
             width: 100%;
-            position: relative;
+            height: 100%;
           }
-          .qr-code {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 70px;
-            height: 70px;
-            z-index: 1000;
+          .fixed-label {
+            width: 140px !important;
           }
-          .print-header { 
-            text-align: center; 
-            margin-bottom: 15px; 
-            border-bottom: 2px solid #000; 
-            padding-bottom: 8px;
-            margin-right: 80px; /* 为二维码留出空间 */
+          .fixed-value {
+            width: 140px !important;
           }
-          .print-title { 
-            font-size: 18px; 
-            font-weight: bold; 
-            margin-bottom: 5px; 
+          .info-label {
+            width: 140px !important;
           }
-          .print-section { 
-            margin-bottom: 12px; 
-            page-break-inside: avoid;
+          .qr-label {
+            width: 140px !important;
           }
-          .print-section-title { 
-            font-weight: bold; 
-            margin-bottom: 5px; 
-            border-left: 3px solid #409EFF; 
-            padding-left: 8px; 
-            background-color: #f8f9fa; 
-            padding: 4px 8px; 
-            font-size: 13px;
+          .qr-image {
+            width: 140px !important;
           }
-          .print-table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin: 8px 0; 
-            font-size: 11px; 
-          }
-          .print-table th, .print-table td { 
-            border: 1px solid #ddd; 
-            padding: 6px; 
-            text-align: left; 
-          }
-          .print-table th { 
-            background-color: #f5f5f5; 
-            font-weight: bold; 
-          }
-          .print-info { 
-            display: flex; 
-            flex-wrap: wrap; 
-            margin-bottom: 8px; 
-          }
-          .print-info-item { 
-            width: 50%; 
-            margin-bottom: 6px; 
-            padding: 2px 5px; 
-            font-size: 11px;
-          }
-          .print-label { 
-            font-weight: bold; 
-            display: inline-block; 
-            width: 100px; 
-          }
-          .print-footer { 
-            margin-top: 20px; 
-            text-align: right; 
-            font-size: 11px; 
-            color: #666; 
-            border-top: 1px solid #ddd; 
-            padding-top: 8px; 
-          }
-          .signature-section {
-            margin: 15px 0;
-            font-size: 11px;
-          }
-          .signature-line {
-            margin: 8px 0;
-          }
-          @page {
-            size: A4;
-            margin: 0.5cm;
-          }
-          @media print {
-            body { 
-              margin: 0; 
-              padding: 10px;
-              font-size: 11px;
-            }
-            .print-container {
-              width: 100%;
-              height: 100%;
-            }
-            .qr-code {
-              position: fixed;
-              top: 10px;
-              right: 10px;
-              width: 60px;
-              height: 60px;
-            }
-            .print-header {
-              margin-right: 70px;
-            }
-            .print-section { 
-              page-break-inside: avoid;
-            }
-            .print-table {
-              page-break-inside: auto;
-            }
-            .print-table tr {
-              page-break-inside: avoid;
-            }
-          }
-        `,
+        }
+      `,
         onPrintDialogClose: () => {
           if (document.body.contains(printContainer)) {
             document.body.removeChild(printContainer);
@@ -742,90 +734,150 @@ const handleUpload = async (row: any) => {
     });
     })          
 }
-// 生成打印内容的函数
+
+// 生成打印内容的函数 - 修改后的版本
 const generatePrintContent = (data: any, details: any[], qrCodeDataURL: string, orderNo: string) => {
-  //查询对应信息
   const qrCodeHTML = qrCodeDataURL 
-    ? `<div class="qr-code"><img src="${qrCodeDataURL}" alt="二维码" style="width:80px;height:80px;" /></div>`
-    : '<div class="qr-code" style="width:80px;height:80px;border:1px solid #ccc;text-align:center;line-height:80px;font-size:10px;">二维码生成失败</div>';
+    ? `<div class="qr-code-img"><img src="${qrCodeDataURL}" alt="二维码" style="width:80px;height:80px;" /></div>`
+    : '<div class="qr-code-img" style="width:80px;height:80px;border:1px solid #ccc;text-align:center;line-height:80px;font-size:10px;color:#999;">二维码生成失败</div>';
+  
   return `
-      <div class="print-container">
-      ${qrCodeHTML}
-        <div class="print-section">
-          <div class="print-section-title">发货计划单</div>
-          
-          <div class="print-info">
-         
-            <div class="print-info-item"><span class="print-label">订单号：</span>${data.customerOrderNo || ''}</div>
-            <div class="print-info-item"><span class="print-label">发货单号：</span>${data.orderNo || ''}</div>
-            <div class="print-info-item"><span class="print-label">计划发货日期：</span>${commonHelper.formatToDate(data.sendingDate) || ''}</div>
-            <div class="print-info-item"><span class="print-label">目的地：</span>${data.sendingAddress || ''}</div>
+    <div class="print-container">
+      <div class="print-section">
+        <div class="print-section-title">发货计划单</div>
+        <style>
+        .print-table{
+          width:700px;
+          border-collapse:collapse;
+          margin-bottom:20px;
+          table-layout:fixed;
+        }
+          .print-table td,.print-table th{
+          border:1px solid #000;
+          padding:8px;
+          text-align:center;
+          word-break:break-word;
+          }
+        </style>
+        <!-- 二维码表格 -->
+        <table class="print-table">
+          <tbody>
+            <tr>
+              <td class="qr-label" style="width: 300px; height: 100px; text-align: center; vertical-align: middle;">
+                二维码：
+              </td>
+              <td class="qr-image" style="width: 300px; height: 100px; text-align: center; vertical-align: middle;">
+                ${qrCodeHTML}
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
-            <div class="print-info-item"><span class="print-label">物品名称：</span>${data.goodsName || ''}</div>
-            <div class="print-info-item"><span class="print-label">计划发货数量：</span>${data.quantity || ''}</div>
-            <div class="print-info-item"><span class="print-label">单位：</span>${data.unit || ''}</div>
-            <div class="print-info-item"><span class="print-label">备注：</span>${data.remarks || ''}</div>
-            <div class="print-info-item"><span class="print-label">合同号：</span>${data.contractNo || ''}</div>
-            <div class="print-info-item"><span class="print-label">状态：</span>${data.status || ''}</div>
+        <!-- 基本信息表格 -->
+        <table class="print-table">
+          <tbody>
+            <tr>
+              <td class="fixed-label">订单号：</td>
+              <td class="fixed-value">${data.customerOrderNo || ''}</td>
+              <td class="fixed-label">发货单号：</td>
+              <td class="fixed-value">${data.orderNo || ''}</td>
+            </tr>
+            <tr>
+              <td class="fixed-label">计划发货日期：</td>
+              <td class="fixed-value">${commonHelper.formatToDate(data.sendingDate) || ''}</td>
+              <td class="fixed-label">目的地：</td>
+              <td class="fixed-value">${data.sendingAddress || ''}</td>
+            </tr>
+            <tr>
+              <td class="fixed-label">物品名称：</td>
+              <td class="fixed-value">${data.goodsName || ''}</td>
+              <td class="fixed-label">计划发货数量：</td>
+              <td class="fixed-value">${data.quantity || ''}</td>
+            </tr>
+            <tr>
+              <td class="fixed-label">单位：</td>
+              <td class="fixed-value">${data.unit || ''}</td>
+              <td class="fixed-label">备注：</td>
+              <td class="fixed-value">${data.remarks || ''}</td>
+            </tr>
+            <tr>
+              <td class="fixed-label">合同号：</td>
+              <td class="fixed-value">${data.contractNo || ''}</td>
+              <td class="fixed-label">状态：</td>
+              <td class="fixed-value">${data.status || ''}</td>
+            </tr>
+            <tr>
+              <td class="fixed-label">客户信息：</td>
+              <td class="fixed-value">${data.customer || ''}</td>
+              <td class="fixed-label">客户联系人：</td>
+              <td class="fixed-value">${data.customerName || ''}</td>
+            </tr>
+            <tr>
+              <td class="fixed-label">客户联系电话：</td>
+              <td class="fixed-value">${data.customerTelephone || ''}</td>
+              <td class="fixed-label">我方公司信息：</td>
+              <td class="fixed-value">${data.ourCompany || ''}</td>
+            </tr>
+            <tr>
+              <td class="fixed-label">我方联系人信息：</td>
+              <td class="fixed-value">${data.ourCompanyName || ''}</td>
+              <td class="fixed-label">我方联系电话：</td>
+              <td class="fixed-value">${data.ourCompanyTelephone || ''}</td>
+            </tr>
+            <tr>
+              <td class="fixed-label">运输公司：</td>
+              <td class="fixed-value">${data.supplier || ''}</td>
+              <td class="fixed-label">货船编号：</td>
+              <td class="fixed-value">${data.supplierNo || ''}</td>
+            </tr>
+            <tr>
+              <td class="fixed-label">船长姓名：</td>
+              <td class="fixed-value">${data.supplierName || ''}</td>
+              <td class="fixed-label"></td>
+              <td class="fixed-value"></td>
+            </tr>
+          </tbody>
+        </table>
 
-            <div class="print-info-item"><span class="print-label">客户信息：</span>${data.customer || ''}</div>
-            <div class="print-info-item"><span class="print-label">客户联系人：</span>${data.customerName || ''}</div>
-            <div class="print-info-item"><span class="print-label">客户联系电话：</span>${data.customerTelephone || ''}</div>
-            <div class="print-info-item"><span class="print-label">我方公司信息：</span>${data.ourCompany || ''}</div>
-            <div class="print-info-item"><span class="print-label">我方联系人信息：</span>${data.ourCompanyName || ''}</div>
-            <div class="print-info-item"><span class="print-label">我方联系电话：</span>${data.ourCompanyTelephone || ''}</div>
-            <div class="print-info-item"><span class="print-label">运输公司：</span>${data.supplier || ''}</div>
-            <div class="print-info-item"><span class="print-label">货船编号：</span>${data.supplierNo || ''}</div>
-            <div class="print-info-item"><span class="print-label">船长姓名：</span>${data.supplierName || ''}</div>
-           
-            <div class="print-info-item">
-                <table class="print-table">
-                <tbody>
-                  ${details.map(detail => `
-                    <tr>
-                      <td>${'公司出货信息'}</td>
-                      <td>
-                      ${'出库验证：'}<br/>
-                      ${'加工方签字：____________________________________'}<br/>
-                      ${'运输方签字：____________________________________'}<br/>
-                      ${'公司方签字：____________________________________'}<br/>
-                      ${'验证日期：______年______月______日'}<br/>
-                      ${'(货物完好无损□/异常情况备注：)'}<br/>
-                      ${''}<br/>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>${'附说明信息'}</td>
-                      <td>
-                      ${'1.随车附本批货物质检报告一份。'}<br/>
-                      ${'2.请您在签收前仔细核对产品数量、规格及包装是否完好。'}<br/>
-                      ${'3.如有任何问题，请及时与我司联系人沟通。'}<br/>
-                      ${'4.此单据为重要结算凭证，请妥善保管。'}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>${'客户签收信息'}</td>
-                      <td>
-                      ${'签收栏：'}<br/>
-                      ${'收货单位(章)：_________________________________'}<br/>
-                      ${'签收人：_______________________________________'}<br/>
-                      ${'签收日期：______年______月______日'}<br/>
-                      ${'(货物完好无损□/异常情况备注：)'}<br/>
-                      ${''}<br/>
-                      </td>
-                    </tr>
-                  `).join('')}
-                </tbody>
-                </table>
-          </div>
-          </div>
-        </div>
-        
-        
+        <!-- 签收信息表格 -->
+        <table class="print-table">
+          <tbody>
+            <tr>
+              <td class="info-label">公司出货信息</td>
+              <td class="info-content">
+                出库验证：<br/>
+                加工方签字：____________________________________<br/>
+                运输方签字：____________________________________<br/>
+                公司方签字：____________________________________<br/>
+                验证日期：______年______月______日<br/>
+                (货物完好无损□/异常情况备注：________________)<br/>
+              </td>
+            </tr>
+            <tr>
+              <td class="info-label">附说明信息</td>
+              <td class="info-content">
+                1.随车附本批货物质检报告一份。<br/>
+                2.请您在签收前仔细核对产品数量、规格及包装是否完好。<br/>
+                3.如有任何问题，请及时与我司联系人沟通。<br/>
+                4.此单据为重要结算凭证，请妥善保管。
+              </td>
+            </tr>
+            <tr>
+              <td class="info-label">客户签收信息</td>
+              <td class="info-content">
+                签收栏：<br/>
+                收货单位(章)：_________________________________<br/>
+                签收人：_______________________________________<br/>
+                签收日期：______年______月______日<br/>
+                (货物完好无损□/异常情况备注：________________)<br/>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    `;
+    </div>
+  `;
 }
-
 
 //新增或编辑数据提交 点击确认后触发
 const dataSave = (data: any, actionType: string) => {
@@ -857,7 +909,7 @@ const dataSave = (data: any, actionType: string) => {
 //     link.click()
 //     document.body.removeChild(link)
 //   })
-// }
+//
 
 const uploadSuccess = () => {
   importLayer.show = false;
@@ -915,25 +967,15 @@ const exportData = (selField: Array<any>) => {
     width: 100%;
   }
   
-  /* 确保二维码在打印时位置正确 */
-  .qr-code {
-    position: fixed !important;
-    top: 10px !important;
-    right: 10px !important;
-    width: 60px !important;
-    height: 60px !important;
-    z-index: 1000 !important;
-  }
-}
-
-/* 非打印时的二维码样式 */
-.qr-code {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 70px;
-  height: 70px;
-  z-index: 1000;
+  // /* 确保二维码在打印时位置正确 - 固定在右上角 */
+  // .qr-code {
+  //   position: absolute !important;
+  //   top: 0px !important;
+  //   right: 0px !important;
+  //   width: 80px !important;
+  //   height: 80px !important;
+  //   z-index: 1000 !important;
+  // }
 }
 
 /* 确保表格内容不会溢出 */
@@ -941,10 +983,62 @@ const exportData = (selField: Array<any>) => {
   table-layout: fixed;
   word-wrap: break-word;
 }
-
 .print-info-item {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  flex: 1;
+  min-width: 0; /* 防止flex项目溢出 */
+  padding: 2px 5px;
+  font-size: 11px;
+}
+/* 添加新的样式确保二维码位置正确 */
+.print-container {
+  position: relative;
+  font-family: Arial,sans-serif; 
+  width: 100%;
+  padding-top: 10px; /* 为二维码留出空间 */
+}
+/* 调整打印头部，避免与二维码重叠 */
+.print-header {
+  text-align: center;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #000;
+  padding-bottom: 8px;
+  margin-right: 90px; /* 为二维码留出足够空间 */
+}
+/* 新增样式：信息行布局 */
+.print-info-row {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  width: 100%;
+}
+.print-label {
+  font-weight: bold;
+  display: inline-block;
+  min-width: 80px; /* 调整标签宽度 */
+}
+
+/* 固定标签列宽 */
+.fixed-label {
+  width: 150px !important; /* 固定标签宽度 */
+  font-weight: bold;
+  background-color: #f5f5f5;
+  text-align: right;
+}
+.fixed-value {
+  width: 150px !important; /* 固定值宽度 */
+  text-align: left;
+}
+/* 签收信息表格样式 */
+.info-label {
+  width: 150px !important;
+  font-weight: bold;
+  background-color: #f5f5f5;
+}
+.info-content {
+  line-height: 1.6;
 }
 </style>

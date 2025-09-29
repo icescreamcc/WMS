@@ -24,6 +24,9 @@
       <el-form-item label="企业电话" prop="Phone">
         <el-input v-model="ruleForm.Phone" :disabled="!uploadParams.isEdit" placeholder="请输入企业电话"></el-input>
       </el-form-item> 
+      <el-form-item label="企业联系人姓名" prop="Phone">
+        <el-input v-model="ruleForm.User" :disabled="!uploadParams.isEdit" placeholder="请输入企业联系人姓名"></el-input>
+      </el-form-item> 
      <el-form-item label="企业Logo"> 
           <Upload :uploadParams="uploadParams"  @handleSuccess="uploadSuccess"/>
       </el-form-item> 
@@ -77,6 +80,7 @@ export default defineComponent({
       CompanyName: [{ required: true, message: '请输入企业名称名称', trigger: 'blur' },{ max: 20, message: '字符超出限制长度', trigger: 'blur'}], 
       Url:[{ max: 20, message: '字符超出限制长度', trigger: 'blur'}],
       Email:[{ max: 20, message: '字符超出限制长度', trigger: 'blur'}],
+      User:[{ max: 10, message: '字符超出限制长度', trigger: 'blur'}],
       Phone:[{ max: 10, message: '字符超出限制长度', trigger: 'blur'}],
       Remark:[{ max: 100, message: '字符超出限制长度', trigger: 'blur'}]
 
@@ -88,6 +92,7 @@ export default defineComponent({
       Email:'',
       Phone:'',
       Url:'',
+      User:'',
       Logo:'',
       Remark:''
     }) 
@@ -121,6 +126,7 @@ export default defineComponent({
         ruleForm.Email=res.data.email;
         ruleForm.Phone=res.data.phone;
         ruleForm.Url=res.data.url;
+        ruleForm.User=res.data.user;
         ruleForm.Logo=res.data.logo; 
         ruleForm.Remark=res.data.remark;
         uploadParams.value.imgUrl=res.data.logo; 
