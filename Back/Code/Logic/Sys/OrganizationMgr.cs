@@ -327,14 +327,15 @@ namespace Logic.Sys
         {
             var model = new SysCompany
             {
-                CompanyId=data.CompanyId,
-                CompanyNo=data.CompanyNo,
-                CompanyName=data.CompanyName,
-                 Email=data.Email,
-                 Phone=data.Phone,
-                 Url=data.Url,
-                 Logo=data.Logo,
-                 Remark=data.Remark
+                CompanyId = data.CompanyId,
+                CompanyNo = data.CompanyNo,
+                CompanyName = data.CompanyName,
+                Email = data.Email,
+                Phone = data.Phone,
+                User = data.User,
+                Url = data.Url,
+                Logo = data.Logo,
+                Remark = data.Remark
             };
             await Repository.UpdateAsync(model); 
         }

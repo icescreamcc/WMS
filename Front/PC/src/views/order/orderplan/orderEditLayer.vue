@@ -109,7 +109,7 @@
             <el-col :span="11">
             <el-form-item  prop="orderUrl">
                <template #label>
-                  <span>上传签字附件<span style="color: red;">*</span></span>
+                  <span>上传合同附件<span style="color: red;">*</span></span>
                 </template>
                 <Upload :uploadParams="uploadParams"  @handleImgChanged="imgChanged" /> 
               </el-form-item>

@@ -23,6 +23,9 @@ namespace DbRepository.Repository.DbModels
         [SugarColumn(Length = 50, IsNullable = true, ColumnDescription = "企业网址")]
         public string Url { get; set; }
 
+        [SugarColumn(Length = 50, IsNullable = true, ColumnDescription = "企业联系人姓名")]
+        public string User { get; set; }
+
         [SugarColumn(Length = 200, IsNullable = true, ColumnDescription = "备注")]
         public string Remark { get; set; }
 
