@@ -26,29 +26,6 @@
           <el-option v-for="item in goodsGroupData" :key="item.key" :label="item.value" :value="item.key"></el-option>
         </el-select>
 
-        <!-- <el-select v-model="query.isUrgentShipment" ref="refSelectClassifyGroup" size="small"
-          :disabled="disableClassifyGroupSelect" class="m-2" style="width:90%;margin-left: 20px;"
-          @change="getTableData(true)" filterable clearable placeholder="选择是否紧急发货">
-          <template #prefix>
-            <div
-              style="color:#909399; border: 1px solid #dcdfe6;border-left: none;height: 30px; background-color: #f5f7fa;padding: 0 7px;position: relative;left: -3px;margin-right:10px ;">
-              是否紧急发货</div>
-          </template>
-          <el-option v-for="item in urgentShipmentData" :key="item.key" :label="item.value"
-            :value="item.key"></el-option>
-        </el-select> -->
-
-          <!-- <el-select v-model="query.sendingAddress" ref="refSelectClassifyGroup" size="small"
-            :disabled="disableClassifyGroupSelect" class="m-2" style="width:90%;margin-left: 20px;"
-            @change="getTableData(true)" filterable clearable placeholder="选择到货地址">
-            <template #prefix>
-              <div
-                style="color:#909399; border: 1px solid #dcdfe6;border-left: none;height: 30px; background-color: #f5f7fa;padding: 0 7px;position: relative;left: -3px;margin-right:10px ;">
-                到货地址</div>
-            </template>
-            <el-option v-for="item in sendingAddressData" :key="item.key" :label="item.value"
-              :value="item.key"></el-option>
-          </el-select> -->
 
         <el-select v-model="query.detailStatus" ref="refSelectClassifyGroup" size="small"
           :disabled="disableClassifyGroupSelect" class="m-2" style="width:90%;margin-left: 20px;"
@@ -72,13 +49,12 @@
       </div>
     </div>
     <div class="layout-container-table">
-       <!-- <Table ref="table" v-model:page="page" v-loading="loading" :showSelection="true" :data="tableData"
+      <!-- <Table ref="table" v-model:page="page" v-loading="loading" :showSelection="true" :data="tableData"
         @getTableData="getTableData" @selection-change="handleSelectionChange" @orderChanged="handleSortChange"> -->
       <Table ref="table" v-model:page="page" v-loading="loading" :showSelection="true" :data="tableData"
         @getTableData="getTableData" @selection-change="handleSelectionChange" @orderChanged="handleSortChange"
-        @expandChange="handleExpandChange"
-        >
-        <el-table-column prop="orderNo" label="明细" fixed type="expand" align="center" sortable :show-overflow-tooltip="true">
+        @expandChange="handleExpandChange">
+        <!-- <el-table-column prop="orderNo" label="明细" fixed type="expand" align="center" sortable :show-overflow-tooltip="true">
           <template #default="props">
             <div style="margin-bottom:10px">
               <span style="font-weight:600;">发货计划明细</span>
@@ -94,17 +70,17 @@
               </el-table>
             </div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
 
         <el-table-column prop="orderNo" label="发货单号" fixed align="center" sortable="custom" min-width="110"
           :show-overflow-tooltip="true" />
         <el-table-column prop="customerOrderNo" label="订单号" fixed align="center" sortable="custom" min-width="110"
           :show-overflow-tooltip="true" />
-        <el-table-column prop="contractNo" label="合同号" fixed align="center" sortable="custom" min-width="110"
-          :show-overflow-tooltip="true" />
-        <el-table-column prop="goodsClassifyName" label="物料分类" fixed align="center" sortable="custom" min-width="100"
+        <el-table-column prop="goodsName" label="物料名称" fixed align="center" min-width="120"
           :show-overflow-tooltip="true" />
         <el-table-column prop="supplierName" label="运输供应商" fixed align="center" sortable="custom" min-width="180"
+          :show-overflow-tooltip="true" />
+        <el-table-column prop="quantity" label="计划发货数" fixed align="center" sortable="custom" min-width="120"
           :show-overflow-tooltip="true" />
         <el-table-column prop="sendingDate" label="计划发货日期" fixed align="center" sortable="custom" min-width="120"
           :show-overflow-tooltip="true">
@@ -125,6 +101,15 @@
           :show-overflow-tooltip="true" /> -->
         <el-table-column prop="receivingResponsableUserInfo" label="收件人信息" align="center" sortable="custom"
           min-width="120" :show-overflow-tooltip="true" />
+        <el-table-column prop="contractNo" label="合同号" align="center" sortable="custom" min-width="110"
+          :show-overflow-tooltip="true" />
+        <el-table-column prop="goodsClassifyName" label="物料分类" align="center" sortable="custom" min-width="100"
+          :show-overflow-tooltip="true" />
+        
+        <el-table-column prop="customerGoodsNo" label="客户料号" align="center" min-width="120" />
+        <el-table-column prop="customerIdentificationCode" label="客户配送中心" align="center" min-width="120" />
+
+        <el-table-column prop="palletsQuantity" label="发货托数" width="160" />
         <el-table-column prop="specialRequest" label="特殊要求" align="center" sortable="custom" min-width="100"
           :show-overflow-tooltip="true" />
         <el-table-column prop="status" label="状态" align="center" sortable="custom" min-width="110"
@@ -141,16 +126,20 @@
 
         <el-table-column prop="sendingAddress" label="到货地址" align="center" sortable="custom" min-width="150"
           :show-overflow-tooltip="true" />
-  
-            <el-table-column  label="确认发货" v-if="permission.isPermisstion('SENDINGUPDATE')" align="center" sortable="custom" min-width="100" :show-overflow-tooltip="true">
-               <template #default="props">
-                <el-button v-if="props.row.status=='WaitingNotification'" circle type="success" style="height: 30px;"  @click="handleConfirmShipment(props.row)" title="点击确认发货">
-                  <el-icon><ShoppingCartFull /></el-icon>
-                </el-button> 
-                <span v-else>{{ props.row.statusDesc}}</span>
-              </template>
-          </el-table-column> 
-          
+
+        <el-table-column label="确认发货" v-if="permission.isPermisstion('SENDINGUPDATE')" align="center" sortable="custom"
+          min-width="100" :show-overflow-tooltip="true">
+          <template #default="props">
+            <el-button v-if="props.row.status == 'WaitingNotification'" circle type="success" style="height: 30px;"
+              @click="handleConfirmShipment(props.row)" title="点击确认发货">
+              <el-icon>
+                <ShoppingCartFull />
+              </el-icon>
+            </el-button>
+            <span v-else>{{ props.row.statusDesc }}</span>
+          </template>
+        </el-table-column>
+
 
         <el-table-column prop="remark" label="备注" align="center" sortable="custom" min-width="120"
           :show-overflow-tooltip="true" />
@@ -182,10 +171,10 @@
         <el-table-column label="客户标签" align="left" min-width="90"
           v-if="permission.isPermisstion('SENDINGUPLOAD', 'SENDINGNOTIFICATION')">
           <template #default="scope">
-         <el-button 
-          v-if="permission.isPermisstion('SENDINGUPLOAD')"  
-          @click="handleUpload(scope.row)" :type="scope.row.isInBaseFiles ? 'success' : ''" :style="scope.row.isInBaseFiles ? { backgroundColor: '#67C23A', color: '#fff', borderColor: '#67C23A' } : {}">打印
-        </el-button>
+            <el-button v-if="permission.isPermisstion('SENDINGUPLOAD')" @click="handleUpload(scope.row)"
+              :type="scope.row.isInBaseFiles ? 'success' : ''"
+              :style="scope.row.isInBaseFiles ? { backgroundColor: '#67C23A', color: '#fff', borderColor: '#67C23A' } : {}">打印
+            </el-button>
             <!-- <el-button v-if="permission.isPermisstion('SENDINGNOTIFICATION') && scope.row.isEmailNotification"
               style="height: 30px;" title="已发送邮件通知" @click="onSendingNotification(scope.row)" circle>
               <img src="../../../../public/icon-img/yidu1.png" height="14">
@@ -199,7 +188,7 @@
         </el-table-column>
       </Table>
       <!--  提交会触发 dataSave函数 ，参数来自 orderEditlayer.submit-->
-      <OrderEditModal :layer="orderLayer" @dataSubmit="dataSave" v-if="orderLayer.show" />   
+      <OrderEditModal :layer="orderLayer" @dataSubmit="dataSave" v-if="orderLayer.show" />
       <ExportModal :layer="exportLayer" @dataSubmit="exportData" v-if="exportLayer.show" />
       <ImportModal :layer="importLayer" @dataSubmit="uploadSuccess" v-if="importLayer.show" />
       <UploadDocumentModal :layer="uploadDocumentLayer" v-if="uploadDocumentLayer.show" />
@@ -215,7 +204,7 @@ defineOptions({
 import { onMounted, ref, reactive } from "vue";
 import { Page } from "@/components/table/type";
 import {
-  getSending, getOrderDetail, getYesOrNoGroup, getDetailStatusGroup, getSendingAddressGroup,getOrderPrint,addSending,updateSending, delSending
+  getSending, getOrderDetail, getYesOrNoGroup, getDetailStatusGroup, getSendingAddressGroup, getOrderPrint, addSending, updateSending, delSending
   , createImportTemplate, exportSendingData, getExportFields, getBaseFiles, adviceSending
 } from "@/api/order/shipment";
 import { LayerInterface } from "@/components/layer/index.vue";
@@ -230,7 +219,7 @@ import ExportModal from "@/components/layer/exportLayer.vue";
 import ImportModal from "@/components/layer/importLayer.vue";
 import UploadDocumentModal from "@/components/layer/uploadDocumentLayer.vue";
 import MailEditLayer from "@/components/layer/mailLayer.vue";
-import {Message,ShoppingCartFull,Checked,Promotion,View,EditPen ,Upload}  from '@element-plus/icons-vue';
+import { Message, ShoppingCartFull, Checked, Promotion, View, EditPen, Upload } from '@element-plus/icons-vue';
 import printJS from 'print-js';
 import QRCode from 'qrcode';
 
@@ -313,7 +302,7 @@ const refSelectClassifyGroup = ref<null | HTMLElement>(null);
 const goodsClassifyDefault = ref(["SamplePiece", "FinishedProduct", "RawMaterial"]);
 
 onMounted(() => {
-//  getCreateUserNameGroupData();
+  //  getCreateUserNameGroupData();
   getGoodsGroupData();
   getYesOrNoGroupData();
   getDetailStatusGroupData();
@@ -324,9 +313,9 @@ onMounted(() => {
 //加载下拉框
 const getGoodsGroupData = () => {
   getGoodsGroup().then(res => {
-    
+
     goodsGroupData.value = res.data.filter((f: any) => goodsClassifyDefault.value.includes(f.key));
-    console.log('#### goodsGroupData.value = ',goodsGroupData.value)
+    console.log('#### goodsGroupData.value = ', goodsGroupData.value)
   })
 }
 
@@ -337,10 +326,10 @@ const getYesOrNoGroupData = () => {
 }
 
 
-const getSendingAddressData  = () => {
-    getSendingAddressGroup().then(res => {
+const getSendingAddressData = () => {
+  getSendingAddressGroup().then(res => {
     sendingAddressData.value = res.data;
-    console.log("### sendingAddressData.value = ",sendingAddressData.value)
+    console.log("### sendingAddressData.value = ", sendingAddressData.value)
   })
 }
 
@@ -374,10 +363,10 @@ const getTableData = (init: Boolean) => {
   // console.log(" ### [getTableData] selectedGoodsGroup.value = ",selectedGoodsGroup.value)
   // console.log(" ### [getTableData] query.isUrgentShipment = ",query.isUrgentShipment)
   // console.log(" ### [getTableData] query.sendingAddress = ",query.sendingAddress)
- getSending(permission.getOperator().userId, page.size, page.index, page.orderField, page.orderType, query.input, dateStart, dateEnd, selectedGoodsGroup.value, query.isUrgentShipment,query.sendingAddress, query.detailStatus)
+  getSending(permission.getOperator().userId, page.size, page.index, page.orderField, page.orderType, query.input, dateStart, dateEnd, selectedGoodsGroup.value, query.isUrgentShipment, query.sendingAddress, query.detailStatus)
     .then((res) => {
       let data = res.data.rows
-      console.log('###########  getTableData   res.data.rows ',res.data.rows)
+      console.log('###########  getTableData   res.data.rows ', res.data.rows)
       // data  = sendingAddressData.value
       data.forEach((d: any) => {
         d.loading = false
@@ -395,7 +384,7 @@ const getTableData = (init: Boolean) => {
     })
 }
 
- const detailList = ref(new Array<any>())
+const detailList = ref(new Array<any>())
 //展开与收缩
 const handleExpandChange = (row: any) => {
   getOrderDetail(permission.getOperator().userId, row.orderNo).then(res => {
@@ -483,7 +472,7 @@ const onMailSubmit = (data: any) => {
 
 const handleAdd = () => {
   if (!selectedGoodsGroup.value) {
-    console.log(" ##### selectedGoodsGroup  =  ",selectedGoodsGroup.value)
+    console.log(" ##### selectedGoodsGroup  =  ", selectedGoodsGroup.value)
     msg.deftAuto("请先选择物料分类");
     refSelectClassifyGroup.value?.focus();
     return;
@@ -510,12 +499,12 @@ const handleConfirmShipment = (row: any) => {
       statusOptions: detailStatusData.value,
       goodsGroupData: goodsGroupData.value,
     }
-    
+
     // 设置行数据和详情
     row.details = res.data;
-    row.status='WaitingShipment';
+    row.status = 'WaitingShipment';
     orderLayer.data = row;
-    
+
     // 添加标记，表示这是从确认发货按钮进入的
     if (orderLayer.data) {
       orderLayer.data.fromConfirmShipment = true;
@@ -535,7 +524,7 @@ const handleEdit = (row: any) => {
     }
     row.details = res.data
     orderLayer.data = row
-     // 确保不设置 fromConfirmShipment 标记
+    // 确保不设置 fromConfirmShipment 标记
     if (orderLayer.data) {
       delete orderLayer.data.fromConfirmShipment;
     }
@@ -562,38 +551,38 @@ const handleUpload = async (row: any) => {
   // 获取当前行的明细数据
   getOrderDetail(permission.getOperator().userId, row.orderNo).then((res: any) => {
     const details = res.data || [];
-     getOrderPrint(row.orderNo, row.customerOrderNo)
-     .then(async(res: any) => {
-     let data = res.data[0];
+    getOrderPrint(row.orderNo, row.customerOrderNo)
+      .then(async (res: any) => {
+        let data = res.data[0];
 
-     // 生成二维码
-      let qrCodeDataURL = '';
-      try {
-        // 二维码内容可以是发货单号，也可以包含更多信息
-        const qrContent = `${row.orderNo}`;
-        qrCodeDataURL = await QRCode.toDataURL(qrContent, {
-          width: 80,
-          height: 80,
-          margin: 1
-        });
-      } catch (error) {
-        console.error('生成二维码失败:', error);
-      }
+        // 生成二维码
+        let qrCodeDataURL = '';
+        try {
+          // 二维码内容可以是发货单号，也可以包含更多信息
+          const qrContent = `${row.orderNo}`;
+          qrCodeDataURL = await QRCode.toDataURL(qrContent, {
+            width: 80,
+            height: 80,
+            margin: 1
+          });
+        } catch (error) {
+          console.error('生成二维码失败:', error);
+        }
 
-      //创建打印容器并插入到页面
-      const printContainer = document.createElement('div');
-      printContainer.id = 'print-content-' + Date.now(); // 唯一ID
-      printContainer.innerHTML = generatePrintContent(data, details,qrCodeDataURL, row.orderNo);
-      //隐藏容器并添加到页面
-      printContainer.style.position = 'fixed';
-      printContainer.style.left = '-9999px';
-      printContainer.style.top = '-9999px';
-      document.body.appendChild(printContainer);
-      //打印该容器
-     printJS({
-      printable: printContainer.id,
-      type: 'html',
-      style: `
+        //创建打印容器并插入到页面
+        const printContainer = document.createElement('div');
+        printContainer.id = 'print-content-' + Date.now(); // 唯一ID
+        printContainer.innerHTML = generatePrintContent(data, details, qrCodeDataURL, row.orderNo);
+        //隐藏容器并添加到页面
+        printContainer.style.position = 'fixed';
+        printContainer.style.left = '-9999px';
+        printContainer.style.top = '-9999px';
+        document.body.appendChild(printContainer);
+        //打印该容器
+        printJS({
+          printable: printContainer.id,
+          type: 'html',
+          style: `
         body { 
           font-family: "Microsoft YaHei", sans-serif; 
           margin: 0; 
@@ -711,36 +700,36 @@ const handleUpload = async (row: any) => {
           }
         }
       `,
-        onPrintDialogClose: () => {
-          if (document.body.contains(printContainer)) {
-            document.body.removeChild(printContainer);
+          onPrintDialogClose: () => {
+            if (document.body.contains(printContainer)) {
+              document.body.removeChild(printContainer);
+            }
+            row.printLoading = false;
+          },
+          onError: (error) => {
+            if (document.body.contains(printContainer)) {
+              document.body.removeChild(printContainer);
+            }
+            row.printLoading = false;
+            console.error('打印错误:', error);
+            msg.errorAuto('打印失败');
           }
-          row.printLoading = false;
-        },
-        onError: (error) => {
-          if (document.body.contains(printContainer)) {
-            document.body.removeChild(printContainer);
-          }
-          row.printLoading = false;
-          console.error('打印错误:', error);
-          msg.errorAuto('打印失败');
-        }
+        });
+      })
+      .catch(error => {
+        row.printLoading = false;
+        msg.errorAuto('获取打印数据失败');
+        console.error('获取数据错误:', error);
       });
-    })
-    .catch(error => {
-      row.printLoading = false;
-      msg.errorAuto('获取打印数据失败');
-      console.error('获取数据错误:', error);
-    });
-    })          
+  })
 }
 
 // 生成打印内容的函数 - 修改后的版本
 const generatePrintContent = (data: any, details: any[], qrCodeDataURL: string, orderNo: string) => {
-  const qrCodeHTML = qrCodeDataURL 
+  const qrCodeHTML = qrCodeDataURL
     ? `<div class="qr-code-img"><img src="${qrCodeDataURL}" alt="二维码" style="width:80px;height:80px;" /></div>`
     : '<div class="qr-code-img" style="width:80px;height:80px;border:1px solid #ccc;text-align:center;line-height:80px;font-size:10px;color:#999;">二维码生成失败</div>';
-  
+
   return `
     <div class="print-container">
       <div class="print-section">
@@ -883,7 +872,7 @@ const generatePrintContent = (data: any, details: any[], qrCodeDataURL: string, 
 const dataSave = (data: any, actionType: string) => {
   orderLayer.btnLoading = true;
   if (actionType == 'add') {
-      data.createUserId = permission.getOperator().userId,
+    data.createUserId = permission.getOperator().userId,
       data.createUserName = permission.getOperator().userName,
       addSending(data).then(res => {
         orderLayer.show = false;
@@ -953,12 +942,13 @@ const exportData = (selField: Array<any>) => {
 <style lang="scss" scoped>
 /* 打印样式优化 */
 @media print {
+
   .layout-container,
   .layout-container-form,
   .layout-container-table {
     visibility: hidden;
   }
-  
+
   .print-area {
     visibility: visible;
     position: absolute;
@@ -966,7 +956,7 @@ const exportData = (selField: Array<any>) => {
     top: 0;
     width: 100%;
   }
-  
+
   // /* 确保二维码在打印时位置正确 - 固定在右上角 */
   // .qr-code {
   //   position: absolute !important;
@@ -983,30 +973,37 @@ const exportData = (selField: Array<any>) => {
   table-layout: fixed;
   word-wrap: break-word;
 }
+
 .print-info-item {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   flex: 1;
-  min-width: 0; /* 防止flex项目溢出 */
+  min-width: 0;
+  /* 防止flex项目溢出 */
   padding: 2px 5px;
   font-size: 11px;
 }
+
 /* 添加新的样式确保二维码位置正确 */
 .print-container {
   position: relative;
-  font-family: Arial,sans-serif; 
+  font-family: Arial, sans-serif;
   width: 100%;
-  padding-top: 10px; /* 为二维码留出空间 */
+  padding-top: 10px;
+  /* 为二维码留出空间 */
 }
+
 /* 调整打印头部，避免与二维码重叠 */
 .print-header {
   text-align: center;
   margin-bottom: 15px;
   border-bottom: 2px solid #000;
   padding-bottom: 8px;
-  margin-right: 90px; /* 为二维码留出足够空间 */
+  margin-right: 90px;
+  /* 为二维码留出足够空间 */
 }
+
 /* 新增样式：信息行布局 */
 .print-info-row {
   display: flex;
@@ -1015,29 +1012,36 @@ const exportData = (selField: Array<any>) => {
   margin-bottom: 8px;
   width: 100%;
 }
+
 .print-label {
   font-weight: bold;
   display: inline-block;
-  min-width: 80px; /* 调整标签宽度 */
+  min-width: 80px;
+  /* 调整标签宽度 */
 }
 
 /* 固定标签列宽 */
 .fixed-label {
-  width: 150px !important; /* 固定标签宽度 */
+  width: 150px !important;
+  /* 固定标签宽度 */
   font-weight: bold;
   background-color: #f5f5f5;
   text-align: right;
 }
+
 .fixed-value {
-  width: 150px !important; /* 固定值宽度 */
+  width: 150px !important;
+  /* 固定值宽度 */
   text-align: left;
 }
+
 /* 签收信息表格样式 */
 .info-label {
   width: 150px !important;
   font-weight: bold;
   background-color: #f5f5f5;
 }
+
 .info-content {
   line-height: 1.6;
 }

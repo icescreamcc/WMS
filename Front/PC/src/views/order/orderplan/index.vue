@@ -24,18 +24,6 @@
             <el-option v-for="item in goodsData" :key="item.key" :label="item.value" :value="item.key"></el-option>
           </el-select>
 
-          <!-- <el-select v-model="query.createUserNames" ref="refSelectClassifyGroup" size="small" :disabled="disableClassifyGroupSelect" class="m-2" style="width:90%;margin-left: 20px;" @change="getTableData(true)" filterable clearable placeholder="选择计划员">
-            <template #prefix><div style="color:#909399; border: 1px solid #dcdfe6;border-left: none;height: 30px; background-color: #f5f7fa;padding: 0 7px;position: relative;left: -3px;margin-right:10px ;">
-              计划员</div></template>        
-            <el-option v-for="item in createUserNameData" :key="item.key" :label="item.value" :value="item.key"></el-option>
-          </el-select>
-
-          <el-select v-model="query.detailStatus" ref="refSelectClassifyGroup" size="small" :disabled="disableClassifyGroupSelect" class="m-2" style="width:90%;margin-left: 20px;" @change="getTableData(true)" filterable clearable placeholder="选择单据状态">
-            <template #prefix><div style="color:#909399; border: 1px solid #dcdfe6;border-left: none;height: 30px; background-color: #f5f7fa;padding: 0 7px;position: relative;left: -3px;margin-right:10px ;">
-              单据状态</div></template>        
-            <el-option v-for="item in detailStatusData" :key="item.key" :label="item.value" :value="item.key"></el-option>
-          </el-select> -->
-
           <el-date-picker v-model="dateRange" type="daterange" range-separator="-" start-placeholder="最早到货日期" end-placeholder="最晚到货日期" size="small" value-format="YYYY-MM-DD" style="margin-left: 10px;;width:100%" @change="getTableData(true)"></el-date-picker>
           <el-input  v-model="query.input" placeholder="请输入关键词进行检索" size="small" style="width: 80%;margin-left: 10px;" clearable @clear="getTableData(true)"></el-input>
           <el-button type="primary" icon="el-icon-search" class="search-btn" @click="getTableData(true)" >搜索</el-button> 

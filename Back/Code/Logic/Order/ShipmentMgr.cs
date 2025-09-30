@@ -49,19 +49,20 @@ namespace Logic.Order
             detailStatus = string.IsNullOrEmpty(detailStatus) ? "" : detailStatus.Trim();
             sendingAddress = string.IsNullOrEmpty(sendingAddress) ? "" : sendingAddress.Trim();
             var data = Repository.ClientDb.Queryable<SendingOrder>()
-                  //.InnerJoin<SendingOrderDetail>((p, d) => p.OrderNo == d.OrderNo)
-                  .LeftJoin<BaseSuppliers>((p, b) => p.SupplierId == b.SupplierId)
-                   .LeftJoin<OrderPlan>((p, b,o) => p.CustomerOrderNo == o.OrderNo)
-                   .LeftJoin<BaseSuppliers>((p, b, o,e) => p.ReceivingResponsableUserInfo == e.SupplierId)
+                  .InnerJoin<SendingOrderDetail>((p, d) => p.OrderNo == d.OrderNo) //25-9-30 ccs
+                  .LeftJoin<BaseGoods>((p, d,  g) => d.GoodsId == g.GoodsId)  //25-9-30 ccs
+                  .LeftJoin<BaseSuppliers>((p, d, g, b) => p.SupplierId == b.SupplierId)
+                  .LeftJoin<OrderPlan>((p, d, g, b, o) => p.CustomerOrderNo == o.OrderNo)
+                  .LeftJoin<BaseSuppliers>((p, d, g, b, o, e) => p.ReceivingResponsableUserInfo == e.SupplierId)
                   //.WhereIF(!string.IsNullOrEmpty(searchKey), (p, b) => p.OrderNo.Contains(searchKey) || p.Remark.Contains(searchKey) || p.SpecialRequest.Contains(searchKey) || p.CreateUserName.Contains(searchKey) || p.ReceivingResponsableUserInfo.Contains(searchKey))
-                  .WhereIF(!string.IsNullOrEmpty(isUrgentShipment), (p, b) => p.IsUrgentShipment.Contains(isUrgentShipment))
+                  .WhereIF(!string.IsNullOrEmpty(isUrgentShipment), (p, d, g, b, o, e) => p.IsUrgentShipment.Contains(isUrgentShipment))
                   //.Where((p, b) => p.CreateUserId.Contains(createUserName))
                   //.Where((p, b) => p.SendingAddress.Contains(sendingAddress))
-                  .WhereIF(!string.IsNullOrEmpty(detailStatus), (p, b) => p.Status.Equals(detailStatus))
-                  .Where((p, b, o) => p.GoodsClassify == goodsGroup && p.SendingDate.Date >= GetDateStart(dateStart).Date && p.SendingDate.Date <= GetDateEnd(dateEnd).Date)
-                  .WhereIF(!string.IsNullOrEmpty(searchKey), (p, b) => SqlFunc.Subqueryable<SendingOrderDetail>().Where(s => s.OrderNo==p.OrderNo 
+                  .WhereIF(!string.IsNullOrEmpty(detailStatus), (p, d, g, b, o, e) => p.Status.Equals(detailStatus))
+                  .Where((p, d, g, b, o, e) => p.GoodsClassify == goodsGroup && p.SendingDate.Date >= GetDateStart(dateStart).Date && p.SendingDate.Date <= GetDateEnd(dateEnd).Date)
+                  .WhereIF(!string.IsNullOrEmpty(searchKey), (p, d, g, b, o, e) => SqlFunc.Subqueryable<SendingOrderDetail>().Where(s => s.OrderNo==p.OrderNo 
                   &&(s.GoodsNo.Contains(searchKey) || s.CustomerGoodsNo.Contains(searchKey) || s.CustomerIdentificationCode.Contains(searchKey))).Any())
-                  .Select((p, b,o,e) => new SendingOrderExpandDto
+                  .Select((p, d, g, b, o, e) => new SendingOrderExpandDto
                   {
                       OrderNo = p.OrderNo,
                       CustomerOrderNo=p.CustomerOrderNo,
@@ -90,6 +91,14 @@ namespace Logic.Order
                       SupplierId = p.SupplierId,
                       SupplierName = b.SupplierName,
                       IsEmailNotification=p.IsEmailNotification,
+
+                      GoodsNo = g.GoodsName,  //25-9-30 ccs
+                      GoodsName = g.GoodsName,
+                      CustomerGoodsNo = g.CustomerGoodsNo,
+                      CustomerIdentificationCode =g.CustomerIdentificationCode,
+                      Quantity = d.Quantity,
+                      PalletsQuantity = d.PalletsQuantity,
+
                       IsInBaseFiles = SqlFunc.Subqueryable<BaseFiles>().Where(bf => bf.PrimaryId == p.OrderNo && bf.FileInfoType == "SendingOrderAttachment").Any()
                   })
                   .OrderBy($"{orderFiled} {orderType}")
@@ -114,8 +123,8 @@ namespace Logic.Order
                 .LeftJoin<SendingOrder>((i, s) => i.OrderNo == s.OrderNo)
                 .LeftJoin<BaseGoods>((i, s, g) => i.GoodsId == g.GoodsId)
                 .LeftJoin<BaseSuppliers>((i, s, g ,bs) => bs.SupplierId == s.SupplierId)
-                 .Where((i) => i.OrderNo == orderNo)
-                 .Select<SendingOrderExpandDto>().ToListAsync();
+                .Where((i) => i.OrderNo == orderNo)
+                .Select<SendingOrderExpandDto>().ToListAsync();
             return orderDetail;
         }
 

@@ -42,45 +42,13 @@
       <Table ref="table" v-model:page="page" v-loading="loading" :showSelection="true" :data="tableData"
         @getTableData="getTableData" @selection-change="handleSelectionChange" @orderChanged="handleSortChange"
         @expandChange="handleExpandChange">
-        <!-- <el-table-column prop="orderNo" label="明细" type="expand" align="center" sortable :show-overflow-tooltip="true">
-          <template #default="props">
-            <div style="margin-bottom:10px">
-              <span style="font-weight:600;">出库明细</span>
-            </div>
-            <div>
-              <el-table :data="detailList.filter(x => x.orderNo == props.row.orderNo)" style="width: 100%">
-                <el-table-column prop="goodsName" label="名称" width="180" />
-                <el-table-column prop="goodsModel" label="型号" width="150" />
-                <el-table-column prop="goodsNo" label="SAP编码" width="150" />
-                <el-table-column prop="goodsClassifyName" label="类型" width="180" />
-                <el-table-column prop="quantity" label="计划出库">
-                  <template #default="detail">
-                    <span>{{ detail.row.quantity + detail.row.unitName }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="actualQuantity" label="实际出库">
-                  <template #default="detail">
-                    <span>{{ detail.row.actualQuantity + detail.row.unitName }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="warehouseName" label="出库仓库" />
-                <el-table-column prop="binName" label="出库货位" />
-                <el-table-column prop="workbinCellNo" label="出库料箱" />
-              </el-table>
-            </div>
-          </template>
-        </el-table-column> -->
+
         <el-table-column prop="orderNo" label="出库单号" align="center" sortable="custom" min-width="100"
           :show-overflow-tooltip="true" />
         <el-table-column prop="goodsName" label="名称" align="center" sortable="custom" min-width="100"
           :show-overflow-tooltip="true" />
-        <!-- <el-table-column prop="quantity" label="计划入库数量" align="center" sortable="custom" min-width="100"
-          :show-overflow-tooltip="true">  
-                 <template #default="detail">
-                  <span>{{ detail.row.quantity + detail.row.unitName }}</span>
-                  </template>
-        </el-table-column> -->
-        <el-table-column prop="actualQuantity" label="实际入库数量" align="center" sortable="custom" min-width="100"
+
+        <el-table-column prop="actualQuantity" label="实际出库数量" align="center" sortable="custom" min-width="100"
           :show-overflow-tooltip="true">
           <template #default="detail">
             <span>{{ detail.row.quantity + detail.row.unitName }}</span>
