@@ -16,7 +16,6 @@
 import { ref } from 'vue'
 import orderplan from './orderplan.vue'
 import shipplan from './shipplan.vue'
-
 const active = ref(0) // 当前 tab 索引
 </script>
 

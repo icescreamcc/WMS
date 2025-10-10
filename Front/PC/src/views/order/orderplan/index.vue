@@ -92,7 +92,7 @@
   })
   import { onMounted, ref, reactive } from "vue";
   import { Page } from "@/components/table/type";
-  import { getOrders,addOrderPlan, updateOrderPlan,delOrderPlan,approvalReceivingOrder,getApprovalHis,exportReceivingData,getExportFields } from "@/api/order/orderplan";
+  import { getOrders,addOrderPlan, updateOrderPlan,delOrderPlan } from "@/api/order/orderplan";
   import { LayerInterface } from "@/components/layer/index.vue"; 
   import Table from "@/components/table/tableServer.vue"; 
   import OrderEditModal from "./orderEditLayer.vue";  

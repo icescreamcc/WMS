@@ -23,7 +23,8 @@
         </div>
 
         <!-- 表格 -->
-        <el-table v-loading="loading" :data="tableData" border style="width: 100%; margin-top: 10px;">
+        <el-table v-loading="loading" :data="tableData" border style="width: 100%; margin-top: 10px;"
+            @row-click="handleRead">
             <el-table-column prop="goodsName" label="名称" align="center" show-overflow-tooltip />
             <el-table-column prop="customerNames" label="客户名称" align="center" :show-overflow-tooltip="true" />
             <el-table-column prop="goodsNames" label="物品名称" align="center" :show-overflow-tooltip="true" />
@@ -33,20 +34,19 @@
 
         <!-- 分页 -->
         <div class="pagination">
-            <el-pagination v-model:current-page="page.index" v-model:page-size="page.size" :total="page.total"
-                background layout="total, sizes, prev, pager, next, jumper" @current-change="getTableData"
-                @size-change="getTableData" />
+            <el-pagination v-model:current-page="page.index" :page-size="7" :total="page.total" background
+                layout="total, prev, pager, next, jumper" @current-change="getTableData(false)" />
         </div>
     </div>
+    <OrderDetail v-if="orderLayer.row" :row="orderLayer.row" v-model:show="orderLayer.show" :title="orderLayer.title" />
 </template>
 
 <script lang="ts" setup>
 import { ref, reactive, onMounted } from "vue"
-
 import { getOrders } from "@/api/order/orderplan";
 import permission from "@/utils/system/permission";
 import { getOptions } from '@/api/order/orderplan';
-
+import OrderDetail from "./planditails.vue";
 // 分页
 interface Page {
     index: number
@@ -57,12 +57,11 @@ interface Page {
 }
 const page = reactive<Page>({
     index: 1,
-    size: 20,
+    size: 7,
     total: 0,
     orderField: "",
     orderType: "",
 })
-
 // 查询条件
 const query = reactive({
     input: "",
@@ -73,16 +72,12 @@ const supplierUserData = ref(new Array<any>());
 const tableData = ref<any[]>([])
 const loading = ref(false)
 
-
-
-
 const getDetailStatusGroupData = () => {
     getOptions().then((res: any) => {
         supplierUserData.value = res.data.userOptions;
         //goodsData.value=res.data.goodsNameOptions; 
     })
 }
-
 // 获取表格数据
 const getTableData = (init: Boolean) => {
     loading.value = true
@@ -111,8 +106,18 @@ const getTableData = (init: Boolean) => {
             loading.value = false;
         })
 }
-
-
+const orderLayer = ref({
+  show: false,
+  title: "",
+  row: null
+});
+const handleRead = (row: any) => {
+  orderLayer.value = {
+    show: true,
+    title: "查看订单计划",
+    row
+  };
+};
 onMounted(() => {
     getDetailStatusGroupData();
     getTableData(true);

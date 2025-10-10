@@ -22,17 +22,17 @@
         </div>
 
         <!-- 表格 -->
-        <el-table v-loading="loading" :data="tableData" border style="width: 100%; margin-top: 10px;">
+        <el-table v-loading="loading" :data="tableData" border style="width: 100%; margin-top: 10px;"
+            @row-click="handleRead">
             <el-table-column prop="orderNo" label="发货单号" :show-overflow-tooltip="true" />
             <el-table-column prop="customerOrderNo" label="订单号" :show-overflow-tooltip="true" />
             <el-table-column prop="supplierName" label="供应商" align="center" show-overflow-tooltip />
-
-            <el-table-column prop="status" label="状态" align="center" sortable="custom" min-width="110"
-                :show-overflow-tooltip="true">
+            <el-table-column prop="quantity" label="发货数" align="center" :show-overflow-tooltip="true" />
+            <el-table-column prop="status" label="状态" align="center" :show-overflow-tooltip="true">
                 <template #default="props">
                     <span v-if="props.row.status == 'Shipment'" class="text-primary">{{ props.row.statusDesc }}</span>
                     <span v-else-if="props.row.status == 'CancelShipment'" class="text-danger">{{ props.row.statusDesc
-                        }}</span>
+                    }}</span>
                     <span v-else-if="props.row.status == 'WaitingNotification'" class="text-warning">{{
                         props.row.statusDesc }}</span>
                     <span v-else class="text-success">{{ props.row.statusDesc }}</span>
@@ -42,11 +42,11 @@
 
         <!-- 分页 -->
         <div class="pagination">
-            <el-pagination v-model:current-page="page.index" v-model:page-size="page.size" :total="page.total"
-                background layout="total, sizes, prev, pager, next, jumper" @current-change="getTableData"
-                @size-change="getTableData" />
+            <el-pagination v-model:current-page="page.index" :page-size="7" :total="page.total" background
+                layout="total, prev, pager, next, jumper" @current-change="getTableData(false)" />
         </div>
     </div>
+    <ShipDetail v-if="shipLayer.row" :row="shipLayer.row" v-model:show="shipLayer.show" :title="shipLayer.title" />
 </template>
 
 <script lang="ts" setup>
@@ -55,6 +55,7 @@ import { getSending } from "@/api/order/shipment";
 import { getGoodsGroup } from '@/api/common';
 import permission from "@/utils/system/permission";
 import { deftClassifyGroup } from '@/config';
+import ShipDetail from "./shipditails.vue";
 // 分页
 interface Page {
     index: number
@@ -65,7 +66,7 @@ interface Page {
 }
 const page = reactive<Page>({
     index: 1,
-    size: 20,
+    size: 7,
     total: 0,
     orderField: "",
     orderType: "",
@@ -96,6 +97,7 @@ const getTableData = (init: Boolean) => {
     if (init) {
         page.index = 1
     }
+    console.log('####  page.index = ', page.index)
     loading.value = false
 
     getSending(permission.getOperator().userId, page.size, page.index, page.orderField, page.orderType,
@@ -119,7 +121,18 @@ const getTableData = (init: Boolean) => {
             loading.value = false;
         })
 }
-
+const shipLayer = ref({
+    show: false,
+    title: "",
+    row: null
+});
+const handleRead = (row: any) => {
+    shipLayer.value = {
+        show: true,
+        title: "发货单计划",
+        row
+    };
+};
 onMounted(() => {
     getGoodsGroupData();
     getTableData(true);
