@@ -274,7 +274,7 @@ onMounted(() => {
     isInStorageApproval.value = res.data.isInStorageApproval
   })
   getGoodsGroupData();
-  getTableData(true);-
+  getTableData(true);
 })
 
 const getGoodsGroupData = () => {

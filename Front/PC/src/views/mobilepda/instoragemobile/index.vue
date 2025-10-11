@@ -105,16 +105,17 @@
                             <div class="input-title">车牌号码</div>
                         </el-col>
                         <el-col :span="16">
-                            <input v-model="dataForm.licensePlateNo" type="text" class="input-cls">
-                            <!-- <el-select  class="input-cls">
-                                
-                            </el-select> -->
+                            <el-select v-model="dataForm.licensePlateNo" placeholder="请选择车牌号码" class="input-cls"
+                                clearable>
+                                <el-option v-for="item in licensePlateOptions" :key="item.value" :label="item.label"
+                                    :value="item.value" />
+                            </el-select>
                         </el-col>
                     </el-row>
                     <!-- 入库数量 -->
                     <el-row class="input-item">
                         <el-col :span="8">
-                            <div class="input-title">入库数量(吨)</div>
+                            <div class="input-title">入库数量(吨)*</div>
                         </el-col>
                         <el-col :span="14">
                             <input type="number" v-model="dataForm.quantity" class="input-cls" placeholder="请输入入库数量">
@@ -147,7 +148,7 @@
                     </el-row>
                     <el-row class="input-item">
                         <el-col :span="8">
-                            <div class="input-titlenone">运输单签字附件</div>
+                            <div class="input-titlenone">运输单签字附件*</div>
                         </el-col>
                         <el-col :span="16" class="upload-col">
                             <Upload :uploadParams="uploadParams" v-if="showUpload" @handleImgChanged="imgChanged" />
@@ -297,6 +298,11 @@ const onClearForm = () => {
     dataForm.value.remark = ''
     document.getElementById('input-carSoleCode')?.focus();
 }
+const licensePlateOptions = ref([
+    { label: '沪A12345', value: '沪A12345' },
+    { label: '苏B67890', value: '苏B67890' },
+    { label: '浙C45678', value: '浙C45678' }
+])
 const editImg = '/icon-img/bianji5.png';
 const router = useRouter();
 const route = useRoute();
@@ -560,33 +566,63 @@ const selectedGoods = ref<any>({
     goodsPicture: []
 });
 
-const getGoodsDatya = (init: boolean) => {
+const getGoodsDatya = async (init: boolean) => {
     if (init) {
         pgIndex.value = 1
     }
     let orderField = goodsSort.value.split('-')[0];
     let orderType = goodsSort.value.split('-')[1];
     let binId: number = selectedBinId.value ? Number(selectedBinId.value) : 0;
-    getGoodsList(pgSize.value, pgIndex.value, orderField, orderType, selectedGoodsGroup.value, selectedGoodsClassifyId.value, selectedShelfId.value, binId, searchKey.value).then(res => {
-        goodsData.value = res.data.rows;
-        totalDate.value = res.data.total;
-        totalPage.value = Math.ceil(totalDate.value / pgSize.value);
-    })
-    if (goodsData.value.length > 0) {
-        selectedGoods.value = goodsData.value[0];
-    } else {
-        selectedGoods.value = {
-            goodsId: '',
-            goodsNo: '',
-            goodsName: '',
-            goodsClassifyName: '',
-            packageUnitId: 0,
-            packageUnitName: '',
-            goodsUnitList: [],
-            goodsPicture: []
-        };
+
+    try {
+        const res = await getGoodsList(
+            pgSize.value,
+            pgIndex.value,
+            orderField,
+            orderType,
+            selectedGoodsGroup.value,
+            selectedGoodsClassifyId.value,
+            selectedShelfId.value,
+            binId,
+            searchKey.value
+        );
+
+        const rows = res.data.rows || [];
+        if (rows.length > 0) {
+            goodsData.value = rows;
+            totalDate.value = res.data.total;
+            totalPage.value = Math.ceil(totalDate.value / pgSize.value);
+            selectedGoods.value = rows[0];
+        } else {
+            console.warn("getGoodsList 返回空数据");
+        }
+    } catch (e) {
+        console.error("加载物品数据失败：", e);
     }
-}
+};
+//     getGoodsList(pgSize.value, pgIndex.value, orderField, orderType, selectedGoodsGroup.value,
+//         selectedGoodsClassifyId.value, selectedShelfId.value, binId, searchKey.value
+//     ).then(res => {
+//         goodsData.value = res.data.rows || [];
+//         totalDate.value = res.data.total || 0;
+//         totalPage.value = Math.ceil(totalDate.value / pgSize.value);
+
+//         if (goodsData.value.length > 0) {
+//             selectedGoods.value = goodsData.value[0];
+//         } else {
+//             selectedGoods.value = {
+//                 goodsId: '',
+//                 goodsNo: '',
+//                 goodsName: '',
+//                 goodsClassifyName: '',
+//                 packageUnitId: 0,
+//                 packageUnitName: '',
+//                 goodsUnitList: [],
+//                 goodsPicture: []
+//             };
+//         }
+//     })
+// }
 
 const onPrePage = () => {
     if (pgIndex.value > 1) {
@@ -718,10 +754,13 @@ const onSubmit = async () => {
     try {
         const response = await addInStorage(dataForm.value)
         const orderNo = response.data as string;
-        await confirmInStorage(orderNo);
+        // await confirmInStorage(orderNo);
         // msg.successAuto('入库已确认');
-        msg.successAuto('入库成功')
-        msgDrawerOptions.value.show = false
+        if (orderNo.length > 0) {
+            msg.successAuto('入库成功')
+            msgDrawerOptions.value.show = false  //提示框隐藏
+        }
+
     } catch (err) {
         msg.errorAuto('入库失败，请重试')
     } finally {
@@ -795,7 +834,7 @@ const onSubmit = async () => {
 
         .content-btn {
             height: 10%;
-              
+
         }
 
         .el-button--success {
