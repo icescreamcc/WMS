@@ -27,7 +27,8 @@ namespace Models.Model.Enum
         [Description("审批未通过")]
         Reject,
 
-        [Description("待入库")]
+        //[Description("待入库")]
+        [Description("待审批")]//临时改下
         WaitInStorage,
 
         [Description("已入库")]
