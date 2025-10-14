@@ -81,6 +81,8 @@ namespace Models.Model.Purchase
 
         public float PalletsQuantity { get; set; }
 
+        public float ActualQuantity { get; set; }
+
         public int QuantityUnitId { get; set; }
 
         public string QuantityUnitName { get; set; }

@@ -98,7 +98,7 @@ namespace Logic.Order
                       CustomerIdentificationCode =g.CustomerIdentificationCode,
                       Quantity = d.Quantity,
                       PalletsQuantity = d.PalletsQuantity,
-
+                      ActualQuantity = d.ActualQuantity,
                       IsInBaseFiles = SqlFunc.Subqueryable<BaseFiles>().Where(bf => bf.PrimaryId == p.OrderNo && bf.FileInfoType == "SendingOrderAttachment").Any()
                   })
                   .OrderBy($"{orderFiled} {orderType}")

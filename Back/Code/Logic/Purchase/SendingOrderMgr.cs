@@ -265,7 +265,11 @@ namespace Logic.Purchase
                         await Repository.ClientDb.Updateable<OrderPlan>()
                                 .SetColumns(op => new OrderPlan
                                 {
-                                    ShippedNum = op.ShippedNum + data.ActualQuantity
+                                    ShippedNum = op.ShippedNum + data.ActualQuantity,
+                                    Belial = ((op.ShippedNum + data.ActualQuantity) == 0
+                                    ? 0
+                                    : SqlFunc.Round(
+                                    ((op.OrderNum) / (op.ShippedNum + data.ActualQuantity)) * 100, 0))
                                 })
                                 .Where(op => op.OrderNo == oldSending.CustomerOrderNo)
                                 .ExecuteCommandAsync();
