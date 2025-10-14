@@ -21,7 +21,7 @@ namespace Models.Model.Order
         public string GoodsName { get; set; }
         public string GoodsNames { get; set; }
         
-        public string OrderNum { get; set; } 
+        public double OrderNum { get; set; } 
 
         public string Unit { get; set; }
 
@@ -33,9 +33,9 @@ namespace Models.Model.Order
 
         public string Remarks { get; set; }
 
-        public string ShippedNum { get; set; }
+        public double ShippedNum { get; set; }
 
-        public string Belial { get; set; }
+        public double Belial { get; set; }
 
         public string Invoice { get; set; }
 

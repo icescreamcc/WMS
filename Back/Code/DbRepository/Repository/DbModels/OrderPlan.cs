@@ -28,7 +28,7 @@ namespace DbRepository.Repository.DbModels
         public string GoodsName { get; set; }
          
         [SugarColumn(Length = 100,IsNullable =true, ColumnDescription = "订单量")]
-        public string OrderNum { get; set; }
+        public double OrderNum { get; set; }
           
         [SugarColumn(Length = 100, IsPrimaryKey = true, ColumnDescription = "单位")]
         public string Unit { get; set; }
@@ -43,10 +43,10 @@ namespace DbRepository.Repository.DbModels
         public string Remarks { get; set; }
 
         [SugarColumn(Length = 100, IsNullable = true, ColumnDescription = "已发重量")]
-        public string ShippedNum { get; set; }
+        public double ShippedNum { get; set; }
          
         [SugarColumn(Length = 100, IsNullable = true, ColumnDescription = "完成比列(已发重量/订单量)")]
-        public string Belial { get; set; }
+        public double Belial { get; set; }
 
         [SugarColumn(Length = 100, IsNullable = true, ColumnDescription = "开票信息")]
         public string Invoice { get; set; }

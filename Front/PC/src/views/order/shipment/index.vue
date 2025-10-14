@@ -78,9 +78,11 @@
           :show-overflow-tooltip="true" />
         <el-table-column prop="goodsName" label="物料名称" fixed align="center" min-width="120"
           :show-overflow-tooltip="true" />
-        <el-table-column prop="supplierName" label="运输供应商" fixed align="center" sortable="custom" min-width="180"
+        <el-table-column prop="supplierName" label="运输供应商" fixed align="center" sortable="custom" min-width="120"
           :show-overflow-tooltip="true" />
         <el-table-column prop="quantity" label="计划发货数" fixed align="center" sortable="custom" min-width="120"
+          :show-overflow-tooltip="true" />
+          <el-table-column prop="actualQuantity" label="实际发货数" fixed align="center" sortable="custom" min-width="120"
           :show-overflow-tooltip="true" />
         <el-table-column prop="sendingDate" label="计划发货日期" fixed align="center" sortable="custom" min-width="120"
           :show-overflow-tooltip="true">
@@ -109,7 +111,7 @@
         <el-table-column prop="customerGoodsNo" label="客户料号" align="center" min-width="120" />
         <el-table-column prop="customerIdentificationCode" label="客户配送中心" align="center" min-width="120" />
 
-        <el-table-column prop="palletsQuantity" label="发货托数" width="160" />
+        <el-table-column prop="palletsQuantity" label="发货托数" width="80" />
         <el-table-column prop="specialRequest" label="特殊要求" align="center" sortable="custom" min-width="100"
           :show-overflow-tooltip="true" />
         <el-table-column prop="status" label="状态" align="center" sortable="custom" min-width="110"
