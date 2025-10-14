@@ -320,9 +320,9 @@ namespace WebApi.Controllers.Purchase
 
         [HttpPost]
         [BusinessLog("扫描二维码,发货单", LogType.Update, _moduleName)]
-        public async void ConfirmSendingAndOutStorage(SendingOrderDto data)
+        public async Task<OutStorageDtoForFront> ConfirmSendingAndOutStorage(SendingOrderDto data)
         {
-            await _sendingOrderMgr.ConfirmSendingAndOutStorage(data);
+           return await _sendingOrderMgr.ConfirmSendingAndOutStorage(data);
         }
 
     }

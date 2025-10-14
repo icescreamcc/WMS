@@ -54,7 +54,7 @@
                         <el-col :span="8">
                             <div class="input-title">计划出库数量</div>
                         </el-col>
-                  
+
                         <el-col :span="16">
                             <el-input v-model="deliveryItem.quantity" type="number" class="input-cls" readonly>
                                 <template #append>{{ deliveryItem.packageUnitName }}</template>
@@ -210,7 +210,7 @@ onMounted(() => {
     html5QrCode.value = new Html5Qrcode(readerId)
 
     // PC端调试用默认发货单号
-    const decodedText = 'S10000011'
+    const decodedText = 'S10000016'
     getOrderDetail(permission.getOperator().userId, decodedText).then(res => {
         deliveryItem.value = res.data[0]
         debugger
@@ -284,60 +284,106 @@ const onScanSuccess = (decodedText: string) => {
 }
 
 const submitDelivery = async () => {
-    debugger
-    if (!deliveryItem.value.actualQuantity || deliveryItem.value.actualQuantity <= 0) {
-        msg.deftAuto('请输入正确的入库数量')
-        return
+    // 检查 deliveryItem 是否存在
+    if (!deliveryItem.value) {
+        ElMessage.error('deliveryItem 未定义');
+        return;
     }
-    if (deliveryItem.value.actualQuantity > deliveryItem.value.quantity) {//
-        msg.deftAuto('实际出库数量不能大于计划出库数量')
-        return
+
+    const item = deliveryItem.value;
+
+    // 检查实际出库数量
+    if (!item.actualQuantity || item.actualQuantity <= 0) {
+        msg.deftAuto('请输入正确的出库数量');
+        return;
     }
-    if (!deliveryItem.value || !deliveryItem.value.goodsPicture?.length) {
-        msg.deftAuto('请上传签字附件')
-        return
+
+    // 检查实际出库数量是否超过计划数量
+    if (item.actualQuantity > item.quantity) {
+        msg.deftAuto('实际出库数量不能大于计划出库数量');
+        return;
     }
-    submitting.value = true
+
+    // 检查签字附件
+    if (!item.goodsPicture || item.goodsPicture.length === 0) {
+        msg.deftAuto('请上传签字附件');
+        return;
+    }
+
+
+    submitting.value = true;
+
     try {
-        const formData = new FormData()
-        formData.append('deliveryNo', deliveryItem.value.orderNo)
-        deliveryItem.value.goodsPicture.forEach((file: any, idx: number) => {
-            formData.append('file' + idx, file)
-        })
+        // 构建 FormData 上传文件（如果需要）
+        const formData = new FormData();
+        formData.append('deliveryNo', item.orderNo);
+        item.goodsPicture.forEach((file: any, idx: number) => {
+            formData.append('file' + idx, file);
+        });
 
-        const sendingdata = {
-            OrderNo: deliveryItem.value.orderNo,        // 单号
-            GoodsName: deliveryItem.value.goodsName,
-            DetailStatus: deliveryItem.value.detailStatus,//发货状态
-            Quantity: deliveryItem.value.quantity,         // 计划数量（可选）
-            ActualQuantity: deliveryItem.value.actualQuantity, // 实际数量
-            CreateUserId: permission.getOperator().userId,
-            CreateUserName: permission.getOperator().userName,
-
-            GoodsPicture: deliveryItem.value.goodsPicture.map((p: any) => ({
-                FileName: p.fileName || p.name,
-                Url: p.url
+        // 构建发送给后端的对象
+        const sendingData = {
+            OrderNo: item.orderNo || '',
+            GoodsName: item.goodsName || '',
+            DetailStatus: item.detailStatus || '',
+            Quantity: item.quantity || 0,
+            ActualQuantity: item.actualQuantity || 0,
+            CreateUserId: permission.getOperator()?.userId || '',
+            CreateUserName: permission.getOperator()?.userName || '',
+            GoodsPicture: (item.goodsPicture || []).map((p: any) => ({
+                FileName: p.fileName || p.name || '',
+                Url: p.url || ''
             }))
-        };
-        debugger
-        await ConfirmSendingAndOutStorage(sendingdata);
 
-        addOutStorage(sendingdata).then(res => {
-        debugger
+        };
+
+        // 调用后端接口
+
+        const res = await ConfirmSendingAndOutStorage(sendingData);
+        const outStorageData = res.data; // 这里才是后端返回的对象
+debugger
+        if (outStorageData && outStorageData.details && outStorageData.details.length > 0) {
+            // 把 OrderNo 写入每个明细
+            outStorageData.details.forEach((d: any) => {
+                d.orderNo = outStorageData.orderNo;
+            });
+
+            const res = await addOutStorage(outStorageData);
             const orderNo = res.data;
-            if(orderNo.length>0){
-                ElMessage.success('发货提交成功！')
+            if (orderNo && orderNo.length > 0) {
+                ElMessage.success('发货提交成功！ 单号: ' + orderNo);
+                msgDrawerOptions.value.show = false;
+                resetForm();
             }
-        })
-      
-        msgDrawerOptions.value.show = false  //提示框隐藏
-        resetForm()
-    } catch (err) {
-        ElMessage.error('提交失败')
+            else {
+                ElMessage.error('添加出库记录失败');
+                resetForm();
+            }
+        } else {
+            ElMessage.error('提交失败：没有生成出库明细');
+        }
+
+
+
+
+        // await ConfirmSendingAndOutStorage(sendingData);
+        // const res = await addOutStorage(sendingData);
+        // const orderNo = res?.data || '';
+
+        // if (orderNo.length > 0) {
+        //     ElMessage.success('发货提交成功！');
+        //     msgDrawerOptions.value.show = false; // 隐藏提示框
+        //     resetForm(); // 重置表单
+        // }
+
+    } catch (err: any) {
+        console.error('提交出错：', err);
+        ElMessage.error(`提交失败: ${err?.message || err}`);
     } finally {
-        submitting.value = false
+        submitting.value = false;
     }
-}
+};
+
 const showScanEntry = ref(true)
 const resetForm = () => {
     deliveryItem.value = null

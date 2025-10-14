@@ -9,6 +9,7 @@ using Logic.LogicCommon;
 using Logic.LogicCommon.FileStorage;
 using Microsoft.Extensions.Configuration;
 using Minio.DataModel;
+using Minio.DataModel.Result;
 using Models.Model;
 using Models.Model.Baseinfo;
 using Models.Model.Enum;
@@ -215,155 +216,450 @@ namespace Logic.Purchase
         /// <param name="data"></param>
         /// <returns></returns>
         /// <exception cref="BusinessException"></exception>
-        public async Task ConfirmSendingAndOutStorage(SendingOrderDto data)
+        //public async Task ConfirmSendingAndOutStorage(SendingOrderDto data)
+        //{
+        //    if (data == null || string.IsNullOrEmpty(data.OrderNo))
+        //    {
+        //        throw new BusinessException("保存失败,单号不能为空");
+        //    }
+        //    using (var uow = Repository.ClientDb.UseTran())
+        //    {
+        //        try
+        //        {
+        //            if (data.Quantity <= data.ActualQuantity)
+        //            {
+        //                // 查找发货单
+        //                var oldSending = await Repository.ClientDb.Queryable<SendingOrder>()
+        //                    .SingleAsync(u => u.OrderNo == data.OrderNo);
+
+        //                if (oldSending == null)
+        //                {
+        //                    throw new BusinessException("保存失败,当前发货计划不存在或已删除");
+        //                }
+        //                if(oldSending.Status== SendingOrderStatus.Shipment.ToString())
+        //                {
+        //                    throw new BusinessException("单号已发货");
+        //                }
+
+        //                var curDate = DateTime.Now;
+        //                oldSending.UpdateDate = curDate;
+        //                oldSending.UpdateUserId = data.UpdateUserId;
+        //                oldSending.UpdateUserName = data.UpdateUserName;
+        //                oldSending.Status = SendingOrderStatus.Shipment.ToString();//data.DetailStatus; 
+
+        //                Repository.ClientDb.Updateable(oldSending).AddQueue();
+
+        //                // 更新实际出库数量
+
+        //                await Repository.ClientDb.Updateable<SendingOrderDetail>()
+        //                        .SetColumns(s => new SendingOrderDetail
+        //                        {
+        //                            Quantity = data.Quantity,
+        //                            ActualQuantity = data.ActualQuantity
+        //                        })
+        //                        .Where(s => s.OrderNo == data.OrderNo)
+        //                        .ExecuteCommandAsync();
+
+
+        //                //根据发货单号 累计已发重量
+        //                var a = oldSending.CustomerOrderNo;
+        //                await Repository.ClientDb.Updateable<OrderPlan>()
+        //                     .SetColumns(op => new OrderPlan
+        //                     {
+        //                         ShippedNum = op.ShippedNum + data.ActualQuantity,
+        //                         Belial = SqlFunc.IIF(
+        //                             (op.ShippedNum + data.ActualQuantity) == 0,
+        //                             0,
+        //                             SqlFunc.Round((op.OrderNum / (op.ShippedNum + data.ActualQuantity)) * 100, 0)
+        //                         )
+        //                     })
+        //                     .Where(op => op.OrderNo == oldSending.CustomerOrderNo)
+        //                     .ExecuteCommandAsync();
+
+
+
+
+        //                //if (data.Details != null && data.Details.Count > 0)
+        //                //{
+        //                //    foreach (var item in data.Details)
+        //                //    {
+        //                //        await Repository.ClientDb.Updateable<SendingOrderDetail>()
+        //                //            .SetColumns(s => s.Quantity == item.Quantity && s.ActualQuantity==item.ActualQuantity)
+        //                //            .Where(s => s.OrderNo == data.OrderNo
+        //                //                     && s.GoodsId == item.GoodsId)
+        //                //            .ExecuteCommandAsync();
+
+        //                //        //根据发货单号 累计已发重量
+        //                //        await Repository.ClientDb.Updateable<OrderPlan>()
+        //                //        .SetColumns(op => op.ShippedNum == op.ShippedNum + (item.ActualQuantity ?? 0f))
+        //                //        .Where(op => op.OrderNo == data.OrderNo)
+        //                //        .ExecuteCommandAsync();
+
+        //                //    }
+        //                //}
+
+        //                //保存图片
+        //                if (data.GoodsPicture != null && data.GoodsPicture.Count > 0)
+        //                {
+        //                    var photos = new List<BaseFiles>();
+        //                    var isSetDeft = false;
+        //                    foreach (var p in data.GoodsPicture)
+        //                    {
+        //                        photos.Add(new BaseFiles
+        //                        {
+        //                            PrimaryId = data.OrderNo,   // 绑定到发货单号
+        //                            FileName = p.FileName,
+        //                            FileInfoType = FileInfoType.SendingPhoto.ToString(),
+        //                            Url = p.Url,
+        //                            IsDeft = !isSetDeft
+        //                        });
+        //                        isSetDeft = true;
+        //                    }
+
+        //                    Repository.ClientDb.Insertable(photos).AddQueue();
+        //                }
+        //                // 2. 生成出库单
+        //                var details = await Repository.ClientDb.Queryable<SendingOrderDetail>()
+        //                               .Where(d => d.OrderNo == data.OrderNo)
+        //                               .ToListAsync();
+
+        //                if (details.Count == 0)
+        //                    throw new BusinessException("发货计划明细不存在");
+
+        //                var goodsArr = details.Select(s => s.GoodsId).Distinct().ToArray();
+        //                var goodsInfo = await Repository.ClientDb.Queryable<BaseGoods>()
+        //                    .Where(w => goodsArr.Contains(w.GoodsId)).ToListAsync();
+
+        //                await _storageMgr.StorageStatistics(data.CreateUserId, data.CreateUserName);
+
+
+        //                //计算并检查库存 
+        //                //出库单明细表
+        //                var ordersDetail = await Repository.ClientDb.Queryable<InvOutStorageDetail>().Where(u => data.OrderNo == u.OrderNo).ToListAsync();
+        //                var chkStorage = await CheckStorage(ordersDetail);
+
+        //                var isOutStorageApproval = bool.Parse((await _sysArgsHelper.GetValueByKey(BusinessConst.IsOutStorageApproval)).Value.ToString());
+        //                if (chkStorage)
+        //                {
+        //                    var lastData = await Repository.ClientDb.Queryable<InvOutStorage>().MaxAsync(x => x.OrderNo);
+        //                    var finishedWarehouse = await Repository.ClientDb.Queryable<InvWarehouse>()
+        //                     .Where(w => w.WarehouseType == "FinishedProduct" && w.IsAbandon == false)
+        //                     .OrderBy(w => w.WarehouseId)   //取第一个
+        //                     .FirstAsync();
+        //                    //出库单
+        //                    var outStorageModel = new InvOutStorage
+        //                    {
+        //                        OrderNo = GetPrimaryId("O", lastData),
+        //                        SourceOrderNo = oldSending.OrderNo,//发货单 
+        //                        OutStorageType = OutStorageType.ReceiveOut + "",
+        //                        GoodsClassify = oldSending.GoodsClassify,
+        //                        CreateDate = DateTime.Now,
+        //                        CreateUserId = oldSending.CreateUserId,
+        //                        CreateUserName = oldSending.CreateUserName,
+        //                        WarehouseId = finishedWarehouse.WarehouseId,
+        //                        Remark = oldSending.Remark,
+        //                    };
+
+        //                    //审批
+        //                    if (isOutStorageApproval)
+        //                    {
+        //                        //审批信息(如果当前修改人也是审批人,则需要修改和添加相应的审批信息)
+        //                        Repository.ClientDb.Deleteable<ApprovalHis>(a => a.DataType == ApprovalDataType.OutStorage.ToString() && a.PrimaryId == data.OrderNo).AddQueue();
+        //                        var process = await GetApprovalProcess(ApprovalDataType.OutStorage.ToString());
+        //                        var curApprover = process.Where(a => a.ApproverId == data.CreateUserId).ToList();
+        //                        if (curApprover?.Count > 0)
+        //                        {
+        //                            var hightApprover = curApprover.OrderByDescending(x => x.Rank).First();
+        //                            outStorageModel.ApprovalDate = DateTime.Now;
+        //                            outStorageModel.ApproverId = data.CreateUserId;
+        //                            outStorageModel.ApproverName = data.CreateUserName;
+        //                            outStorageModel.ApproverRole = hightApprover.ApproverRole;
+        //                            if (hightApprover.IsLastApproval)
+        //                            {
+        //                                outStorageModel.ApprovalStatus = ApprovalStatus.Approve.ToString();
+        //                                outStorageModel.Status = OutStorageStatus.WaitOutStorage.ToString();
+        //                            }
+        //                            else
+        //                            {
+        //                                outStorageModel.Status = OutStorageStatus.Approvaling.ToString();
+        //                                outStorageModel.ApprovalStatus = ApprovalStatus.Approvaling.ToString();
+        //                            }
+        //                            var approvalHis = new ApprovalHis
+        //                            {
+        //                                ApprovalDate = DateTime.Now,
+        //                                ApprovalModel = hightApprover.ApprovalModel,
+        //                                ApprovalStatus = ApprovalStatus.Approve.ToString(),
+        //                                ApproverId = data.CreateUserId,
+        //                                ApproverName = data.CreateUserName,
+        //                                ApproverRoleId = hightApprover.ApproverRole,
+        //                                ApproverRoleName = hightApprover.ApproverRoleName,
+        //                                DataType = ApprovalDataType.OutStorage.ToString(),
+        //                                ApprovalRank = hightApprover.Rank,
+        //                                PrimaryId = outStorageModel.OrderNo
+        //                            };
+        //                            Repository.ClientDb.Insertable(approvalHis).AddQueue();
+        //                        }
+        //                        else
+        //                        {
+        //                            outStorageModel.Status = OutStorageStatus.Pending.ToString();
+        //                            outStorageModel.ApprovalStatus = ApprovalStatus.Pending.ToString();
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        outStorageModel.Status = OutStorageStatus.WaitOutStorage.ToString();
+        //                        outStorageModel.ApprovalStatus = ApprovalStatus.NoApproval.ToString();
+        //                    }
+        //                    Repository.ClientDb.Insertable(outStorageModel).AddQueue();
+
+        //                    //出库明细
+
+        //                    // 查出所有需要的货物信息（BaseGoods）
+        //                    var goodsIds = details.Select(d => d.GoodsId).Distinct().ToList();
+
+        //                    // 查出成品仓下面的 Bin（货位）
+        //                    var bins = await Repository.ClientDb.Queryable<InvBin>()
+        //                        .Where(b => b.WarehouseId == finishedWarehouse.WarehouseId && b.IsAbandon == false)
+        //                        .ToListAsync();
+
+
+
+        //                    var outStorageDetail = details.Select(d =>
+        //                    {
+        //                        var g = goodsInfo.FirstOrDefault(x => x.GoodsId == d.GoodsId);
+        //                        var bin = bins.FirstOrDefault(); // 这里简单取第一个，如果有多个可以加逻辑
+        //                        float actualQty = d.ActualQuantity > 0 ? d.ActualQuantity : d.Quantity;
+        //                        return new InvOutStorageDetail
+        //                        {
+        //                            OrderNo = outStorageModel.OrderNo,
+        //                            GoodsId = d.GoodsId,
+        //                            GoodsName = g?.GoodsName ?? "",      // 根据 BaseGoods 找名称
+        //                            WarehouseId = finishedWarehouse.WarehouseId,
+        //                            ShelfId = bin?.ShelfId ?? "",       //pc端没有要修改
+        //                            BinId = bin?.BinId ?? 0,
+        //                            WorkbinId = 0,
+        //                            WorkbinCellId = 0,
+        //                            Quantity = data.Quantity,
+        //                            ActualQuantity = actualQty,
+        //                            UnitId = g.PackageUnitId,//标准单位
+        //                            Remark = oldSending.Remark,
+        //                            UnitPrice = goodsInfo.Single(s => s.GoodsId == d.GoodsId).CostPrice,
+        //                            TotalPrice = Math.Round(goodsInfo.Single(s => s.GoodsId == d.GoodsId).CostPrice * (d.ActualQuantity > 0 ? d.ActualQuantity : d.Quantity), 2),
+
+        //                            PriceUnit = goodsInfo.Single(s => s.GoodsId == d.GoodsId).PriceUnitName
+        //                        };
+        //                    }).ToList();
+        //                    Repository.ClientDb.Insertable(outStorageDetail).AddQueue();
+
+        //                    await Repository.ClientDb.SaveQueuesAsync();
+
+        //                    uow.CommitTran();
+
+        //                    //return outStorageModel.OrderNo;
+        //                }
+
+        //            }else
+        //            {
+        //                throw new BusinessException("实际发货数量不能超过计划发货数量");
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            uow.RollbackTran();
+        //            throw new BusinessException($"保存失败：{ex.Message}");
+        //        }
+        //    }
+        //}
+        public async Task<OutStorageDtoForFront> ConfirmSendingAndOutStorage(SendingOrderDto data)
         {
             if (data == null || string.IsNullOrEmpty(data.OrderNo))
-            {
-                throw new BusinessException("保存失败,单号不能为空");
-            }
+                throw new BusinessException("保存失败，单号不能为空");
+
             using (var uow = Repository.ClientDb.UseTran())
             {
                 try
                 {
-                    if (data.Quantity <= data.ActualQuantity)
+                    // 查找发货单
+                    var oldSending = await Repository.ClientDb.Queryable<SendingOrder>()
+                        .SingleAsync(u => u.OrderNo == data.OrderNo);
+
+                    if (oldSending == null)
+                        throw new BusinessException("保存失败，当前发货计划不存在或已删除");
+
+                    //if (oldSending.Status == SendingOrderStatus.Shipment.ToString())
+                    //    throw new BusinessException("单号已发货");
+
+                    // 查找对应订单计划
+                    var orderPlan = await Repository.ClientDb.Queryable<OrderPlan>()
+                        .Where(op => op.OrderNo == oldSending.CustomerOrderNo)
+                        .SingleAsync();
+
+                    if (orderPlan == null)
+                        throw new BusinessException("找不到对应的订单计划(OrderPlan)");
+
+                    // 查找发货明细
+                    var sendingDetails = await Repository.ClientDb.Queryable<SendingOrderDetail>()
+                        .Where(d => d.OrderNo == data.OrderNo)
+                        .ToListAsync();
+
+                    if (sendingDetails.Count == 0)
+                        throw new BusinessException("发货计划明细不存在");
+
+                    //  汇总本次发货实际数量
+                    //var actualTotal = sendingDetails.Sum(d => d.ActualQuantity);
+
+                    // 校验逻辑：本次发货 + 已发货量 <= 订单计划量
+                    var planQty = orderPlan.OrderNum;
+                    var shippedQty = orderPlan.ShippedNum;
+
+                    if (data.ActualQuantity > planQty)
                     {
-                        // 查找发货单
-                        var oldSending = await Repository.ClientDb.Queryable<SendingOrder>()
-                            .SingleAsync(u => u.OrderNo == data.OrderNo);
+                        var remain = planQty - shippedQty;
+                        throw new BusinessException($"发货超出订单计划，当前最大可发数量为：{remain}");
+                    }
 
-                        if (oldSending == null)
+                    // 更新发货单状态
+                    var curDate = DateTime.Now;
+                    oldSending.UpdateDate = curDate;
+                    oldSending.UpdateUserId = data.CreateUserId;
+                    oldSending.UpdateUserName = data.CreateUserName;
+                    oldSending.Status = SendingOrderStatus.Shipment.ToString();
+
+                    Repository.ClientDb.Updateable(oldSending).AddQueue();
+
+                    // 更新发货明细的实际数量（保持和传入一致）
+                    await Repository.ClientDb.Updateable<SendingOrderDetail>()
+                        .SetColumns(s => new SendingOrderDetail
                         {
-                            throw new BusinessException("保存失败,当前发货计划不存在或已删除");
-                        }
-                        if(oldSending.Status== SendingOrderStatus.Shipment.ToString())
+                            Quantity = data.Quantity,
+                            ActualQuantity = data.ActualQuantity
+                        })
+                        .Where(s => s.OrderNo == data.OrderNo)
+                        .ExecuteCommandAsync();
+
+                    // 更新订单计划的已发数量
+                    await Repository.ClientDb.Updateable<OrderPlan>()
+                        .SetColumns(op => new OrderPlan
                         {
-                            throw new BusinessException("单号已发货");
-                        }
+                            ShippedNum = data.ActualQuantity,
+                            Belial = SqlFunc.IIF(
+                                                         (op.ShippedNum + data.ActualQuantity) == 0,
+                                                         0,
+                                                         SqlFunc.Round((op.OrderNum / (op.ShippedNum + data.ActualQuantity)) * 100, 0)
+                                                 )
+                        })
+                        .Where(op => op.OrderNo == oldSending.CustomerOrderNo)
+                        .ExecuteCommandAsync();
 
-                        var curDate = DateTime.Now;
-                        oldSending.UpdateDate = curDate;
-                        oldSending.UpdateUserId = data.UpdateUserId;
-                        oldSending.UpdateUserName = data.UpdateUserName;
-                        oldSending.Status = SendingOrderStatus.Shipment.ToString();//data.DetailStatus; 
-
-                        Repository.ClientDb.Updateable(oldSending).AddQueue();
-
-                        // 更新实际出库数量
-
-                        await Repository.ClientDb.Updateable<SendingOrderDetail>()
-                                .SetColumns(s => new SendingOrderDetail
-                                {
-                                    Quantity = data.Quantity,
-                                    ActualQuantity = data.ActualQuantity
-                                })
-                                .Where(s => s.OrderNo == data.OrderNo)
-                                .ExecuteCommandAsync();
-
-
-                        //根据发货单号 累计已发重量
-                        var a = oldSending.CustomerOrderNo;
-                        await Repository.ClientDb.Updateable<OrderPlan>()
-                                .SetColumns(op => new OrderPlan
-                                {
-                                    ShippedNum = op.ShippedNum + data.ActualQuantity,
-                                    Belial = ((op.ShippedNum + data.ActualQuantity) == 0
-                                    ? 0
-                                    : SqlFunc.Round(
-                                    ((op.OrderNum) / (op.ShippedNum + data.ActualQuantity)) * 100, 0))
-                                })
-                                .Where(op => op.OrderNo == oldSending.CustomerOrderNo)
-                                .ExecuteCommandAsync();
-
-
-
-                        //if (data.Details != null && data.Details.Count > 0)
-                        //{
-                        //    foreach (var item in data.Details)
-                        //    {
-                        //        await Repository.ClientDb.Updateable<SendingOrderDetail>()
-                        //            .SetColumns(s => s.Quantity == item.Quantity && s.ActualQuantity==item.ActualQuantity)
-                        //            .Where(s => s.OrderNo == data.OrderNo
-                        //                     && s.GoodsId == item.GoodsId)
-                        //            .ExecuteCommandAsync();
-
-                        //        //根据发货单号 累计已发重量
-                        //        await Repository.ClientDb.Updateable<OrderPlan>()
-                        //        .SetColumns(op => op.ShippedNum == op.ShippedNum + (item.ActualQuantity ?? 0f))
-                        //        .Where(op => op.OrderNo == data.OrderNo)
-                        //        .ExecuteCommandAsync();
-
-                        //    }
-                        //}
-
-                        //保存图片
-                        if (data.GoodsPicture != null && data.GoodsPicture.Count > 0)
+                    // 保存发货照片
+                    if (data.GoodsPicture != null && data.GoodsPicture.Count > 0)
+                    {
+                        var photos = new List<BaseFiles>();
+                        var isSetDeft = false;
+                        foreach (var p in data.GoodsPicture)
                         {
-                            var photos = new List<BaseFiles>();
-                            var isSetDeft = false;
-                            foreach (var p in data.GoodsPicture)
+                            photos.Add(new BaseFiles
                             {
-                                photos.Add(new BaseFiles
+                                PrimaryId = data.OrderNo,
+                                FileName = p.FileName,
+                                FileInfoType = FileInfoType.SendingPhoto.ToString(),
+                                Url = p.Url,
+                                IsDeft = !isSetDeft
+                            });
+                            isSetDeft = true;
+                        }
+
+                        Repository.ClientDb.Insertable(photos).AddQueue();
+                    }
+
+                    // ===== 生成出库单逻辑 =====
+                    var goodsArr = sendingDetails.Select(s => s.GoodsId).Distinct().ToArray();
+                    var goodsInfo = await Repository.ClientDb.Queryable<BaseGoods>()
+                        .Where(w => goodsArr.Contains(w.GoodsId))
+                        .ToListAsync();
+
+                    await _storageMgr.StorageStatistics(data.CreateUserId, data.CreateUserName);
+
+                    // 检查库存
+                    var ordersDetail = await Repository.ClientDb.Queryable<InvOutStorageDetail>()
+                        .Where(u => data.OrderNo == u.OrderNo)
+                        .ToListAsync();
+
+                    var chkStorage = await CheckStorage(ordersDetail);
+                    InvOutStorage outStorageModel = null;
+                    var isOutStorageApproval = bool.Parse((await _sysArgsHelper.GetValueByKey(BusinessConst.IsOutStorageApproval)).Value.ToString());
+                    List<OutStorageDetail> detailsForFront = new List<OutStorageDetail>();
+                    if (chkStorage)
+                    {
+                        // 检查是否已有出库单
+                        var outStorage = await Repository.ClientDb.Queryable<InvOutStorage>()
+                            .SingleAsync(o => o.SourceOrderNo == data.OrderNo);
+
+                        if (outStorage != null)
+                        {
+                            // 出库单已存在，只更新数量
+                            var existingDetails = await Repository.ClientDb.Queryable<InvOutStorageDetail>()
+                                .Where(d => d.OrderNo == outStorage.OrderNo)
+                                .ToListAsync();
+
+                            foreach (var d in existingDetails)
+                            {
+                                var sendDetail = sendingDetails.FirstOrDefault(s => s.GoodsId == d.GoodsId);
+                                if (sendDetail != null)
                                 {
-                                    PrimaryId = data.OrderNo,   // 绑定到发货单号
-                                    FileName = p.FileName,
-                                    FileInfoType = FileInfoType.SendingPhoto.ToString(),
-                                    Url = p.Url,
-                                    IsDeft = !isSetDeft
-                                });
-                                isSetDeft = true;
+                                    d.ActualQuantity = sendDetail.ActualQuantity > 0 ? sendDetail.ActualQuantity : sendDetail.Quantity;
+                                    d.TotalPrice = Math.Round(d.UnitPrice * d.ActualQuantity, 2);
+                                    detailsForFront.Add(new OutStorageDetail
+                                    {
+                                        GoodsId = d.GoodsId,
+                                        GoodsName = d.GoodsName,
+                                        Quantity = d.Quantity,
+                                        ActualQuantity = d.ActualQuantity,
+                                        UnitId = d.UnitId,
+                                        WarehouseId = d.WarehouseId,
+                                        ShelfId = d.ShelfId,
+                                        BinId = d.BinId, 
+                                        Remark = d.Remark,
+                                        UnitPrice = d.UnitPrice,
+                                        TotalPrice = d.TotalPrice,
+                                        PriceUnit = d.PriceUnit,
+                                        OutStorageType = OutStorageType.ReceiveOut.ToString(),
+                                        GoodsClassify = oldSending.GoodsClassify,
+                                    });
+                                }
                             }
 
-                            Repository.ClientDb.Insertable(photos).AddQueue();
+                            await Repository.ClientDb.Updateable(existingDetails).ExecuteCommandAsync();
                         }
-                        // 2. 生成出库单
-                        var details = await Repository.ClientDb.Queryable<SendingOrderDetail>()
-                                       .Where(d => d.OrderNo == data.OrderNo)
-                                       .ToListAsync();
-
-                        if (details.Count == 0)
-                            throw new BusinessException("发货计划明细不存在");
-
-                        var goodsArr = details.Select(s => s.GoodsId).Distinct().ToArray();
-                        var goodsInfo = await Repository.ClientDb.Queryable<BaseGoods>()
-                            .Where(w => goodsArr.Contains(w.GoodsId)).ToListAsync();
-
-                        await _storageMgr.StorageStatistics(data.CreateUserId, data.CreateUserName);
-
-
-                        //计算并检查库存 
-                        //出库单明细表
-                        var ordersDetail = await Repository.ClientDb.Queryable<InvOutStorageDetail>().Where(u => data.OrderNo == u.OrderNo).ToListAsync();
-                        var chkStorage = await CheckStorage(ordersDetail);
-
-                        var isOutStorageApproval = bool.Parse((await _sysArgsHelper.GetValueByKey(BusinessConst.IsOutStorageApproval)).Value.ToString());
-                        if (chkStorage)
+                        else
                         {
                             var lastData = await Repository.ClientDb.Queryable<InvOutStorage>().MaxAsync(x => x.OrderNo);
                             var finishedWarehouse = await Repository.ClientDb.Queryable<InvWarehouse>()
-                             .Where(w => w.WarehouseType == "FinishedProduct" && w.IsAbandon == false)
-                             .OrderBy(w => w.WarehouseId)   //取第一个
-                             .FirstAsync();
-                            //出库单
-                            var outStorageModel = new InvOutStorage
+                                .Where(w => w.WarehouseType == "FinishedProduct" && w.IsAbandon == false)
+                                .OrderBy(w => w.WarehouseId)
+                                .FirstAsync();
+
+                            outStorageModel = new InvOutStorage
                             {
                                 OrderNo = GetPrimaryId("O", lastData),
-                                SourceOrderNo = oldSending.OrderNo,//发货单 
+                                SourceOrderNo = oldSending.OrderNo,
                                 OutStorageType = OutStorageType.ReceiveOut + "",
                                 GoodsClassify = oldSending.GoodsClassify,
                                 CreateDate = DateTime.Now,
                                 CreateUserId = oldSending.CreateUserId,
                                 CreateUserName = oldSending.CreateUserName,
                                 WarehouseId = finishedWarehouse.WarehouseId,
-                                Remark = oldSending.Remark,
+                                Remark = oldSending.Remark
                             };
 
-                            //审批
+                            // ===== 审批处理 =====
                             if (isOutStorageApproval)
                             {
-                                //审批信息(如果当前修改人也是审批人,则需要修改和添加相应的审批信息)
                                 Repository.ClientDb.Deleteable<ApprovalHis>(a => a.DataType == ApprovalDataType.OutStorage.ToString() && a.PrimaryId == data.OrderNo).AddQueue();
+
                                 var process = await GetApprovalProcess(ApprovalDataType.OutStorage.ToString());
                                 var curApprover = process.Where(a => a.ApproverId == data.CreateUserId).ToList();
+
                                 if (curApprover?.Count > 0)
                                 {
                                     var hightApprover = curApprover.OrderByDescending(x => x.Rank).First();
@@ -371,6 +667,7 @@ namespace Logic.Purchase
                                     outStorageModel.ApproverId = data.CreateUserId;
                                     outStorageModel.ApproverName = data.CreateUserName;
                                     outStorageModel.ApproverRole = hightApprover.ApproverRole;
+
                                     if (hightApprover.IsLastApproval)
                                     {
                                         outStorageModel.ApprovalStatus = ApprovalStatus.Approve.ToString();
@@ -381,6 +678,7 @@ namespace Logic.Purchase
                                         outStorageModel.Status = OutStorageStatus.Approvaling.ToString();
                                         outStorageModel.ApprovalStatus = ApprovalStatus.Approvaling.ToString();
                                     }
+
                                     var approvalHis = new ApprovalHis
                                     {
                                         ApprovalDate = DateTime.Now,
@@ -407,58 +705,89 @@ namespace Logic.Purchase
                                 outStorageModel.Status = OutStorageStatus.WaitOutStorage.ToString();
                                 outStorageModel.ApprovalStatus = ApprovalStatus.NoApproval.ToString();
                             }
+
                             Repository.ClientDb.Insertable(outStorageModel).AddQueue();
 
-                            //出库明细
-
-                            // 查出所有需要的货物信息（BaseGoods）
-                            var goodsIds = details.Select(d => d.GoodsId).Distinct().ToList();
-
-                            // 查出成品仓下面的 Bin（货位）
+                            // ===== 出库单明细 =====
                             var bins = await Repository.ClientDb.Queryable<InvBin>()
                                 .Where(b => b.WarehouseId == finishedWarehouse.WarehouseId && b.IsAbandon == false)
                                 .ToListAsync();
 
-
-
-                            var outStorageDetail = details.Select(d =>
+                            var outStorageDetailList = sendingDetails.Select(d =>
                             {
                                 var g = goodsInfo.FirstOrDefault(x => x.GoodsId == d.GoodsId);
-                                var bin = bins.FirstOrDefault(); // 这里简单取第一个，如果有多个可以加逻辑
+                                var bin = bins.FirstOrDefault();
                                 float actualQty = d.ActualQuantity > 0 ? d.ActualQuantity : d.Quantity;
+
+                                var detail = new OutStorageDetail
+                                {
+                                    GoodsId = d.GoodsId,
+                                    GoodsName = g?.GoodsName ?? "",
+                                    Quantity = d.Quantity,
+                                    ActualQuantity = actualQty,
+                                    UnitId = g.PackageUnitId,
+                                    WarehouseId = finishedWarehouse.WarehouseId,
+                                    ShelfId = bin?.ShelfId ?? "",
+                                    BinId = bin?.BinId ?? 0,
+                                    Remark = data.Remark,
+                                    UnitPrice = g.CostPrice,
+                                    TotalPrice = Math.Round(g.CostPrice * actualQty, 2),
+                                    PriceUnit = g.PriceUnitName,
+                                    GoodsClassify = oldSending.GoodsClassify,
+                                };
+
+                                detailsForFront.Add(detail);
                                 return new InvOutStorageDetail
                                 {
                                     OrderNo = outStorageModel.OrderNo,
-                                    GoodsId = d.GoodsId,
-                                    GoodsName = g?.GoodsName ?? "",      // 根据 BaseGoods 找名称
-                                    WarehouseId = finishedWarehouse.WarehouseId,
-                                    ShelfId = bin?.ShelfId ?? "",       //pc端没有要修改
-                                    BinId = bin?.BinId ?? 0,
-                                    WorkbinId = 0,
-                                    WorkbinCellId = 0,
-                                    Quantity = data.Quantity,
-                                    ActualQuantity = actualQty,
-                                    UnitId = g.PackageUnitId,//标准单位
-                                    Remark = oldSending.Remark,
-                                    UnitPrice = goodsInfo.Single(s => s.GoodsId == d.GoodsId).CostPrice,
-                                    TotalPrice = Math.Round(goodsInfo.Single(s => s.GoodsId == d.GoodsId).CostPrice * (d.ActualQuantity > 0 ? d.ActualQuantity : d.Quantity), 2),
-
-                                    PriceUnit = goodsInfo.Single(s => s.GoodsId == d.GoodsId).PriceUnitName
+                                    GoodsId = detail.GoodsId,
+                                    GoodsName = detail.GoodsName,
+                                    Quantity = detail.Quantity,
+                                    ActualQuantity = detail.ActualQuantity,
+                                    UnitId = detail.UnitId,
+                                    WarehouseId = detail.WarehouseId,
+                                    ShelfId = detail.ShelfId,
+                                    BinId = detail.BinId,
+                                    Remark = detail.Remark,
+                                    UnitPrice = detail.UnitPrice,
+                                    TotalPrice = detail.TotalPrice,
+                                    PriceUnit = detail.PriceUnit
                                 };
                             }).ToList();
-                            Repository.ClientDb.Insertable(outStorageDetail).AddQueue();
 
-                            await Repository.ClientDb.SaveQueuesAsync();
+                            //Repository.ClientDb.Insertable(outStorageModel).AddQueue();
+                            Repository.ClientDb.Insertable(outStorageDetailList).AddQueue();
 
-                            uow.CommitTran();
-
-                            //return outStorageModel.OrderNo;
+                            //Repository.ClientDb.Insertable(outStorageDetail).AddQueue();
                         }
 
-                    }else
-                    {
-                        throw new BusinessException("实际发货数量不能超过计划发货数量");
+                        // 提交所有操作
+                        await Repository.ClientDb.SaveQueuesAsync();
+                        uow.CommitTran();
+
+                        // 返回给前端
+                        return new OutStorageDtoForFront
+                        {
+                            OrderNo = outStorage?.OrderNo,
+                            Details = detailsForFront,
+                            GoodsClassify = oldSending.GoodsClassify,
+                            OutStorageType = OutStorageType.ReceiveOut.ToString(),
+                            CreateUserName = oldSending.CreateUserName,
+                        };
+
                     }
+                    else
+                    {
+                        return new OutStorageDtoForFront
+                        {
+                            OrderNo = null,
+                            GoodsClassify = null,
+                            OutStorageType = null,
+                            Details = new List<OutStorageDetail>(),
+                            CreateUserName =null,
+                        };
+                    }
+                    
                 }
                 catch (Exception ex)
                 {
@@ -467,6 +796,7 @@ namespace Logic.Purchase
                 }
             }
         }
+
 
 
 

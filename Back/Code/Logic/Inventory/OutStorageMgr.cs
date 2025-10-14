@@ -216,7 +216,7 @@ namespace Logic.Inventory
         /// <returns></returns>
         public async Task<string> AddOutStorage(OutStorage data)
         {
-            if (data.Details?.Count == 0)
+            if (data.Details == null || data.Details.Count == 0)
             {
                 throw new BusinessException("保存失败,请添加出库单明细");
             }
@@ -331,11 +331,14 @@ namespace Logic.Inventory
                         WorkbinId = b.WorkbinId,
                         WorkbinCellId = b.WorkbinCellId,
                         Quantity = b.Quantity,
+                        ActualQuantity=b.ActualQuantity,
                         UnitId = b.UnitId,
                         Remark = b.Remark,
                         UnitPrice= goodsInfo.Single(s=>s.GoodsId== b.GoodsId).CostPrice,
                         TotalPrice= Math.Round(goodsInfo.Single(s => s.GoodsId == b.GoodsId).CostPrice * b.Quantity,2),
-                        PriceUnit= goodsInfo.Single(s => s.GoodsId == b.GoodsId).PriceUnitName
+                        PriceUnit= goodsInfo.Single(s => s.GoodsId == b.GoodsId).PriceUnitName,
+                        //GoodsClassify = oldSending.GoodsClassify,
+
                     })
                     .ToList();
                 Repository.ClientDb.Insertable(outStorageDetail).AddQueue();

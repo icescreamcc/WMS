@@ -8,6 +8,8 @@ namespace Models.Model.Inv
 {
    public class OutStorageDetail
     {
+        public string GoodsClassify { get; set; }
+        public string OutStorageType { get; set; }
         public int DetailId { get; set; }
          
         public string OrderNo { get; set; }
