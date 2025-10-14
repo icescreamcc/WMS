@@ -210,7 +210,7 @@ onMounted(() => {
     html5QrCode.value = new Html5Qrcode(readerId)
 
     // PC端调试用默认发货单号
-    const decodedText = 'S10000010'
+    const decodedText = 'S10000011'
     getOrderDetail(permission.getOperator().userId, decodedText).then(res => {
         deliveryItem.value = res.data[0]
         debugger
@@ -322,10 +322,15 @@ const submitDelivery = async () => {
         debugger
         await ConfirmSendingAndOutStorage(sendingdata);
 
-        // addOutStorage(sendingdata).then(res => {
-        //     const orderNo = res.data;
-        // })
-        ElMessage.success('发货提交成功！')
+        addOutStorage(sendingdata).then(res => {
+        debugger
+            const orderNo = res.data;
+            if(orderNo.length>0){
+                ElMessage.success('发货提交成功！')
+            }
+        })
+      
+        msgDrawerOptions.value.show = false  //提示框隐藏
         resetForm()
     } catch (err) {
         ElMessage.error('提交失败')
