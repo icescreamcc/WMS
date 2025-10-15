@@ -80,7 +80,8 @@ namespace Logic.Order
                           Belial = m.Belial,
                           Invoice = m.Invoice,
                           PaymentState = m.PaymentState,
-                          OrderState ="新建",
+                          //OrderState ="新建",
+                          OrderState = m.OrderState,
                           OrderUrl = m.OrderUrl,
                           CreateDate = m.CreateDate,
                           ModifyDate = m.ModifyDate,
@@ -152,8 +153,10 @@ namespace Logic.Order
                 ShippedNum = data.ShippedNum,
                 Belial = data.Belial,
                 Invoice = data.Invoice,
-                PaymentState = data.PaymentState,
-                OrderState = data.OrderState,
+                //PaymentState = data.PaymentState,
+                //OrderState = data.OrderState,
+                PaymentState = "未回款",
+                OrderState = "进行中",
                 OrderUrl = data.OrderUrl,
                 CreateDate = DateTime.Now.ToStringExtension()
             };
@@ -173,7 +176,11 @@ namespace Logic.Order
             {
                 throw new BusinessException("保存失败,当前任务单不存在或已删除!");
             }
-
+            string orderState = "已关闭";
+            if (data.PaymentState== "未回款")
+            {
+                orderState = "进行中";
+            }
             var model = new OrderPlan
             {
                 OrderNo = data.OrderNo,
@@ -190,7 +197,7 @@ namespace Logic.Order
                 Belial=data.Belial,
                 Invoice=data.Invoice,
                 PaymentState = data.PaymentState,
-                OrderState = data.OrderState,
+                OrderState = orderState,
                 OrderUrl = data.OrderUrl,
                 CreateDate=data.CreateDate,
                 ModifyDate = DateTime.Now.ToStringExtension(),

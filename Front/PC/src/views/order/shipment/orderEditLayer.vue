@@ -312,7 +312,7 @@ const formRules = {
   remark: [{ max: 100, message: '字符超出限制长度', trigger: 'blur' }],
   specialRequest: [{ max: 100, message: '字符超出限制长度', trigger: 'blur' }],  // 订单号
   customerOrderNo: [{ required: true,max: 100, message: '必填项', trigger: 'blur' }],
-  planQuantity: [{ required: true,max: 100, message: '必填项', trigger: 'blur' }, { validator: validateQuantity, trigger: 'blur' }],
+  planQuantity: [{ required: true, message: '必填项', trigger: 'blur' }, { validator: validateQuantity, trigger: 'blur' }],
   // ActualQuantity: [{ required: false,max: 100, message: '必填项', trigger: 'blur' }],
   initCustomFormatter: [{ max: 100, message: '字符超出限制长度', trigger: 'blur' }],
   isUrgentShipment: [{ required: false, message: '请选择是否紧急发货', trigger: 'change' }],
