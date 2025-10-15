@@ -48,10 +48,16 @@
         <el-table-column prop="goodsName" label="名称" align="center" sortable="custom" min-width="100"
           :show-overflow-tooltip="true" />
 
+        <el-table-column prop="quantity" label="计划出库数量" align="center" sortable="custom" min-width="100"
+          :show-overflow-tooltip="true">
+          <template #default="detail">
+            <span>{{ detail.row.quantity  + detail.row.unitName }}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="actualQuantity" label="实际出库数量" align="center" sortable="custom" min-width="100"
           :show-overflow-tooltip="true">
           <template #default="detail">
-            <span>{{ detail.row.quantity + detail.row.unitName }}</span>
+            <span>{{ detail.row.actualQuantity  + detail.row.unitName }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="warehouseName" label="出库仓库" align="center" sortable="custom" min-width="100"

@@ -567,26 +567,26 @@ namespace Logic.Purchase
                         // 执行更新
                         await Repository.ClientDb.Updateable(order).ExecuteCommandAsync();
                     }
-                    // 保存发货照片
-                    if (data.GoodsPicture != null && data.GoodsPicture.Count > 0)
-                    {
-                        var photos = new List<BaseFiles>();
-                        var isSetDeft = false;
-                        foreach (var p in data.GoodsPicture)
-                        {
-                            photos.Add(new BaseFiles
-                            {
-                                PrimaryId = data.OrderNo,
-                                FileName = p.FileName,
-                                FileInfoType = FileInfoType.SendingPhoto.ToString(),
-                                Url = p.Url,
-                                IsDeft = !isSetDeft
-                            });
-                            isSetDeft = true;
-                        }
+                    ////// 保存发货照片
+                    //if (data.GoodsPicture != null && data.GoodsPicture.Count > 0)
+                    //{
+                    //    var photos = new List<BaseFiles>();
+                    //    var isSetDeft = false;
+                    //    foreach (var p in data.GoodsPicture)
+                    //    {
+                    //        photos.Add(new BaseFiles
+                    //        {
+                    //            PrimaryId = data.OrderNo,
+                    //            FileName = p.FileName,
+                    //            FileInfoType = FileInfoType.SendingPhoto.ToString(),
+                    //            Url = p.Url,
+                    //            IsDeft = !isSetDeft
+                    //        });
+                    //        isSetDeft = true;
+                    //    }
 
-                        Repository.ClientDb.Insertable(photos).AddQueue();
-                    }
+                    //    Repository.ClientDb.Insertable(photos).AddQueue();
+                    //}
 
                     // ===== 生成出库单逻辑 =====
                     var goodsArr = sendingDetails.Select(s => s.GoodsId).Distinct().ToArray();
@@ -603,6 +603,7 @@ namespace Logic.Purchase
 
                     var chkStorage = await CheckStorage(ordersDetail);
                     InvOutStorage outStorageModel = null;
+                    OutStorage outStorageDto = null;
                     var isOutStorageApproval = bool.Parse((await _sysArgsHelper.GetValueByKey(BusinessConst.IsOutStorageApproval)).Value.ToString());
                     List<OutStorageDetail> detailsForFront = new List<OutStorageDetail>();
                     if (chkStorage)
@@ -644,8 +645,27 @@ namespace Logic.Purchase
                                     });
                                 }
                             }
+                            //不更新数据,出库记录的时候更新
+                            //await Repository.ClientDb.Updateable(existingDetails).ExecuteCommandAsync();
+                            // 生成 DTO
+                            outStorageDto = new OutStorage
+                            {
+                                OrderNo = outStorage.OrderNo,
+                                OutStorageType = outStorage.OutStorageType,
+                                GoodsClassify = outStorage.GoodsClassify,
+                                Status = outStorage.Status,
+                                ApprovalStatus = outStorage.ApprovalStatus,
+                                Remark = outStorage.Remark,
+                                WarehouseId = outStorage.WarehouseId,
+                                CreateUserId = oldSending.CreateUserId,
+                                CreateUserName = oldSending.CreateUserName,
+                                CreateDate = outStorage.CreateDate,
+                                OutStorageDate = outStorage.OutStorageDate,
+                                SourceOrderNo =outStorage.SourceOrderNo,
+                                UpdateUserId = oldSending.UpdateUserId,
+                                UpdateUserName = oldSending.CreateUserName,
 
-                            await Repository.ClientDb.Updateable(existingDetails).ExecuteCommandAsync();
+                            };
                         }
                         else
                         {
@@ -654,7 +674,7 @@ namespace Logic.Purchase
                                 .Where(w => w.WarehouseType == "FinishedProduct" && w.IsAbandon == false)
                                 .OrderBy(w => w.WarehouseId)
                                 .FirstAsync();
-
+                         
                             outStorageModel = new InvOutStorage
                             {
                                 OrderNo = GetPrimaryId("O", lastData),
@@ -665,7 +685,7 @@ namespace Logic.Purchase
                                 CreateUserId = oldSending.CreateUserId,
                                 CreateUserName = oldSending.CreateUserName,
                                 WarehouseId = finishedWarehouse.WarehouseId,
-                                Remark = oldSending.Remark
+                                Remark = oldSending.Remark,
                             };
 
                             // ===== 审批处理 =====
@@ -721,8 +741,25 @@ namespace Logic.Purchase
                                 outStorageModel.Status = OutStorageStatus.WaitOutStorage.ToString();
                                 outStorageModel.ApprovalStatus = ApprovalStatus.NoApproval.ToString();
                             }
+                            //返回dto
+                            outStorageDto = new OutStorage
+                            {
+                                OrderNo = outStorageModel.OrderNo,
+                                SourceOrderNo = oldSending.OrderNo,
+                                OutStorageType = outStorageModel.OutStorageType,
+                                GoodsClassify = outStorageModel.GoodsClassify,
+                                Status = outStorageModel.Status,
+                                ApprovalStatus = outStorageModel.ApprovalStatus,
+                                Remark = outStorageModel.Remark,
+                                WarehouseId = outStorageModel.WarehouseId,
+                                CreateUserId = outStorageModel.CreateUserId,
+                                CreateUserName = outStorageModel.CreateUserName,
+                                CreateDate = outStorageModel.CreateDate,
+                                OutStorageDate = outStorageModel.OutStorageDate
+                            };
 
-                            Repository.ClientDb.Insertable(outStorageModel).AddQueue();
+                            //不更新数据,出库记录的时候更新
+                            //Repository.ClientDb.Insertable(outStorageModel).AddQueue();
 
                             // ===== 出库单明细 =====
                             var bins = await Repository.ClientDb.Queryable<InvBin>()
@@ -767,28 +804,30 @@ namespace Logic.Purchase
                                     Remark = detail.Remark,
                                     UnitPrice = detail.UnitPrice,
                                     TotalPrice = detail.TotalPrice,
-                                    PriceUnit = detail.PriceUnit
+                                    PriceUnit = detail.PriceUnit,
+                                    
                                 };
                             }).ToList();
 
-                            //Repository.ClientDb.Insertable(outStorageModel).AddQueue();
-                            Repository.ClientDb.Insertable(outStorageDetailList).AddQueue();
+                            //不更新数据,出库记录的时候更新
+                            //Repository.ClientDb.Insertable(outStorageDetailList).AddQueue();
 
-                            //Repository.ClientDb.Insertable(outStorageDetail).AddQueue();
                         }
 
                         // 提交所有操作
                         await Repository.ClientDb.SaveQueuesAsync();
                         uow.CommitTran();
-
                         // 返回给前端
                         return new OutStorageDtoForFront
                         {
                             OrderNo = outStorage?.OrderNo,
                             Details = detailsForFront,
+                            OutStorageDetails = outStorageDto,
                             GoodsClassify = oldSending.GoodsClassify,
                             OutStorageType = OutStorageType.ReceiveOut.ToString(),
                             CreateUserName = oldSending.CreateUserName,
+                            CreateUserId = oldSending.CreateUserId,
+                            GoodsPicture =data.GoodsPicture,
                         };
 
                     }
@@ -800,7 +839,9 @@ namespace Logic.Purchase
                             GoodsClassify = null,
                             OutStorageType = null,
                             Details = new List<OutStorageDetail>(),
-                            CreateUserName =null,
+                            CreateUserName = null,
+                            OutStorageDetails = null,
+                            GoodsPicture =null,
                         };
                     }
                     

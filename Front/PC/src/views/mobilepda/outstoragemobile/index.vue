@@ -210,7 +210,7 @@ onMounted(() => {
     html5QrCode.value = new Html5Qrcode(readerId)
 
     // PC端调试用默认发货单号
-    const decodedText = 'S10000022'
+    const decodedText = 'S10000024'
     getOrderDetail(permission.getOperator().userId, decodedText).then(res => {
         deliveryItem.value = res.data[0]
         debugger
@@ -341,12 +341,28 @@ const submitDelivery = async () => {
 
         const res = await ConfirmSendingAndOutStorage(sendingData);
         const outStorageData = res.data; // 这里才是后端返回的对象
-debugger
+        debugger
         if (outStorageData && outStorageData.details && outStorageData.details.length > 0) {
             // 把 OrderNo 写入每个明细
             outStorageData.details.forEach((d: any) => {
                 d.orderNo = outStorageData.orderNo;
             });
+
+            // 1. 解构出 outStorageDetails
+            const { outStorageDetails } = outStorageData;
+
+            // 2. 把需要的字段赋值到顶层
+            if (outStorageDetails) {
+                outStorageData.status = outStorageDetails.status;
+                outStorageData.approvalStatus = outStorageDetails.approvalStatus;
+                outStorageData.remark = outStorageDetails.remark;
+                outStorageData.warehouseId = outStorageDetails.warehouseId;
+                outStorageData.outStorageDate = outStorageDetails.outStorageDate;
+                outStorageData.sourceOrderNo = outStorageDetails.sourceOrderNo;
+                outStorageData.createUserId =outStorageData.createUserId;
+                outStorageData.createUserName =outStorageData.createUserName;
+                outStorageData.goodsPicture =outStorageData.goodsPicture;//照片
+            }
 
             const res = await addOutStorage(outStorageData);
             const orderNo = res.data;
@@ -357,6 +373,7 @@ debugger
             }
             else {
                 ElMessage.error('添加出库记录失败');
+                msgDrawerOptions.value.show = false;
                 resetForm();
             }
         } else {

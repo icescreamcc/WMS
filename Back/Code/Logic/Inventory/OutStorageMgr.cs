@@ -12,6 +12,7 @@ using Models.Model.Enum;
 using Models.Model.Inv;
 using Models.Model.Purchase;
 using Models.Model.Sys;
+using NPOI.SS.Formula.Functions;
 using SqlSugar;
 using StackExchange.Redis;
 using System;
@@ -117,11 +118,19 @@ namespace Logic.Inventory
                   .ToPageList(pgIndex, pgSize, ref total);
             data.ForEach(row =>
             {
-                row.OutStorageTypeDesc = EnumHelper.GetDescFromEnumVal<OutStorageType>(row.OutStorageType);
-                row.StatusDesc = EnumHelper.GetDescFromEnumVal<OutStorageStatus>(row.Status);
-                row.GoodsClassifyDesc = EnumHelper.GetDescFromEnumVal<BaseTypeGroup>(row.GoodsClassify);
-                row.ApprovalStatusDesc = EnumHelper.GetDescFromEnumVal<ApprovalStatus>(row.ApprovalStatus);
-                row.IsApproval = (isAnyApproval && row.Status == OutStorageStatus.Pending.ToString()) || (curApprover?.Count > 0 && curApproverRank.Contains(row.ApprovalLastRank + 1) && (row.Status == OutStorageStatus.Pending.ToString() || row.Status == OutStorageStatus.Approvaling.ToString()));
+                try
+                {
+                    row.OutStorageTypeDesc = EnumHelper.GetDescFromEnumVal<OutStorageType>(row.OutStorageType);
+                    row.StatusDesc = EnumHelper.GetDescFromEnumVal<OutStorageStatus>(row.Status?.Trim());
+                    row.GoodsClassifyDesc = EnumHelper.GetDescFromEnumVal<BaseTypeGroup>(row.GoodsClassify);
+                    row.ApprovalStatusDesc = EnumHelper.GetDescFromEnumVal<ApprovalStatus>(row.ApprovalStatus);
+                    row.IsApproval = (isAnyApproval && row.Status == OutStorageStatus.Pending.ToString()) || (curApprover?.Count > 0 && curApproverRank.Contains(row.ApprovalLastRank + 1) && (row.Status == OutStorageStatus.Pending.ToString() || row.Status == OutStorageStatus.Approvaling.ToString()));
+
+                }
+                catch (Exception ex)
+                {
+                    throw new BusinessException($"[GetOrders] Enum convert failed, OrderNo={row.OrderNo}, Status={row.Status}, Error={ex.Message}");
+                }
             });
 
             var sourceOrderNos = data.Select(d => d.SourceOrderNo).ToList();
@@ -214,7 +223,7 @@ namespace Logic.Inventory
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public async Task<string> AddOutStorage(OutStorage data)
+        public async Task<string> AddUpdateOutStorage(OutStorage data)
         {
             if (data.Details == null || data.Details.Count == 0)
             {
@@ -351,6 +360,181 @@ namespace Logic.Inventory
             return "";
         }
 
+        public async Task<string> AddOutStorage(OutStorage data)
+        {
+            // 判断是否存在相同出库单号（即：再次扫码时的情况）
+            if (!string.IsNullOrEmpty(data.OrderNo))
+            {
+                var exist = await Repository.ClientDb.Queryable<InvOutStorage>()
+                              .AnyAsync(x => x.OrderNo == data.OrderNo);
+                if (exist)
+                {
+                    // 已存在出库单 → 直接调用修改方法
+                    await UpdateOutStorage(data);
+
+                    
+                    return data.OrderNo;
+                }
+            }
+            ///////////////////////////
+            if (data.Details == null || data.Details.Count == 0)
+            {
+                throw new BusinessException("保存失败,请添加出库单明细");
+            }
+            var sameGoods = data.Details.GroupBy(d => new { d.GoodsId, d.WarehouseId, d.BinId, d.WorkbinCellId, d.UnitId }).Count();
+            if (sameGoods != data.Details.Count)
+            {
+                throw new BusinessException("保存失败,同一物品在相同单位、货位下不允许多次添加");
+            }
+            //验证：指定的物品是否在盘点中
+            var goodsArr = data.Details.Select(s => s.GoodsId).Distinct().ToArray();
+            var goodsInfo = await Repository.ClientDb.Queryable<BaseGoods>().Where(w => goodsArr.Contains(w.GoodsId)).ToListAsync();
+            foreach (var detail in data.Details)
+            {
+                var isTakeStockLock = goodsInfo.Exists(e => e.GoodsId == detail.GoodsId && e.IsTakeStockLock);
+                if (isTakeStockLock)
+                {
+                    throw new BusinessException($"保存失败，物品{detail.GoodsName + detail.GoodsModel}正在盘点中，暂停出库");
+                }
+            }
+            //验证：指定的货位是否在盘点中
+            var binArr = data.Details.Select(s => s.BinId).Distinct().ToArray();
+            var binInfo = await Repository.ClientDb.Queryable<InvBin>().Where(w => binArr.Contains(w.BinId)).ToListAsync();
+            foreach (var detail in data.Details)
+            {
+                var isTakeStockLock = binInfo.Exists(e => e.BinId == detail.BinId && e.IsTakeStockLock);
+                if (isTakeStockLock)
+                {
+                    throw new BusinessException($"保存失败，货位{detail.BinName}正在盘点中，暂停出库");
+                }
+            }
+            //检查库存 
+            await _storageMgr.StorageStatistics(data.CreateUserId, data.CreateUserName);
+            var chkStorage = await _storageMgr.CheckStorage(data.Details);
+            if (chkStorage)
+            {
+                //出库单 
+                var lastData = await Repository.ClientDb.Queryable<InvOutStorage>().MaxAsync(x => x.OrderNo);
+                var outStorageModel = new InvOutStorage
+                {
+                    OrderNo = GetPrimaryId("O", lastData),
+                    SourceOrderNo = data.SourceOrderNo,
+                    OutStorageType = data.OutStorageType,
+                    LineNo = data.LineNo,
+                    GoodsClassify = data.GoodsClassify,
+                    CreateDate = DateTime.Now,
+                    CreateUserId = data.CreateUserId,
+                    CreateUserName = data.CreateUserName,
+                    WarehouseId = data.WarehouseId,
+                    Remark = data.Remark
+                };
+                //审批
+                var isOutStorageApproval = bool.Parse((await _sysArgsHelper.GetValueByKey(BusinessConst.IsOutStorageApproval)).Value.ToString());
+                if (isOutStorageApproval)
+                {
+                    //审批信息(如果当前创建人也是审批人,则需要修改和添加相应的审批信息) 
+                    var process = await GetApprovalProcess(ApprovalDataType.OutStorage.ToString());
+                    var curApprover = process.Where(a => a.ApproverId == data.CreateUserId).ToList();
+                    if (curApprover?.Count > 0)
+                    {
+                        var hightApprover = curApprover.OrderByDescending(x => x.Rank).First();
+                        outStorageModel.ApprovalDate = DateTime.Now;
+                        outStorageModel.ApproverId = data.CreateUserId;
+                        outStorageModel.ApproverName = data.CreateUserName;
+                        outStorageModel.ApproverRole = hightApprover.ApproverRole;
+                        if (hightApprover.IsLastApproval)
+                        {
+                            outStorageModel.ApprovalStatus = ApprovalStatus.Approve.ToString();
+                            outStorageModel.Status = OutStorageStatus.WaitOutStorage.ToString();
+                        }
+                        else
+                        {
+                            outStorageModel.Status = OutStorageStatus.Approvaling.ToString();
+                            outStorageModel.ApprovalStatus = ApprovalStatus.Approvaling.ToString();
+                        }
+                        var approvalHis = new ApprovalHis
+                        {
+                            ApprovalDate = DateTime.Now,
+                            ApprovalModel = hightApprover.ApprovalModel,
+                            ApprovalStatus = ApprovalStatus.Approve.ToString(),
+                            ApproverId = data.CreateUserId,
+                            ApproverName = data.CreateUserName,
+                            ApproverRoleId = hightApprover.ApproverRole,
+                            ApproverRoleName = hightApprover.ApproverRoleName,
+                            DataType = ApprovalDataType.OutStorage.ToString(),
+                            ApprovalRank = hightApprover.Rank,
+                            PrimaryId = outStorageModel.OrderNo
+                        };
+                        Repository.ClientDb.Insertable(approvalHis).AddQueue();
+                    }
+                    else
+                    {
+                        outStorageModel.Status = OutStorageStatus.Pending.ToString();
+                        outStorageModel.ApprovalStatus = ApprovalStatus.Pending.ToString();
+                    }
+                }
+                else
+                {
+                    outStorageModel.Status = OutStorageStatus.WaitOutStorage.ToString();
+                    outStorageModel.ApprovalStatus = ApprovalStatus.NoApproval.ToString();
+                }
+                Repository.ClientDb.Insertable(outStorageModel).AddQueue();
+                //出库单明细
+                var outStorageDetail = data.Details
+                    .Select(b => new InvOutStorageDetail
+                    {
+                        OrderNo = outStorageModel.OrderNo,
+                        GoodsId = b.GoodsId,
+                        GoodsName = b.GoodsName,
+                        WarehouseId = b.WarehouseId,
+                        ShelfId = b.ShelfId,
+                        BinId = b.BinId,
+                        WorkbinId = b.WorkbinId,
+                        WorkbinCellId = b.WorkbinCellId,
+                        Quantity = b.Quantity,
+                        ActualQuantity = b.ActualQuantity,
+                        UnitId = b.UnitId,
+                        Remark = b.Remark,
+                        UnitPrice = goodsInfo.Single(s => s.GoodsId == b.GoodsId).CostPrice,
+                        TotalPrice = Math.Round(goodsInfo.Single(s => s.GoodsId == b.GoodsId).CostPrice * b.Quantity, 2),
+                        PriceUnit = goodsInfo.Single(s => s.GoodsId == b.GoodsId).PriceUnitName,
+                        //GoodsClassify = oldSending.GoodsClassify,
+
+                    })
+                    .ToList();
+                Repository.ClientDb.Insertable(outStorageDetail).AddQueue();
+                await Repository.ClientDb.SaveQueuesAsync();
+
+                // 保存发货照片
+                if (data.GoodsPicture != null && data.GoodsPicture.Count > 0)
+                {
+                    var photos = new List<BaseFiles>();
+                    var isSetDeft = false;
+                    foreach (var p in data.GoodsPicture)
+                    {
+                        photos.Add(new BaseFiles
+                        {
+                            PrimaryId = outStorageModel.OrderNo,
+                            FileName = p.FileName,
+                            FileInfoType = FileInfoType.SendingPhoto.ToString(),
+                            Url = p.Url,
+                            IsDeft = !isSetDeft
+                        });
+                        isSetDeft = true;
+                    }
+
+                    Repository.ClientDb.Insertable(photos).AddQueue();
+                }
+
+
+                var msgContent = $"{data.CreateUserName}提交了一份待确认的({EnumHelper.GetDescFromEnumVal<OutStorageType>(data.OutStorageType)})出库单";
+                var msgRemark = $"{string.Join(',', data.Details.Select(s => s.GoodsName))}";
+                await _messageService.CreateMessage(data.CreateUserName, msgContent, msgRemark, MessageType.OutStorage);
+                return outStorageModel.OrderNo;
+            }
+            return "";
+        }
+
         /// <summary>
         /// 修改出库单
         /// </summary>
@@ -421,6 +605,7 @@ namespace Logic.Inventory
                     UpdateUserName = data.CreateUserName,
                     WarehouseId = data.WarehouseId,
                     Remark = data.Remark,
+                   
                 };
                 //审批
                 if (isOutStorageApproval)
@@ -485,17 +670,45 @@ namespace Logic.Inventory
                     WorkbinId = b.WorkbinId,
                     WorkbinCellId = b.WorkbinCellId,
                     Quantity = b.Quantity,
+                    ActualQuantity =b.ActualQuantity,
                     UnitId = b.UnitId,
                     Remark = b.Remark,
                     UnitPrice = goodsInfo.Single(s => s.GoodsId == b.GoodsId).CostPrice,
                     TotalPrice = Math.Round(goodsInfo.Single(s => s.GoodsId == b.GoodsId).CostPrice * b.Quantity, 2),
                     PriceUnit = goodsInfo.Single(s => s.GoodsId == b.GoodsId).PriceUnitName
                 }).ToList();
+
+                // 插入新照片
+                if (data.GoodsPicture != null && data.GoodsPicture.Count > 0)
+                {
+                    // 删除旧照片
+                    Repository.ClientDb.Deleteable<BaseFiles>(f => f.PrimaryId == data.OrderNo && f.FileInfoType == FileInfoType.SendingPhoto.ToString())
+                        .AddQueue();
+
+                    var photos = new List<BaseFiles>();
+                    var isSetDeft = false;
+                    foreach (var p in data.GoodsPicture)
+                    {
+                        photos.Add(new BaseFiles
+                        {
+                            PrimaryId = data.OrderNo,
+                            FileName = p.FileName,
+                            FileInfoType = FileInfoType.SendingPhoto.ToString(),
+                            Url = p.Url,
+                            IsDeft = !isSetDeft
+                        });
+                        isSetDeft = true;
+                    }
+                    Repository.ClientDb.Insertable(photos).AddQueue();
+                }
+
                 Repository.ClientDb.Deleteable<InvOutStorageDetail>(d => d.OrderNo == data.OrderNo).AddQueue();
                 Repository.ClientDb.Insertable(outStorageDetail).AddQueue();
                 await Repository.ClientDb.SaveQueuesAsync();
             }  
         }
+
+
           
         /// <summary>
         /// 删除出库单
