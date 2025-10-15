@@ -538,19 +538,35 @@ namespace Logic.Purchase
                         .ExecuteCommandAsync();
 
                     // 更新订单计划的已发数量
-                    await Repository.ClientDb.Updateable<OrderPlan>()
-                        .SetColumns(op => new OrderPlan
-                        {
-                            ShippedNum = data.ActualQuantity,
-                            Belial = SqlFunc.IIF(
-                                                         (op.ShippedNum + data.ActualQuantity) == 0,
-                                                         0,
-                                                         SqlFunc.Round((op.OrderNum / (op.ShippedNum + data.ActualQuantity)) * 100, 0)
-                                                 )
-                        })
-                        .Where(op => op.OrderNo == oldSending.CustomerOrderNo)
-                        .ExecuteCommandAsync();
+                    //await Repository.ClientDb.Updateable<OrderPlan>()
+                    //    .SetColumns(op => new OrderPlan
+                    //    {
+                    //        ShippedNum = data.ActualQuantity,
+                    //        Belial = SqlFunc.IIF(
+                    //            (op.ShippedNum + data.ActualQuantity) == 0,
+                    //             0,
+                    //             SqlFunc.Round((op.OrderNum / (op.ShippedNum + data.ActualQuantity)) * 100, 0)
+                    //             )
+                    //    })
+                    //    .Where(op => op.OrderNo == oldSending.CustomerOrderNo)
+                    //    .ExecuteCommandAsync();
 
+                    var order = await Repository.ClientDb.Queryable<OrderPlan>()
+                        .Where(op => op.OrderNo == oldSending.CustomerOrderNo)
+                        .FirstAsync();
+                    if (order != null)
+                    {
+                        // 计算新的 Belial 值
+                        var total = order.ShippedNum + data.ActualQuantity;
+                        order.Belial = order.OrderNum == 0
+                            ? 0
+                            : Math.Round((total / order.OrderNum) * 100, 0);
+
+                        // 计算新的已发货数量
+                        order.ShippedNum = total;
+                        // 执行更新
+                        await Repository.ClientDb.Updateable(order).ExecuteCommandAsync();
+                    }
                     // 保存发货照片
                     if (data.GoodsPicture != null && data.GoodsPicture.Count > 0)
                     {

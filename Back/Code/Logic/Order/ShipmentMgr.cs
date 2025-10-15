@@ -313,7 +313,7 @@ namespace Logic.Order
         public async Task<List<KeyValueModel>> GetOrderPlan()
         {
             var res = await Repository.ClientDb.Queryable<OrderPlan>()
-                //.Where(c => c.IsValid)
+                .Where(c => c.OrderState != "已关闭")
                 .Select(c => new KeyValueModel { Key = c.OrderNo, Value = c.OrderNo, Remark = c.ContractNo })
                 .ToListAsync();
             return res.OrderBy(x => x.Remark).ToList();
