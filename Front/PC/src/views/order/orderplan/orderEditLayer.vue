@@ -173,7 +173,7 @@ const ruleForm = ref({
   contractNo: props.layer.row?.contractNo || '',
   signingDate: props.layer.row?.signingDate || '',
   customerName: props.layer.row?.customerName || '',
-  goodsName: props.layer.row?.goodsName || 'S10000005',
+  goodsName: props.layer.row?.goodsName || '',
   orderNum: props.layer.row?.orderNum || '',
   orderAmount: props.layer.row?.orderAmount || '',
   // 修改这里：默认值为8
@@ -216,7 +216,7 @@ watch(() => props.layer.row, (newVal) => {
       contractNo: newVal.contractNo || '',
       signingDate: newVal.signingDate || '',
       customerName: newVal.customerName || '',
-      goodsName: newVal.goodsName || 'S10000005',
+      goodsName: newVal.goodsName || '',
       orderNum: newVal.orderNum || '',
       orderAmount: newVal.orderAmount || '',
 
@@ -292,6 +292,9 @@ onMounted(() => {
     supplierUserData.value = res.data.userOptions;
     goodsNameData.value = res.data.goodsNameOptions;
     unitsData.value = res.data.unitOptions;
+    if(ruleForm.value.goodsName ==''){
+      ruleForm.value.goodsName = goodsNameData.value[0].key;
+    }
   })
 });
 
