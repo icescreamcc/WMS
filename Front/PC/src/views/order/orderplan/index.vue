@@ -74,7 +74,7 @@
           <el-table-column :label="$t('message.common.handle')" align="center" width="200">
             <template #default="scope">
                <el-button @click="handleRead(scope.row)">{{ $t("message.common.read") }}</el-button>
-              <el-button  type="primary"  @click="handleEdit(scope.row)" :disabled="scope.row.orderState != '新建'" >
+              <el-button  type="primary"  @click="handleEdit(scope.row)" :disabled="scope.row.orderState != '进行中'" >
                 {{
                 $t("message.common.update")
               }}</el-button>
