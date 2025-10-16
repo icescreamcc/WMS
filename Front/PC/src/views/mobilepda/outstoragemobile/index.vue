@@ -210,10 +210,10 @@ onMounted(() => {
     html5QrCode.value = new Html5Qrcode(readerId)
 
     // PC端调试用默认发货单号
-    const decodedText = 'S10000024'
+    const decodedText = 'S10000030'
     getOrderDetail(permission.getOperator().userId, decodedText).then(res => {
         deliveryItem.value = res.data[0]
-        debugger
+
         if (deliveryItem.value) deliveryItem.value.actualQuantity = deliveryItem.value.quantity
     })
 })
@@ -341,7 +341,7 @@ const submitDelivery = async () => {
 
         const res = await ConfirmSendingAndOutStorage(sendingData);
         const outStorageData = res.data; // 这里才是后端返回的对象
-        debugger
+
         if (outStorageData && outStorageData.details && outStorageData.details.length > 0) {
             // 把 OrderNo 写入每个明细
             outStorageData.details.forEach((d: any) => {
@@ -359,9 +359,9 @@ const submitDelivery = async () => {
                 outStorageData.warehouseId = outStorageDetails.warehouseId;
                 outStorageData.outStorageDate = outStorageDetails.outStorageDate;
                 outStorageData.sourceOrderNo = outStorageDetails.sourceOrderNo;
-                outStorageData.createUserId =outStorageData.createUserId;
-                outStorageData.createUserName =outStorageData.createUserName;
-                outStorageData.goodsPicture =outStorageData.goodsPicture;//照片
+                outStorageData.createUserId = outStorageData.createUserId;
+                outStorageData.createUserName = outStorageData.createUserName;
+                outStorageData.goodsPicture = outStorageData.goodsPicture;//照片
             }
 
             const res = await addOutStorage(outStorageData);

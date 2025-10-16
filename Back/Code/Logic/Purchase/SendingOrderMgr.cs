@@ -486,8 +486,7 @@ namespace Logic.Purchase
                     if (oldSending == null)
                         throw new BusinessException("保存失败，当前发货计划不存在或已删除");
 
-                    //if (oldSending.Status == SendingOrderStatus.Shipment.ToString())
-                    //    throw new BusinessException("单号已发货");
+    
 
                     // 查找对应订单计划
                     var orderPlan = await Repository.ClientDb.Queryable<OrderPlan>()
@@ -512,11 +511,11 @@ namespace Logic.Purchase
                     var planQty = orderPlan.OrderNum;
                     var shippedQty = orderPlan.ShippedNum;
 
-                    if (data.ActualQuantity > planQty)
-                    {
-                        var remain = planQty - shippedQty;
-                        throw new BusinessException($"发货超出订单计划，当前最大可发数量为：{remain}");
-                    }
+                    //if (data.ActualQuantity > planQty)
+                    //{
+                    //    var remain = planQty - shippedQty;
+                    //    throw new BusinessException($"发货超出订单计划，当前最大可发数量为：{remain}");
+                    //}
 
                     // 更新发货单状态
                     var curDate = DateTime.Now;
@@ -537,56 +536,70 @@ namespace Logic.Purchase
                         .Where(s => s.OrderNo == data.OrderNo)
                         .ExecuteCommandAsync();
 
-                    // 更新订单计划的已发数量
-                    //await Repository.ClientDb.Updateable<OrderPlan>()
-                    //    .SetColumns(op => new OrderPlan
-                    //    {
-                    //        ShippedNum = data.ActualQuantity,
-                    //        Belial = SqlFunc.IIF(
-                    //            (op.ShippedNum + data.ActualQuantity) == 0,
-                    //             0,
-                    //             SqlFunc.Round((op.OrderNum / (op.ShippedNum + data.ActualQuantity)) * 100, 0)
-                    //             )
-                    //    })
-                    //    .Where(op => op.OrderNo == oldSending.CustomerOrderNo)
-                    //    .ExecuteCommandAsync();
 
+                    //原来的方法只会累加，如果修改数量不会减去之前的
+                    //var order = await Repository.ClientDb.Queryable<OrderPlan>()
+                    //    .Where(op => op.OrderNo == oldSending.CustomerOrderNo)
+                    //    .FirstAsync();
+                    //if (order != null)
+                    //{
+                    //    // 计算新的 Belial 值
+                    //    var total = order.ShippedNum + data.ActualQuantity;//之前是累计，现在改
+                    //    order.Belial = order.OrderNum == 0
+                    //        ? 0
+                    //        : Math.Round((total / order.OrderNum) * 100, 0);
+
+                    //    // 计算新的已发货数量
+                    //    order.ShippedNum = total;
+                    //    // 执行更新
+                    //    await Repository.ClientDb.Updateable(order).ExecuteCommandAsync();
+                    //}
+
+                    // ===== 更新订单计划的已发数量与Belial =====
                     var order = await Repository.ClientDb.Queryable<OrderPlan>()
                         .Where(op => op.OrderNo == oldSending.CustomerOrderNo)
                         .FirstAsync();
+
                     if (order != null)
                     {
-                        // 计算新的 Belial 值
-                        var total = order.ShippedNum + data.ActualQuantity;
+                        double newShippedNum;
+
+                        // 先查当前是否已有对应出库单
+                        var outStorage = await Repository.ClientDb.Queryable<InvOutStorage>()
+                            .Where(o => o.SourceOrderNo == data.OrderNo)
+                            .FirstAsync();
+
+                        if (outStorage != null)
+                        {
+                            // 出库单已存在 → 计算差值修正
+                            var existingDetails = await Repository.ClientDb.Queryable<InvOutStorageDetail>()
+                                .Where(d => d.OrderNo == outStorage.OrderNo)
+                                .ToListAsync();
+
+                            var oldQty = existingDetails.Sum(d => d.ActualQuantity);
+                            var diff = data.ActualQuantity - oldQty;  // 新旧差值
+
+                            newShippedNum = order.ShippedNum + diff;
+                        }
+                        else
+                        {
+                            // 新建出库单 → 累加发货数量
+                            newShippedNum = order.ShippedNum + data.ActualQuantity;
+                        }
+
+                        // 防止负数
+                        if (newShippedNum < 0)
+                            newShippedNum = 0;
+
+                        // 更新字段
+                        order.ShippedNum = newShippedNum;
                         order.Belial = order.OrderNum == 0
                             ? 0
-                            : Math.Round((total / order.OrderNum) * 100, 0);
+                            : Math.Round((newShippedNum / order.OrderNum) * 100, 0);
 
-                        // 计算新的已发货数量
-                        order.ShippedNum = total;
-                        // 执行更新
                         await Repository.ClientDb.Updateable(order).ExecuteCommandAsync();
                     }
-                    ////// 保存发货照片
-                    //if (data.GoodsPicture != null && data.GoodsPicture.Count > 0)
-                    //{
-                    //    var photos = new List<BaseFiles>();
-                    //    var isSetDeft = false;
-                    //    foreach (var p in data.GoodsPicture)
-                    //    {
-                    //        photos.Add(new BaseFiles
-                    //        {
-                    //            PrimaryId = data.OrderNo,
-                    //            FileName = p.FileName,
-                    //            FileInfoType = FileInfoType.SendingPhoto.ToString(),
-                    //            Url = p.Url,
-                    //            IsDeft = !isSetDeft
-                    //        });
-                    //        isSetDeft = true;
-                    //    }
 
-                    //    Repository.ClientDb.Insertable(photos).AddQueue();
-                    //}
 
                     // ===== 生成出库单逻辑 =====
                     var goodsArr = sendingDetails.Select(s => s.GoodsId).Distinct().ToArray();
@@ -624,7 +637,7 @@ namespace Logic.Purchase
                                 var sendDetail = sendingDetails.FirstOrDefault(s => s.GoodsId == d.GoodsId);
                                 if (sendDetail != null)
                                 {
-                                    d.ActualQuantity = sendDetail.ActualQuantity > 0 ? sendDetail.ActualQuantity : sendDetail.Quantity;
+                                    d.ActualQuantity = data.ActualQuantity > 0 ? data.ActualQuantity : data.Quantity;
                                     d.TotalPrice = Math.Round(d.UnitPrice * d.ActualQuantity, 2);
                                     detailsForFront.Add(new OutStorageDetail
                                     {
@@ -770,7 +783,7 @@ namespace Logic.Purchase
                             {
                                 var g = goodsInfo.FirstOrDefault(x => x.GoodsId == d.GoodsId);
                                 var bin = bins.FirstOrDefault();
-                                float actualQty = d.ActualQuantity > 0 ? d.ActualQuantity : d.Quantity;
+                                float actualQty = data.ActualQuantity > 0 ? data.ActualQuantity : data.Quantity;
 
                                 var detail = new OutStorageDetail
                                 {

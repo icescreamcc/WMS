@@ -78,11 +78,11 @@
                 </el-input>
               </template>
             </el-table-column>
-            <el-table-column prop="quantity" label="出库数量" align="center" min-width="130" :show-overflow-tooltip="true">
+            <el-table-column prop="actualQuantity" label="出库数量" align="center" min-width="130" :show-overflow-tooltip="true">
               <template #default="detail">
                 <el-popover placement="top-start" title="库存提示" :width="550" trigger="focus">
                   <template #reference>
-                    <el-input v-model="detail.row.quantity" placeholder="数量" style="width:65%"
+                    <el-input v-model="detail.row.actualQuantity" placeholder="数量" style="width:65%"
                       :disabled="!props.layer.showButton" type="number" @change="onInputTotalPrice(detail.row)"
                       @focus="getStorageData(detail.row)" />
                   </template>

@@ -133,16 +133,16 @@ namespace Logic.Inventory
                 }
             });
 
-            var sourceOrderNos = data.Select(d => d.SourceOrderNo).ToList();
+            var OrderNos = data.Select(d => d.OrderNo).ToList();
             var photos = await Repository.ClientDb.Queryable<BaseFiles>()
-          .Where(p => sourceOrderNos.Contains(p.PrimaryId) && p.FileInfoType == FileInfoType.SendingPhoto.ToString())
+          .Where(p => OrderNos.Contains(p.PrimaryId) && p.FileInfoType == FileInfoType.SendingPhoto.ToString())
           .ToListAsync();
 
             // 逐个挂载到单据上
             data.ForEach(row =>
             {
                 row.GoodsPicture = photos
-                    .Where(p => p.PrimaryId == row.SourceOrderNo)
+                    .Where(p => p.PrimaryId == row.OrderNo)
                     .Select(p => new FileInfoDto
                     {
                         FileId = p.FileId,
@@ -219,7 +219,7 @@ namespace Logic.Inventory
         }
 
         /// <summary>
-        /// 添加出库单
+        /// 添加出库单 取消
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
